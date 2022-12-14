@@ -6,14 +6,20 @@ import { PersistGate } from 'redux-persist/integration/react';
 import { store, persistor } from './src/store';
 import { Provider } from 'react-redux';
 import LoadingState from './src/screens/LoadingState';
+import { extendTheme, NativeBaseProvider } from 'native-base';
+import { lightTheme } from './src/themes/light-theme';
 
 const AppWrapper = () => {
+  const theme = extendTheme({ colors: lightTheme });
+
   return (
     <Provider store={store}>
       <PersistGate loading={<LoadingState />} persistor={persistor}>
-        <NavigationContainer ref={navigationRef}>
-          <App />
-        </NavigationContainer>
+        <NativeBaseProvider theme={theme}>
+          <NavigationContainer ref={navigationRef} theme={theme}>
+            <App />
+          </NavigationContainer>
+        </NativeBaseProvider>
       </PersistGate>
     </Provider>
   );
