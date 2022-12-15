@@ -1,6 +1,6 @@
 import { SnackbarModel } from '../../types/storeTypes';
 import {
-  SET_DARK_MODE,
+  SET_COLOR_MODE,
   SET_LOADER,
   SET_SNACKBAR,
 } from '../constants/mainConstants';
@@ -12,9 +12,9 @@ export const setLoader = (payload: boolean) => {
   };
 };
 
-export const setTheme = (payload: boolean) => {
+export const setColorMode = (payload: 'light' | 'dark') => {
   return {
-    type: SET_DARK_MODE,
+    type: SET_COLOR_MODE,
     payload,
   };
 };

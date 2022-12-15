@@ -8,7 +8,7 @@ export interface StoreModel {
 
 export interface MainStoreModel {
   isLoading: boolean;
-  isDarkMode: boolean;
+  colorMode: 'dark' | 'light';
   snackbar: SnackbarModel;
 }
 

@@ -21,13 +21,14 @@ export type Leaves<T> = T extends object
   ? { [K in keyof T]-?: Join<K, Leaves<T[K]>> }[keyof T]
   : '';
 
-export const lightTheme = {
+const colors = {
   contrastThreshold: 7,
   // Singleton colors
   white: '#FFFFFF',
   black: '#000000',
   lightText: '#FFFFFF',
   darkText: '#000000',
+  transparent: 'rgba(255, 255, 255, 0)',
   // Primary colors
   rose: {
     50: '#fff1f2',
@@ -342,18 +343,18 @@ export const lightTheme = {
   tertiary: {} as IColorHues,
 };
 
-lightTheme.danger = lightTheme.rose;
-lightTheme.error = lightTheme.red;
-lightTheme.success = lightTheme.green;
-lightTheme.warning = lightTheme.orange;
-lightTheme.muted = lightTheme.trueGray;
-lightTheme.primary = lightTheme.cyan;
-lightTheme.secondary = lightTheme.pink;
-lightTheme.tertiary = lightTheme.emerald;
-lightTheme.info = lightTheme.lightBlue;
-lightTheme.light = lightTheme.warmGray;
+colors.danger = colors.rose;
+colors.error = colors.red;
+colors.success = colors.green;
+colors.warning = colors.orange;
+colors.muted = colors.trueGray;
+colors.primary = colors.cyan;
+colors.secondary = colors.pink;
+colors.tertiary = colors.emerald;
+colors.info = colors.lightBlue;
+colors.light = colors.warmGray;
 
-export default lightTheme;
+export default colors;
 
 // export type IColors = Leaves<ITheme['colors']>;
-export type IColors = Leaves<typeof lightTheme>;
+export type IColors = Leaves<typeof colors>;

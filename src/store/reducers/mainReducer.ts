@@ -1,14 +1,14 @@
 import { MainStoreModel } from '../../types/storeTypes';
 import {
   CLEAR_STORE,
-  SET_DARK_MODE,
+  SET_COLOR_MODE,
   SET_LOADER,
   SET_SNACKBAR,
 } from '../constants/mainConstants';
 
 const initialState: MainStoreModel = {
   isLoading: false,
-  isDarkMode: false,
+  colorMode: 'dark',
   snackbar: {
     type: 'error',
     message: '',
@@ -24,10 +24,10 @@ const mainReducer = (state = initialState, action: any) => {
         isLoading: action.payload,
       };
 
-    case SET_DARK_MODE:
+    case SET_COLOR_MODE:
       return {
         ...state,
-        isDarkMode: action.payload,
+        colorMode: action.payload,
       };
 
     case SET_SNACKBAR:

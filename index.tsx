@@ -7,16 +7,24 @@ import { store, persistor } from './src/store';
 import { Provider } from 'react-redux';
 import LoadingState from './src/screens/LoadingState';
 import { extendTheme, NativeBaseProvider } from 'native-base';
-import { lightTheme } from './src/themes/light-theme';
+import colors from './src/themes/colors';
+import fonts from './src/themes/fonts';
+import components from './src/themes/components';
 
 const AppWrapper = () => {
-  const theme = extendTheme({ colors: lightTheme });
+  const theme = extendTheme({
+    ...fonts,
+    components,
+    colors,
+    initialColorMode: 'dark',
+    useSystemColorMode: false,
+  });
 
   return (
     <Provider store={store}>
       <PersistGate loading={<LoadingState />} persistor={persistor}>
         <NativeBaseProvider theme={theme}>
-          <NavigationContainer ref={navigationRef} theme={theme}>
+          <NavigationContainer ref={navigationRef}>
             <App />
           </NavigationContainer>
         </NativeBaseProvider>

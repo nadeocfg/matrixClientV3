@@ -1,13 +1,30 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Login from './screens/Login';
 import Registration from './screens/Registration';
+import Home from './screens/Home';
+import { useColorMode } from 'native-base';
+import { useAppSelector } from './hooks/useSelector';
+import { StoreModel } from './types/storeTypes';
 
 const App = () => {
+  const { setColorMode } = useColorMode();
+  const storeColorMode = useAppSelector(
+    (state: StoreModel) => state.mainStore.colorMode,
+  );
   const Stack = createNativeStackNavigator();
 
+  useEffect(() => {
+    setColorMode(storeColorMode);
+  }, []);
+
   return (
-    <Stack.Navigator initialRouteName="Login">
+    <Stack.Navigator initialRouteName="Home">
+      <Stack.Screen
+        options={{ headerShown: false }}
+        name="Home"
+        component={Home}
+      />
       <Stack.Screen
         options={{ headerShown: false }}
         name="Login"
