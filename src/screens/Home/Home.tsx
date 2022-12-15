@@ -1,15 +1,15 @@
-import React, { PropsWithChildren } from 'react';
-import { useAppDispatch } from '../hooks/useDispatch';
-import { useAppSelector } from '../hooks/useSelector';
+import React, { PropsWithChildren, useEffect } from 'react';
+import { useAppDispatch } from '../../hooks/useDispatch';
+import { useAppSelector } from '../../hooks/useSelector';
 import {
   setColorMode as setColorModeAction,
   setLoader,
-} from '../store/actions/mainActions';
-import { StoreModel } from '../types/storeTypes';
-import { navigate } from '../utils/navigation';
+} from '../../store/actions/mainActions';
+import { StoreModel } from '../../types/storeTypes';
+import { navigate } from '../../utils/navigation';
 import { useColorMode, Text, Center, ScrollView, Button } from 'native-base';
-import theme from '../themes/theme';
-import NativeAlert from '../components/NativeAlert';
+import theme from '../../themes/theme';
+import nativeAlert from '../../utils/nativeAlert';
 
 const Home: React.FC<PropsWithChildren<any>> = () => {
   const dispatch = useAppDispatch();
@@ -20,6 +20,10 @@ const Home: React.FC<PropsWithChildren<any>> = () => {
     (state: StoreModel) => state.mainStore.colorMode,
   );
   const { colorMode, setColorMode } = useColorMode();
+
+  useEffect(() => {
+    dispatch(setLoader(false));
+  }, []);
 
   const changeLoading = () => {
     dispatch(setLoader(!isLoading));
@@ -33,7 +37,7 @@ const Home: React.FC<PropsWithChildren<any>> = () => {
   };
 
   const showAlert = () => {
-    NativeAlert('Alert title', 'alert message');
+    nativeAlert('Alert title', 'alert message');
   };
 
   return (

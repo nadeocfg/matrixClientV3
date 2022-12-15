@@ -4,6 +4,7 @@ const theme = {
   transparent: colors.transparent,
   light: {
     bgColor: colors.coolGray[50],
+    transparentBg: colors.lightTransparentBg,
     button: {
       primary: {
         bgColor: colors.darkBlue[700],
@@ -14,6 +15,7 @@ const theme = {
   },
   dark: {
     bgColor: colors.coolGray[800],
+    transparentBg: colors.darkTransparentBg,
     button: {
       primary: {
         bgColor: colors.darkBlue[200],

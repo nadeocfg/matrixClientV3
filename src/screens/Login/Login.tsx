@@ -12,9 +12,15 @@ import {
 } from 'native-base';
 import React, { PropsWithChildren, useState } from 'react';
 import { StyleSheet } from 'react-native';
-import { CloseEyeIcon, EyeIcon } from '../components/icons';
-import theme from '../themes/theme';
-import { navigate } from '../utils/navigation';
+import { CloseEyeIcon, EyeIcon } from '../../components/icons';
+import { useAppDispatch } from '../../hooks/useDispatch';
+import { setAuthResponse } from '../../store/actions/authActions';
+import { setLoader } from '../../store/actions/mainActions';
+import { setRooms } from '../../store/actions/roomsActions';
+import theme from '../../themes/theme';
+import matrixClient from '../../utils/matrix';
+import nativeAlert from '../../utils/nativeAlert';
+import { navigate } from '../../utils/navigation';
 
 const Login: React.FC<PropsWithChildren<any>> = () => {
   const [formData, setFormData] = useState({
@@ -23,13 +29,69 @@ const Login: React.FC<PropsWithChildren<any>> = () => {
     password: '',
   });
   const [isDisabled, setIsDisabled] = useState(true);
-  const [isPassword, setIsPassword] = useState(false);
+  const [isPassword, setIsPassword] = useState(true);
   const { colorMode } = useColorMode();
+  const dispatch = useAppDispatch();
 
   const onChange = (name: string) => (value: string) => {
     setFormData({
       ...formData,
       [name]: value,
+    });
+  };
+
+  const login = () => {
+    const { username, password } = formData;
+
+    if (!username || !password) {
+      nativeAlert('Error', 'Username and password is required');
+      return;
+    }
+
+    dispatch(setLoader(true));
+
+    matrixClient
+      .loginWithPassword(username, password)
+      .then(res => {
+        dispatch(setAuthResponse(res));
+
+        matrixClient.startClient({
+          initialSyncLimit: 10,
+          includeArchivedRooms: false,
+          lazyLoadMembers: true,
+        });
+      })
+      .catch(err => {
+        nativeAlert(
+          err.data?.errcode || '',
+          err.data?.error || 'Something went wrong',
+        );
+      })
+      .finally(() => {
+        dispatch(setLoader(false));
+      });
+
+    matrixClient.once('sync' as any, (state: string) => {
+      console.log('STATE');
+      console.log(state);
+
+      const rooms = matrixClient.getRooms();
+
+      if (rooms.length > 0) {
+        dispatch(
+          setRooms(
+            rooms.map(item => {
+              return {
+                myUserId: item.myUserId,
+                name: item.name,
+                normalizedName: item.normalizedName,
+                roomId: item.roomId,
+                timeline: item.timeline,
+              };
+            }),
+          ),
+        );
+      }
     });
   };
 
@@ -119,13 +181,13 @@ const Login: React.FC<PropsWithChildren<any>> = () => {
             </Stack>
           </FormControl>
 
-          <Button>Next</Button>
+          <Button onPress={login}>Log in</Button>
         </Box>
 
         <Center flexDirection="row">
-          Already have an account?{' '}
+          Don't have an account yet?{' '}
           <Button variant="link" onPress={() => navigate('Registration')}>
-            Log in
+            Sign up
           </Button>
         </Center>
       </Box>

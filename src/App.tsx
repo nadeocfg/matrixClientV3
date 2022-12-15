@@ -6,6 +6,9 @@ import Home from './screens/Home';
 import { useColorMode } from 'native-base';
 import { useAppSelector } from './hooks/useSelector';
 import { StoreModel } from './types/storeTypes';
+import Loader from './components/Loader';
+import { NavigationContainer } from '@react-navigation/native';
+import { navigationRef } from './utils/navigation';
 
 const App = () => {
   const { setColorMode } = useColorMode();
@@ -19,23 +22,27 @@ const App = () => {
   }, []);
 
   return (
-    <Stack.Navigator initialRouteName="Home">
-      <Stack.Screen
-        options={{ headerShown: false }}
-        name="Home"
-        component={Home}
-      />
-      <Stack.Screen
-        options={{ headerShown: false }}
-        name="Login"
-        component={Login}
-      />
-      <Stack.Screen
-        options={{ headerShown: false }}
-        name="Registration"
-        component={Registration}
-      />
-    </Stack.Navigator>
+    <NavigationContainer ref={navigationRef}>
+      <Stack.Navigator initialRouteName="Home">
+        <Stack.Screen
+          options={{ headerShown: false }}
+          name="Home"
+          component={Home}
+        />
+        <Stack.Screen
+          options={{ headerShown: false }}
+          name="Login"
+          component={Login}
+        />
+        <Stack.Screen
+          options={{ headerShown: false }}
+          name="Registration"
+          component={Registration}
+        />
+      </Stack.Navigator>
+
+      <Loader />
+    </NavigationContainer>
   );
 };
 

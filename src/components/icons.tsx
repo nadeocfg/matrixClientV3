@@ -1,5 +1,5 @@
 import React from 'react';
-import { Path, G, Svg, Defs, ClipPath, Rect } from 'react-native-svg';
+import { Path, G, Svg, Defs, ClipPath, Rect, Circle } from 'react-native-svg';
 
 export const CloseEyeIcon = ({ color }: any) => {
   return (
@@ -63,6 +63,21 @@ export const EyeIcon = ({ color }: any) => {
           />
         </ClipPath>
       </Defs>
+    </Svg>
+  );
+};
+
+export const MockedLogo = () => {
+  return (
+    <Svg width="121" height="120" viewBox="0 0 121 120" fill="none">
+      <Circle
+        opacity="0.5"
+        cx="60.5"
+        cy="60"
+        r="60"
+        fill="#787880"
+        fillOpacity="0.36"
+      />
     </Svg>
   );
 };

@@ -1,7 +1,5 @@
-import { NavigationContainer } from '@react-navigation/native';
 import React from 'react';
 import App from './src/App';
-import { navigationRef } from './src/utils/navigation';
 import { PersistGate } from 'redux-persist/integration/react';
 import { store, persistor } from './src/store';
 import { Provider } from 'react-redux';
@@ -24,9 +22,7 @@ const AppWrapper = () => {
     <Provider store={store}>
       <PersistGate loading={<LoadingState />} persistor={persistor}>
         <NativeBaseProvider theme={theme}>
-          <NavigationContainer ref={navigationRef}>
-            <App />
-          </NavigationContainer>
+          <App />
         </NativeBaseProvider>
       </PersistGate>
     </Provider>
