@@ -11,11 +11,12 @@ import {
   Stack,
   useColorMode,
 } from 'native-base';
-import React, { PropsWithChildren, useState } from 'react';
+import React, { PropsWithChildren, useState, useContext } from 'react';
 import { StyleSheet } from 'react-native';
 import { CloseEyeIcon, EyeIcon } from '../../components/icons';
+import { MatrixContext } from '../../context/matrixContext';
 import { useAppDispatch } from '../../hooks/useDispatch';
-import { setAuthResponse } from '../../store/actions/authActions';
+import { setAuthData, setAuthResponse } from '../../store/actions/authActions';
 import {
   setActionsDrawerContent,
   setActionsDrawerVisible,
@@ -23,8 +24,7 @@ import {
 } from '../../store/actions/mainActions';
 import { setRooms } from '../../store/actions/roomsActions';
 import theme from '../../themes/theme';
-import matrixClient from '../../utils/matrix';
-import nativeAlert from '../../utils/nativeAlert';
+import matrixSdk from '../../utils/matrix';
 import { navigate } from '../../utils/navigation';
 
 const Login: React.FC<PropsWithChildren<any>> = () => {
@@ -37,18 +37,24 @@ const Login: React.FC<PropsWithChildren<any>> = () => {
   const [isPassword, setIsPassword] = useState(true);
   const { colorMode } = useColorMode();
   const dispatch = useAppDispatch();
+  const matrixContext = useContext(MatrixContext);
 
   const onChange = (name: string) => (value: string) => {
     setFormData({
       ...formData,
       [name]: value,
     });
+
+    if (name !== 'password') {
+      dispatch(setAuthData({ name, data: value }));
+    }
   };
 
-  const login = () => {
-    const { username, password } = formData;
+  const login = async () => {
+    const { username, password, server } = formData;
 
-    if (!username || !password) {
+    // Check required fields
+    if (!username || !password || !server) {
       dispatch(
         setActionsDrawerContent({
           title: 'Error',
@@ -66,34 +72,59 @@ const Login: React.FC<PropsWithChildren<any>> = () => {
       return;
     }
 
+    // Set loader true
     dispatch(setLoader(true));
 
-    matrixClient
+    // Stop previous matrix client instance
+    await matrixContext.instance?.stopClient();
+
+    // Create a new matrix client instance
+    const instance = await matrixSdk.createClient({
+      baseUrl: `https://${server}/`,
+      deviceId: 'matrix-client-app',
+    });
+
+    // Set matrix client instance to React context
+    matrixContext.setInstance(instance);
+
+    // Login into matrix network
+    instance
       .loginWithPassword(username, password)
       .then(res => {
         dispatch(setAuthResponse(res));
 
-        matrixClient.startClient({
+        // Start matrix client
+        instance.startClient({
           initialSyncLimit: 10,
           includeArchivedRooms: false,
           lazyLoadMembers: true,
         });
       })
       .catch(err => {
-        nativeAlert(
-          err.data?.errcode || '',
-          err.data?.error || 'Something went wrong',
+        dispatch(
+          setActionsDrawerContent({
+            title: err.data?.errcode || '',
+            text: err.data?.error || 'Something went wrong',
+            actions: [
+              {
+                title: 'Close',
+                onPress: () => dispatch(setActionsDrawerVisible(false)),
+              },
+            ],
+          }),
         );
-      })
-      .finally(() => {
-        dispatch(setLoader(false));
+
+        dispatch(setActionsDrawerVisible(true));
       });
 
-    matrixClient.once('sync' as any, (state: string) => {
+    // Initial sync of matrix client
+    instance.once('sync' as any, (state: string) => {
       console.log('STATE');
       console.log(state);
+      dispatch(setLoader(false));
 
-      const rooms = matrixClient.getRooms();
+      // Get rooms(Chats)
+      const rooms = instance.getRooms();
 
       if (rooms.length > 0) {
         dispatch(

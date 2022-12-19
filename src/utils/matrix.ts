@@ -1,8 +1,5 @@
-import { MatrixClient, createClient } from 'matrix-js-sdk';
+import sdk from 'matrix-js-sdk';
 
-const matrixClient: MatrixClient = createClient({
-  baseUrl: 'https://matrix.org/',
-  deviceId: 'matrix-client-app',
-});
+const matrixSdk = sdk;
 
-export default matrixClient;
+export default matrixSdk;

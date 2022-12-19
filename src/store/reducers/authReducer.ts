@@ -1,5 +1,5 @@
 import { AuthStoreModel } from '../../types/storeTypes';
-import { SET_AUTH_RESPONSE } from '../constants/authConstants';
+import { SET_AUTH_DATA, SET_AUTH_RESPONSE } from '../constants/authConstants';
 import { CLEAR_STORE } from '../constants/mainConstants';
 
 const initialState: AuthStoreModel = {
@@ -14,6 +14,10 @@ const initialState: AuthStoreModel = {
       },
     },
   },
+  authData: {
+    server: 'matrix.org',
+    username: '',
+  },
 };
 
 const authReducer = (state = initialState, action: any) => {
@@ -22,6 +26,15 @@ const authReducer = (state = initialState, action: any) => {
       return {
         ...state,
         authResponse: action.payload,
+      };
+
+    case SET_AUTH_DATA:
+      return {
+        ...state,
+        authData: {
+          ...state.authData,
+          [action.payload.name]: action.payload.data,
+        },
       };
 
     case CLEAR_STORE:

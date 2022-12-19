@@ -37,6 +37,10 @@ export interface SnackbarModel {
 
 export interface AuthStoreModel {
   authResponse: AuthResponseModel;
+  authData: {
+    server: string;
+    username: string;
+  };
 }
 
 export interface AuthResponseModel {

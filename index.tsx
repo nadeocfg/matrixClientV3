@@ -8,6 +8,7 @@ import { extendTheme, NativeBaseProvider } from 'native-base';
 import colors from './src/themes/colors';
 import fonts from './src/themes/fonts';
 import components from './src/themes/components';
+import { MatrixContextProvider } from './src/context/matrixContext';
 
 const AppWrapper = () => {
   const theme = extendTheme({
@@ -21,9 +22,11 @@ const AppWrapper = () => {
   return (
     <Provider store={store}>
       <PersistGate loading={<LoadingState />} persistor={persistor}>
-        <NativeBaseProvider theme={theme}>
-          <App />
-        </NativeBaseProvider>
+        <MatrixContextProvider>
+          <NativeBaseProvider theme={theme}>
+            <App />
+          </NativeBaseProvider>
+        </MatrixContextProvider>
       </PersistGate>
     </Provider>
   );

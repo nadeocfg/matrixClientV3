@@ -2,6 +2,7 @@ import React, { PropsWithChildren, useEffect } from 'react';
 import { useAppDispatch } from '../../hooks/useDispatch';
 import { useAppSelector } from '../../hooks/useSelector';
 import {
+  clearStore,
   setActionsDrawerContent,
   setActionsDrawerVisible,
   setColorMode as setColorModeAction,
@@ -22,6 +23,7 @@ const Home: React.FC<PropsWithChildren<any>> = () => {
     (state: StoreModel) => state.mainStore.colorMode,
   );
   const { colorMode, setColorMode } = useColorMode();
+  const currentState = useAppSelector((state: StoreModel) => state);
 
   useEffect(() => {
     dispatch(setLoader(false));
@@ -56,6 +58,13 @@ const Home: React.FC<PropsWithChildren<any>> = () => {
         ],
       }),
     );
+  };
+
+  const clearStoreAction = () => {
+    dispatch(clearStore());
+    navigate('Login');
+
+    console.log(currentState);
   };
 
   return (
@@ -93,6 +102,9 @@ const Home: React.FC<PropsWithChildren<any>> = () => {
         </Button>
         <Button onPress={showDrawer} mb="10">
           Show Drawer
+        </Button>
+        <Button onPress={clearStoreAction} mb="10">
+          Clear store
         </Button>
       </Center>
     </ScrollView>

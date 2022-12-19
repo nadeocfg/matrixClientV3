@@ -27,6 +27,7 @@ interface Step1Props {
   onChange: Function;
   setIsDisabled: Function;
   setIsPassword: Function;
+  checkUsername: (e: any) => void;
   onNext: () => void;
   isDisabled: boolean;
   isPassword: boolean;
@@ -45,6 +46,7 @@ const Step1 = ({
   isAgree,
   onNext,
   colorMode,
+  checkUsername,
   styles,
 }: Step1Props) => {
   return (
@@ -105,6 +107,7 @@ const Step1 = ({
               placeholder="Username"
               value={username}
               onChangeText={onChange('username')}
+              onBlur={checkUsername}
             />
           </Stack>
         </FormControl>

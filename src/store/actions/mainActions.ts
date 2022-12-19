@@ -3,12 +3,19 @@ import {
   SnackbarModel,
 } from '../../types/storeTypes';
 import {
+  CLEAR_STORE,
   SET_ACTIONS_DRAWER_CONTENT,
   SET_ACTIONS_DRAWER_VISIBLE,
   SET_COLOR_MODE,
   SET_LOADER,
   SET_SNACKBAR,
 } from '../constants/mainConstants';
+
+export const clearStore = () => {
+  return {
+    type: CLEAR_STORE,
+  };
+};
 
 export const setLoader = (payload: boolean) => {
   return {

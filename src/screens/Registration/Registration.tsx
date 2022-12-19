@@ -1,6 +1,7 @@
 import { PresenceTransition, ScrollView, useColorMode } from 'native-base';
-import React, { PropsWithChildren, useState } from 'react';
+import React, { PropsWithChildren, useState, useContext } from 'react';
 import { StyleSheet } from 'react-native';
+import { MatrixContext } from '../../context/matrixContext';
 import { useAppDispatch } from '../../hooks/useDispatch';
 import {
   setActionsDrawerContent,
@@ -8,6 +9,7 @@ import {
 } from '../../store/actions/mainActions';
 import theme from '../../themes/theme';
 import isEmailValid from '../../utils/isEmailValid';
+import matrixSdk from '../../utils/matrix';
 import Step1 from './steps/Step1';
 import Step2 from './steps/Step2';
 import Step3 from './steps/Step3';
@@ -26,12 +28,70 @@ const Registration: React.FC<PropsWithChildren<any>> = () => {
   const [isDisabled, setIsDisabled] = useState(true);
   const [isPassword, setIsPassword] = useState(true);
   const { colorMode } = useColorMode();
+  const matrixContext = useContext(MatrixContext);
 
   const onChange = (name: string) => (value: string) => {
     setSignUpData({
       ...signUpData,
       [name]: value,
     });
+  };
+
+  const register = async () => {
+    const { server, username, password, email } = signUpData;
+
+    const instance = await matrixSdk.createClient({
+      baseUrl: `https://${server}/`,
+    });
+
+    matrixContext.setInstance(instance);
+  };
+
+  const checkUsername = async () => {
+    const { server, username } = signUpData;
+
+    const instance = await matrixSdk.createClient({
+      baseUrl: `https://${server}/`,
+    });
+
+    matrixContext.setInstance(instance);
+
+    instance
+      .isUsernameAvailable(username)
+      .then(res => {
+        if (!res) {
+          dispatch(
+            setActionsDrawerContent({
+              title: 'Error',
+              text: 'Username already taken',
+              actions: [
+                {
+                  title: 'Close',
+                  onPress: () => dispatch(setActionsDrawerVisible(false)),
+                },
+              ],
+            }),
+          );
+
+          dispatch(setActionsDrawerVisible(true));
+        }
+      })
+      .catch(err => {
+        dispatch(
+          setActionsDrawerContent({
+            title: err.data?.errcode || '',
+            text: err.data?.error || 'Something went wrong',
+            actions: [
+              {
+                title: 'Close',
+                onPress: () => dispatch(setActionsDrawerVisible(false)),
+              },
+            ],
+          }),
+        );
+
+        dispatch(setActionsDrawerVisible(true));
+      });
   };
 
   const onNext = () => {
@@ -120,6 +180,7 @@ const Registration: React.FC<PropsWithChildren<any>> = () => {
             username={signUpData.username}
             isAgree={signUpData.isAgree}
             onChange={onChange}
+            checkUsername={checkUsername}
             onNext={onNext}
             styles={styles}
           />

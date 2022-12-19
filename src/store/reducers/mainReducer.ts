@@ -17,7 +17,7 @@ const initialState: MainStoreModel = {
     isVisible: false,
   },
   actionsDrawer: {
-    isVisible: true,
+    isVisible: false,
     content: {
       title: '',
       text: '',

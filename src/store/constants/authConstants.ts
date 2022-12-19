@@ -1,1 +1,2 @@
 export const SET_AUTH_RESPONSE = 'SET_AUTH_RESPONSE';
+export const SET_AUTH_DATA = 'SET_AUTH_DATA';
