@@ -40,25 +40,25 @@ const ForgotPassword = () => {
   };
 
   const onNext = () => {
-    // if (currentStep === 0) {
-    //   if (!email || isEmailValid(email)) {
-    //     dispatch(
-    //       setActionsDrawerContent({
-    //         title: 'Error',
-    //         text: 'Email is not valid',
-    //         actions: [
-    //           {
-    //             title: 'Ok',
-    //             onPress: () => dispatch(setActionsDrawerVisible(false)),
-    //           },
-    //         ],
-    //       }),
-    //     );
+    if (currentStep === 0) {
+      if (!email || isEmailValid(email)) {
+        dispatch(
+          setActionsDrawerContent({
+            title: 'Error',
+            text: 'Email is not valid',
+            actions: [
+              {
+                title: 'Ok',
+                onPress: () => dispatch(setActionsDrawerVisible(false)),
+              },
+            ],
+          }),
+        );
 
-    //     dispatch(setActionsDrawerVisible(true));
-    //     return;
-    //   }
-    // }
+        dispatch(setActionsDrawerVisible(true));
+        return;
+      }
+    }
 
     setCurrentStep(currentStep + 1);
   };

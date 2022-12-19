@@ -35,30 +35,30 @@ const Registration: React.FC<PropsWithChildren<any>> = () => {
   };
 
   const onNext = () => {
-    // if (currentStep === 0) {
-    //   if (
-    //     !signUpData.server ||
-    //     !signUpData.username ||
-    //     !signUpData.password ||
-    //     !signUpData.isAgree
-    //   ) {
-    //     dispatch(
-    //       setActionsDrawerContent({
-    //         title: 'Error',
-    //         text: 'All fields is required',
-    //         actions: [
-    //           {
-    //             title: 'Ok',
-    //             onPress: () => dispatch(setActionsDrawerVisible(false)),
-    //           },
-    //         ],
-    //       }),
-    //     );
+    if (currentStep === 0) {
+      if (
+        !signUpData.server ||
+        !signUpData.username ||
+        !signUpData.password ||
+        !signUpData.isAgree
+      ) {
+        dispatch(
+          setActionsDrawerContent({
+            title: 'Error',
+            text: 'All fields is required',
+            actions: [
+              {
+                title: 'Ok',
+                onPress: () => dispatch(setActionsDrawerVisible(false)),
+              },
+            ],
+          }),
+        );
 
-    //     dispatch(setActionsDrawerVisible(true));
-    //     return;
-    //   }
-    // }
+        dispatch(setActionsDrawerVisible(true));
+        return;
+      }
+    }
 
     if (currentStep === 1) {
       if (!signUpData.email || isEmailValid(signUpData.email)) {

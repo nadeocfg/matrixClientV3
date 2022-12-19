@@ -104,13 +104,15 @@ const components = {
     baseStyle: {
       borderRadius: 'full',
       _light: {
-        bgColor: theme.transparent,
+        bg: theme.transparent,
+        borderColor: theme.light.button.primary,
         borderWidth: 1,
         _icon: {
           color: theme.light.text,
         },
         _checked: {
-          borderColor: theme.light.text,
+          borderColor: theme.light.button.primary,
+          bg: theme.light.button.primary,
         },
         _hover: {
           borderColor: theme.light.text,
@@ -120,13 +122,15 @@ const components = {
         },
       },
       _dark: {
-        bgColor: theme.transparent,
+        bg: theme.transparent,
+        borderColor: theme.dark.button.primary,
         borderWidth: 1,
         _icon: {
           color: theme.dark.text,
         },
         _checked: {
-          borderColor: theme.dark.text,
+          borderColor: theme.dark.button.primary,
+          bg: theme.dark.button.primary,
         },
         _hover: {
           borderColor: theme.dark.text,

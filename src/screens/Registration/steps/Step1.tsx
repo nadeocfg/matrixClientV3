@@ -13,6 +13,8 @@ import {
 import React from 'react';
 import { StyleProp } from 'react-native';
 import { CloseEyeIcon, EyeIcon, MockedLogo } from '../../../components/icons';
+import PPModal from '../../../components/PPModal';
+import TUModal from '../../../components/TUModal';
 import theme from '../../../themes/theme';
 import { navigate } from '../../../utils/navigation';
 
@@ -137,8 +139,7 @@ const Step1 = ({
           onChange={onChange('isAgree')}
           accessibilityLabel="I agree with the Terms of Use and Privacy Policy">
           <Box flexDirection="row" flexWrap="wrap" ml={2}>
-            I agree with the <Button variant="link">Terms of Use</Button> and{' '}
-            <Button variant="link">Privacy Policy</Button>
+            I agree with the <TUModal /> and <PPModal />
           </Box>
         </Checkbox>
       </Box>
