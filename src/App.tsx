@@ -9,6 +9,8 @@ import { StoreModel } from './types/storeTypes';
 import Loader from './components/Loader';
 import { NavigationContainer } from '@react-navigation/native';
 import { navigationRef } from './utils/navigation';
+import ForgotPassword from './screens/ForgotPassword';
+import ActionsDrawer from './components/ActionsDrawer';
 
 const App = () => {
   const { setColorMode } = useColorMode();
@@ -36,12 +38,18 @@ const App = () => {
         />
         <Stack.Screen
           options={{ headerShown: false }}
+          name="ForgotPassword"
+          component={ForgotPassword}
+        />
+        <Stack.Screen
+          options={{ headerShown: false }}
           name="Registration"
           component={Registration}
         />
       </Stack.Navigator>
 
       <Loader />
+      <ActionsDrawer />
     </NavigationContainer>
   );
 };

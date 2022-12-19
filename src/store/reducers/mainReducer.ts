@@ -1,6 +1,8 @@
 import { MainStoreModel } from '../../types/storeTypes';
 import {
   CLEAR_STORE,
+  SET_ACTIONS_DRAWER_CONTENT,
+  SET_ACTIONS_DRAWER_VISIBLE,
   SET_COLOR_MODE,
   SET_LOADER,
   SET_SNACKBAR,
@@ -13,6 +15,14 @@ const initialState: MainStoreModel = {
     type: 'error',
     message: '',
     isVisible: false,
+  },
+  actionsDrawer: {
+    isVisible: true,
+    content: {
+      title: '',
+      text: '',
+      actions: [],
+    },
   },
 };
 
@@ -34,6 +44,24 @@ const mainReducer = (state = initialState, action: any) => {
       return {
         ...state,
         snackbar: action.payload,
+      };
+
+    case SET_ACTIONS_DRAWER_VISIBLE:
+      return {
+        ...state,
+        actionsDrawer: {
+          ...state.actionsDrawer,
+          isVisible: action.payload,
+        },
+      };
+
+    case SET_ACTIONS_DRAWER_CONTENT:
+      return {
+        ...state,
+        actionsDrawer: {
+          ...state.actionsDrawer,
+          content: action.payload,
+        },
       };
 
     case CLEAR_STORE:

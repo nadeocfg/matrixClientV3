@@ -2,6 +2,8 @@ import React, { PropsWithChildren, useEffect } from 'react';
 import { useAppDispatch } from '../../hooks/useDispatch';
 import { useAppSelector } from '../../hooks/useSelector';
 import {
+  setActionsDrawerContent,
+  setActionsDrawerVisible,
   setColorMode as setColorModeAction,
   setLoader,
 } from '../../store/actions/mainActions';
@@ -40,6 +42,22 @@ const Home: React.FC<PropsWithChildren<any>> = () => {
     nativeAlert('Alert title', 'alert message');
   };
 
+  const showDrawer = () => {
+    dispatch(setActionsDrawerVisible(true));
+    dispatch(
+      setActionsDrawerContent({
+        title: 'Error',
+        text: 'Email not found',
+        actions: [
+          {
+            title: 'OK',
+            onPress: () => dispatch(setActionsDrawerVisible(false)),
+          },
+        ],
+      }),
+    );
+  };
+
   return (
     <ScrollView
       _light={{
@@ -72,6 +90,9 @@ const Home: React.FC<PropsWithChildren<any>> = () => {
         </Button>
         <Button onPress={showAlert} mb="10">
           Show Alert
+        </Button>
+        <Button onPress={showDrawer} mb="10">
+          Show Drawer
         </Button>
       </Center>
     </ScrollView>

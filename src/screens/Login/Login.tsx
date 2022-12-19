@@ -2,6 +2,7 @@ import {
   Box,
   Button,
   Center,
+  Flex,
   FormControl,
   Heading,
   Input,
@@ -130,10 +131,9 @@ const Login: React.FC<PropsWithChildren<any>> = () => {
                 isDisabled={isDisabled}
                 InputRightElement={
                   <Button
-                    size="xs"
                     variant="outline"
-                    w="1/6"
-                    h="full"
+                    px={2.5}
+                    py={1.5}
                     onPress={() => setIsDisabled(!isDisabled)}>
                     {isDisabled ? 'Edit' : 'Save'}
                   </Button>
@@ -178,6 +178,13 @@ const Login: React.FC<PropsWithChildren<any>> = () => {
                   </Pressable>
                 }
               />
+              <Flex direction="row-reverse">
+                <Button
+                  variant="link"
+                  onPress={() => navigate('ForgotPassword')}>
+                  Forgot password
+                </Button>
+              </Flex>
             </Stack>
           </FormControl>
 
@@ -185,7 +192,7 @@ const Login: React.FC<PropsWithChildren<any>> = () => {
         </Box>
 
         <Center flexDirection="row">
-          Don't have an account yet?{' '}
+          Don’t have an account?{' '}
           <Button variant="link" onPress={() => navigate('Registration')}>
             Sign up
           </Button>

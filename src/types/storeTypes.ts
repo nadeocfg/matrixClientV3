@@ -1,4 +1,4 @@
-import { Room, MatrixEvent } from 'matrix-js-sdk';
+import { MatrixEvent } from 'matrix-js-sdk';
 
 export interface StoreModel {
   mainStore: MainStoreModel;
@@ -10,6 +10,23 @@ export interface MainStoreModel {
   isLoading: boolean;
   colorMode: 'dark' | 'light';
   snackbar: SnackbarModel;
+  actionsDrawer: ActionsDrawerModel;
+}
+
+export interface ActionsDrawerModel {
+  isVisible: boolean;
+  content: ActionsDrawerContentModel;
+}
+
+export interface ActionsDrawerContentModel {
+  title: string;
+  text: string;
+  actions: ActionsDrawerActionModel[];
+}
+
+export interface ActionsDrawerActionModel {
+  title: string;
+  onPress: () => void;
 }
 
 export interface SnackbarModel {

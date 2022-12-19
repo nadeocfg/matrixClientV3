@@ -2,29 +2,33 @@ import {
   Box,
   Button,
   Center,
+  Checkbox,
   FormControl,
   Heading,
   Input,
   Pressable,
+  ScrollView,
   Stack,
 } from 'native-base';
 import React from 'react';
-import { StyleProp, ViewStyle } from 'react-native';
+import { StyleProp } from 'react-native';
 import { CloseEyeIcon, EyeIcon, MockedLogo } from '../../../components/icons';
 import theme from '../../../themes/theme';
+import { navigate } from '../../../utils/navigation';
 
 interface Step1Props {
   colorMode: 'light' | 'dark';
   server: string;
   username: string;
   password: string;
+  isAgree: boolean;
   onChange: Function;
   setIsDisabled: Function;
   setIsPassword: Function;
   onNext: () => void;
   isDisabled: boolean;
   isPassword: boolean;
-  style?: StyleProp<ViewStyle>;
+  styles: StyleProp<any>;
 }
 
 const Step1 = ({
@@ -36,17 +40,27 @@ const Step1 = ({
   setIsDisabled,
   setIsPassword,
   isPassword,
+  isAgree,
   onNext,
   colorMode,
+  styles,
 }: Step1Props) => {
   return (
-    <Box>
+    <ScrollView
+      contentContainerStyle={styles.container}
+      p={4}
+      _light={{
+        bg: theme.light.bgColor,
+      }}
+      _dark={{
+        bg: theme.dark.bgColor,
+      }}>
       <Center mb={12}>
         <MockedLogo />
         <Heading mt={4}>Create your account</Heading>
       </Center>
 
-      <Box>
+      <Box style={styles.inner}>
         <FormControl>
           <FormControl.Label>
             Where your conversations will live
@@ -66,10 +80,9 @@ const Step1 = ({
               isDisabled={isDisabled}
               InputRightElement={
                 <Button
-                  size="xs"
                   variant="outline"
-                  w="1/6"
-                  h="full"
+                  px={2.5}
+                  py={1.5}
                   onPress={() => setIsDisabled(!isDisabled)}>
                   {isDisabled ? 'Edit' : 'Save'}
                 </Button>
@@ -118,8 +131,25 @@ const Step1 = ({
         </FormControl>
 
         <Button onPress={onNext}>Next</Button>
+        <Checkbox
+          mt={4}
+          value={isAgree ? 'agree' : ''}
+          onChange={onChange('isAgree')}
+          accessibilityLabel="I agree with the Terms of Use and Privacy Policy">
+          <Box flexDirection="row" flexWrap="wrap" ml={2}>
+            I agree with the <Button variant="link">Terms of Use</Button> and{' '}
+            <Button variant="link">Privacy Policy</Button>
+          </Box>
+        </Checkbox>
       </Box>
-    </Box>
+
+      <Center flexDirection="row">
+        Already have an account?{' '}
+        <Button variant="link" onPress={() => navigate('Login')}>
+          Log in
+        </Button>
+      </Center>
+    </ScrollView>
   );
 };
 

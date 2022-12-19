@@ -1,5 +1,10 @@
-import { SnackbarModel } from '../../types/storeTypes';
 import {
+  ActionsDrawerContentModel,
+  SnackbarModel,
+} from '../../types/storeTypes';
+import {
+  SET_ACTIONS_DRAWER_CONTENT,
+  SET_ACTIONS_DRAWER_VISIBLE,
   SET_COLOR_MODE,
   SET_LOADER,
   SET_SNACKBAR,
@@ -22,6 +27,20 @@ export const setColorMode = (payload: 'light' | 'dark') => {
 export const setSnackbar = (payload: SnackbarModel) => {
   return {
     type: SET_SNACKBAR,
+    payload,
+  };
+};
+
+export const setActionsDrawerVisible = (payload: boolean) => {
+  return {
+    type: SET_ACTIONS_DRAWER_VISIBLE,
+    payload,
+  };
+};
+
+export const setActionsDrawerContent = (payload: ActionsDrawerContentModel) => {
+  return {
+    type: SET_ACTIONS_DRAWER_CONTENT,
     payload,
   };
 };

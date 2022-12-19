@@ -4,6 +4,9 @@ const components = {
   // Button styles
   Button: {
     baseStyle: {
+      _text: {
+        fontWeight: 600,
+      },
       _dark: {
         bg: theme.dark.button.primary.bgColor,
         _text: { color: theme.dark.button.primary.textColor },
@@ -14,7 +17,7 @@ const components = {
         _text: { color: theme.light.button.primary.textColor },
         _pressed: { bg: theme.dark.button.primary.bgColor },
       },
-      borderRadius: 5,
+      borderRadius: 10,
     },
     variants: {
       outline: {
@@ -40,6 +43,9 @@ const components = {
         },
       },
       link: {
+        _text: {
+          fontWeight: 400,
+        },
         _dark: {
           _text: {
             color: theme.dark.button.primary.bgColor,
@@ -70,6 +76,65 @@ const components = {
   Input: {
     baseStyle: {
       borderRadius: 5,
+    },
+  },
+
+  // ActionSheetContent
+  ActionsheetContent: {
+    baseStyle: {},
+  },
+
+  // ActionSheetItem
+  ActionsheetItem: {
+    baseStyle: {
+      paddingTop: 2,
+      paddingBottom: 2,
+      borderTopWidth: 1,
+      _light: {
+        borderColor: theme.light.text,
+      },
+      _dark: {
+        borderColor: theme.dark.text,
+      },
+    },
+  },
+
+  // Checkbox
+  Checkbox: {
+    baseStyle: {
+      borderRadius: 'full',
+      _light: {
+        bgColor: theme.transparent,
+        borderWidth: 1,
+        _icon: {
+          color: theme.light.text,
+        },
+        _checked: {
+          borderColor: theme.light.text,
+        },
+        _hover: {
+          borderColor: theme.light.text,
+        },
+        _pressed: {
+          borderColor: theme.light.text,
+        },
+      },
+      _dark: {
+        bgColor: theme.transparent,
+        borderWidth: 1,
+        _icon: {
+          color: theme.dark.text,
+        },
+        _checked: {
+          borderColor: theme.dark.text,
+        },
+        _hover: {
+          borderColor: theme.dark.text,
+        },
+        _pressed: {
+          borderColor: theme.dark.text,
+        },
+      },
     },
   },
 };

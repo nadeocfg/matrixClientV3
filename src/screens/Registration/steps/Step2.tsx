@@ -5,31 +5,47 @@ import {
   FormControl,
   Heading,
   Input,
+  ScrollView,
   Stack,
   Text,
 } from 'native-base';
 import React from 'react';
-import { StyleProp, ViewStyle } from 'react-native';
+import { StyleProp } from 'react-native';
 import { MockedLogo } from '../../../components/icons';
+import theme from '../../../themes/theme';
 
 interface Step2Props {
-  colorMode: 'light' | 'dark';
   email: string;
   onChange: Function;
   onNext: () => void;
-  style?: StyleProp<ViewStyle>;
+  resendEmail: () => void;
+  styles: StyleProp<any>;
 }
 
-const Step2 = ({ email, onChange, onNext }: Step2Props) => {
+const Step2 = ({
+  email,
+  onChange,
+  onNext,
+  resendEmail,
+  styles,
+}: Step2Props) => {
   return (
-    <Box>
+    <ScrollView
+      contentContainerStyle={styles.container}
+      p={4}
+      _light={{
+        bg: theme.light.bgColor,
+      }}
+      _dark={{
+        bg: theme.dark.bgColor,
+      }}>
       <Center mb={12}>
         <MockedLogo />
         <Heading mt={4}>Enter your email</Heading>
         <Text mt={4}>matrix.org needs to verify your account</Text>
       </Center>
 
-      <Box>
+      <Box style={styles.inner}>
         <FormControl>
           <Stack mb={8} px={4}>
             <Input
@@ -46,7 +62,14 @@ const Step2 = ({ email, onChange, onNext }: Step2Props) => {
 
         <Button onPress={onNext}>Next</Button>
       </Box>
-    </Box>
+
+      <Center flexDirection="column">
+        Did not receive an email?
+        <Button variant="link" onPress={resendEmail}>
+          Resend email
+        </Button>
+      </Center>
+    </ScrollView>
   );
 };
 

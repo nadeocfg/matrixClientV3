@@ -1,17 +1,11 @@
-import {
-  Box,
-  Button,
-  Center,
-  PresenceTransition,
-  ScrollView,
-  useColorMode,
-} from 'native-base';
+import { PresenceTransition, ScrollView, useColorMode } from 'native-base';
 import React, { PropsWithChildren, useState } from 'react';
 import { StyleSheet } from 'react-native';
 import theme from '../../themes/theme';
-import { navigate } from '../../utils/navigation';
 import Step1 from './steps/Step1';
 import Step2 from './steps/Step2';
+import Step3 from './steps/Step3';
+import Step4 from './steps/Step4';
 
 const Registration: React.FC<PropsWithChildren<any>> = () => {
   const [currentStep, setCurrentStep] = useState(0);
@@ -34,79 +28,133 @@ const Registration: React.FC<PropsWithChildren<any>> = () => {
   };
 
   const onNext = () => {
+    // if (currentStep === 0) {
+    //   if (
+    //     !signUpData.server ||
+    //     !signUpData.username ||
+    //     !signUpData.password ||
+    //     !signUpData.isAgree
+    //   ) {
+    //     dispatch(
+    //       setActionsDrawerContent({
+    //         title: 'Error',
+    //         text: 'All fields is required',
+    //         actions: [
+    //           {
+    //             title: 'Ok',
+    //             onPress: () => dispatch(setActionsDrawerVisible(false)),
+    //           },
+    //         ],
+    //       }),
+    //     );
+
+    //     dispatch(setActionsDrawerVisible(true));
+    //     return;
+    //   }
+    // }
+
     setCurrentStep(currentStep + 1);
   };
 
-  console.log(currentStep);
+  const resendEmail = () => {
+    console.log('resendEmail');
+  };
 
   return (
     <ScrollView
       contentContainerStyle={styles.container}
-      p={4}
       _light={{
         bg: theme.light.bgColor,
       }}
       _dark={{
         bg: theme.dark.bgColor,
       }}>
-      <Box style={styles.inner}>
-        {currentStep === 0 && (
-          <PresenceTransition
-            visible={currentStep === 0}
-            initial={{
-              translateX: 500,
-            }}
-            animate={{
-              translateX: 0,
-              transition: {
-                duration: 300,
-              },
-            }}
-            style={styles.inner}>
-            <Step1
-              colorMode={colorMode || 'light'}
-              isDisabled={isDisabled}
-              setIsDisabled={setIsDisabled}
-              isPassword={isPassword}
-              setIsPassword={setIsPassword}
-              server={signUpData.server}
-              password={signUpData.password}
-              username={signUpData.username}
-              onChange={onChange}
-              onNext={onNext}
-            />
-          </PresenceTransition>
-        )}
+      {currentStep === 0 && (
+        <PresenceTransition
+          visible={currentStep === 0}
+          initial={{
+            translateX: 500,
+          }}
+          animate={{
+            translateX: 0,
+            transition: {
+              duration: 300,
+            },
+          }}
+          style={styles.inner}>
+          <Step1
+            colorMode={colorMode || 'light'}
+            isDisabled={isDisabled}
+            setIsDisabled={setIsDisabled}
+            isPassword={isPassword}
+            setIsPassword={setIsPassword}
+            server={signUpData.server}
+            password={signUpData.password}
+            username={signUpData.username}
+            isAgree={signUpData.isAgree}
+            onChange={onChange}
+            onNext={onNext}
+            styles={styles}
+          />
+        </PresenceTransition>
+      )}
 
-        {currentStep === 1 && (
-          <PresenceTransition
-            visible={currentStep === 1}
-            initial={{
-              translateX: 500,
-            }}
-            animate={{
-              translateX: 0,
-              transition: {
-                duration: 300,
-              },
-            }}
-            style={styles.inner}>
-            <Step2
-              colorMode={colorMode || 'light'}
-              email={signUpData.email}
-              onChange={onChange}
-              onNext={onNext}
-            />
-          </PresenceTransition>
-        )}
+      {currentStep === 1 && (
+        <PresenceTransition
+          visible={currentStep === 1}
+          initial={{
+            translateX: 500,
+          }}
+          animate={{
+            translateX: 0,
+            transition: {
+              duration: 300,
+            },
+          }}
+          style={styles.inner}>
+          <Step2
+            email={signUpData.email}
+            onChange={onChange}
+            onNext={onNext}
+            styles={styles}
+            resendEmail={resendEmail}
+          />
+        </PresenceTransition>
+      )}
 
-        <Center flexDirection="row">
-          Already have an account?{' '}
-          <Button variant="link" onPress={() => navigate('Login')}>
-            Log in
-          </Button>
-        </Center>
-      </Box>
+      {currentStep === 2 && (
+        <PresenceTransition
+          visible={currentStep === 2}
+          initial={{
+            translateX: 500,
+          }}
+          animate={{
+            translateX: 0,
+            transition: {
+              duration: 300,
+            },
+          }}
+          style={styles.inner}>
+          <Step3 styles={styles} resendEmail={resendEmail} onNext={onNext} />
+        </PresenceTransition>
+      )}
+
+      {currentStep === 3 && (
+        <PresenceTransition
+          visible={currentStep === 3}
+          initial={{
+            translateX: 500,
+          }}
+          animate={{
+            translateX: 0,
+            transition: {
+              duration: 300,
+            },
+          }}
+          style={styles.inner}>
+          <Step4 styles={styles} />
+        </PresenceTransition>
+      )}
     </ScrollView>
   );
 };
