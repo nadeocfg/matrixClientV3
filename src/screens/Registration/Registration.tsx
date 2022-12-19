@@ -1,13 +1,20 @@
 import { PresenceTransition, ScrollView, useColorMode } from 'native-base';
 import React, { PropsWithChildren, useState } from 'react';
 import { StyleSheet } from 'react-native';
+import { useAppDispatch } from '../../hooks/useDispatch';
+import {
+  setActionsDrawerContent,
+  setActionsDrawerVisible,
+} from '../../store/actions/mainActions';
 import theme from '../../themes/theme';
+import isEmailValid from '../../utils/isEmailValid';
 import Step1 from './steps/Step1';
 import Step2 from './steps/Step2';
 import Step3 from './steps/Step3';
 import Step4 from './steps/Step4';
 
 const Registration: React.FC<PropsWithChildren<any>> = () => {
+  const dispatch = useAppDispatch();
   const [currentStep, setCurrentStep] = useState(0);
   const [signUpData, setSignUpData] = useState({
     server: 'matrix.org',
@@ -52,6 +59,26 @@ const Registration: React.FC<PropsWithChildren<any>> = () => {
     //     return;
     //   }
     // }
+
+    if (currentStep === 1) {
+      if (!signUpData.email || isEmailValid(signUpData.email)) {
+        dispatch(
+          setActionsDrawerContent({
+            title: 'Error',
+            text: 'Email is not valid',
+            actions: [
+              {
+                title: 'Ok',
+                onPress: () => dispatch(setActionsDrawerVisible(false)),
+              },
+            ],
+          }),
+        );
+
+        dispatch(setActionsDrawerVisible(true));
+        return;
+      }
+    }
 
     setCurrentStep(currentStep + 1);
   };

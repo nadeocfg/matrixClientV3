@@ -16,7 +16,11 @@ import { StyleSheet } from 'react-native';
 import { CloseEyeIcon, EyeIcon } from '../../components/icons';
 import { useAppDispatch } from '../../hooks/useDispatch';
 import { setAuthResponse } from '../../store/actions/authActions';
-import { setLoader } from '../../store/actions/mainActions';
+import {
+  setActionsDrawerContent,
+  setActionsDrawerVisible,
+  setLoader,
+} from '../../store/actions/mainActions';
 import { setRooms } from '../../store/actions/roomsActions';
 import theme from '../../themes/theme';
 import matrixClient from '../../utils/matrix';
@@ -45,7 +49,20 @@ const Login: React.FC<PropsWithChildren<any>> = () => {
     const { username, password } = formData;
 
     if (!username || !password) {
-      nativeAlert('Error', 'Username and password is required');
+      dispatch(
+        setActionsDrawerContent({
+          title: 'Error',
+          text: 'All fields are required',
+          actions: [
+            {
+              title: 'Close',
+              onPress: () => dispatch(setActionsDrawerVisible(false)),
+            },
+          ],
+        }),
+      );
+
+      dispatch(setActionsDrawerVisible(true));
       return;
     }
 
