@@ -64,10 +64,11 @@ const Step1 = ({
 
       <Box style={styles.inner}>
         <FormControl>
-          <FormControl.Label>
+          <FormControl.Label px={2} _text={{ fontWeight: 'normal' }}>
             Where your conversations will live
           </FormControl.Label>
           <Stack
+            pl={2}
             mb={8}
             borderBottomWidth={1}
             paddingBottom={2}
@@ -95,7 +96,7 @@ const Step1 = ({
         </FormControl>
 
         <FormControl>
-          <Stack mb={8} px={4}>
+          <Stack mb={8} px={2}>
             <Input
               px={0}
               fontSize="md"
@@ -109,7 +110,7 @@ const Step1 = ({
         </FormControl>
 
         <FormControl>
-          <Stack mb={8} px={4}>
+          <Stack mb={8} px={2}>
             <Input
               px={0}
               type={isPassword ? 'password' : 'text'}
