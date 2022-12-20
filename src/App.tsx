@@ -16,6 +16,7 @@ import matrixSdk from './utils/matrix';
 import { useAppDispatch } from './hooks/useDispatch';
 import { setRooms } from './store/actions/roomsActions';
 import { setLoader } from './store/actions/mainActions';
+import RoomItem from './screens/RoomItem';
 
 const App = () => {
   const { setColorMode } = useColorMode();
@@ -112,6 +113,11 @@ const App = () => {
           options={{ headerShown: false }}
           name="Registration"
           component={Registration}
+        />
+        <Stack.Screen
+          options={{ headerShown: false }}
+          name="RoomItem"
+          component={RoomItem}
         />
       </Stack.Navigator>
 

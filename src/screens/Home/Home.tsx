@@ -66,13 +66,6 @@ const Home: React.FC<PropsWithChildren<any>> = () => {
     console.log(currentState);
   };
 
-  const sendMessage = () => {
-    matrixContext.instance?.sendMessage('!BvsFQCHpiKgoYFAwVS:matrix.org', {
-      msgtype: 'm.text',
-      body: 'Test message',
-    });
-  };
-
   return (
     <ScrollView
       _light={{
@@ -100,6 +93,9 @@ const Home: React.FC<PropsWithChildren<any>> = () => {
         <Button onPress={() => navigate('Registration')} mb="10">
           Go to Registration
         </Button>
+        <Button onPress={() => navigate('RoomItem')} mb="10">
+          Go to Room Item
+        </Button>
         <Button onPress={changeColorMode} mb="10">
           Change color mode
         </Button>
@@ -108,9 +104,6 @@ const Home: React.FC<PropsWithChildren<any>> = () => {
         </Button>
         <Button onPress={clearStoreAction} mb="10">
           Clear store
-        </Button>
-        <Button onPress={sendMessage} mb="10">
-          Send message
         </Button>
       </Center>
     </ScrollView>
