@@ -9,6 +9,7 @@ import {
   Pressable,
   ScrollView,
   Stack,
+  WarningOutlineIcon,
 } from 'native-base';
 import React from 'react';
 import { StyleProp } from 'react-native';
@@ -24,6 +25,8 @@ interface Step1Props {
   username: string;
   password: string;
   isAgree: boolean;
+  setIsAgree: (isAgree: boolean) => void;
+  isUsernameExist: boolean;
   onChange: Function;
   setIsDisabled: Function;
   setIsPassword: Function;
@@ -44,6 +47,8 @@ const Step1 = ({
   setIsPassword,
   isPassword,
   isAgree,
+  setIsAgree,
+  isUsernameExist,
   onNext,
   colorMode,
   checkUsername,
@@ -70,15 +75,13 @@ const Step1 = ({
             Where your conversations will live
           </FormControl.Label>
           <Stack
-            pl={2}
             mb={8}
-            borderBottomWidth={1}
+            borderBottomWidth={0.5}
             paddingBottom={2}
             borderColor={theme[colorMode || 'light'].button.primary.bgColor}>
             <Input
               fontSize="sm"
               w="100%"
-              p="0"
               variant="unstyled"
               value={server}
               onChangeText={onChange('server')}
@@ -97,10 +100,9 @@ const Step1 = ({
           </Stack>
         </FormControl>
 
-        <FormControl>
-          <Stack mb={8} px={2}>
+        <FormControl isInvalid={isUsernameExist}>
+          <Stack mb={8}>
             <Input
-              px={0}
               fontSize="md"
               w="100%"
               variant="unstyled"
@@ -109,13 +111,16 @@ const Step1 = ({
               onChangeText={onChange('username')}
               onBlur={checkUsername}
             />
+            <FormControl.ErrorMessage
+              leftIcon={<WarningOutlineIcon size="xs" />}>
+              Username already taken
+            </FormControl.ErrorMessage>
           </Stack>
         </FormControl>
 
         <FormControl>
-          <Stack mb={8} px={2}>
+          <Stack mb={8}>
             <Input
-              px={0}
               type={isPassword ? 'password' : 'text'}
               fontSize="md"
               w="100%"
@@ -124,7 +129,7 @@ const Step1 = ({
               value={password}
               onChangeText={onChange('password')}
               InputRightElement={
-                <Pressable onPress={() => setIsPassword(!isPassword)}>
+                <Pressable onPress={() => setIsPassword(!isPassword)} mr={2}>
                   {isPassword ? (
                     <CloseEyeIcon color="#000" />
                   ) : (
@@ -136,13 +141,15 @@ const Step1 = ({
           </Stack>
         </FormControl>
 
-        <Button onPress={onNext}>Next</Button>
+        <Button onPress={onNext} isDisabled={!isAgree}>
+          Next
+        </Button>
         <Checkbox
           mt={4}
-          value={isAgree ? 'agree' : ''}
-          onChange={onChange('isAgree')}
+          value={'agree'}
+          onChange={() => setIsAgree(!isAgree)}
           accessibilityLabel="I agree with the Terms of Use and Privacy Policy">
-          <Box flexDirection="row" flexWrap="wrap" ml={2}>
+          <Box flexDirection="row" flexWrap="wrap" ml={0}>
             I agree with the <TUModal /> and <PPModal />
           </Box>
         </Checkbox>
@@ -150,7 +157,7 @@ const Step1 = ({
 
       <Center flexDirection="row">
         Already have an account?{' '}
-        <Button variant="link" onPress={() => navigate('Login')}>
+        <Button variant="link" size="sm" onPress={() => navigate('Login')}>
           Log in
         </Button>
       </Center>

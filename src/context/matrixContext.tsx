@@ -3,7 +3,7 @@ import React, { PropsWithChildren, useState, createContext } from 'react';
 
 interface MatrixContextModel {
   instance: null | MatrixClient;
-  setInstance: (instance: MatrixClient) => void;
+  setInstance: (instance: MatrixClient | null) => void;
 }
 
 export const MatrixContext = createContext<MatrixContextModel>({
@@ -12,7 +12,7 @@ export const MatrixContext = createContext<MatrixContextModel>({
 });
 
 export const MatrixContextProvider = (props: PropsWithChildren) => {
-  const setInstance = (instance: MatrixClient) => {
+  const setInstance = (instance: MatrixClient | null) => {
     setState({ ...state, instance: instance });
   };
 

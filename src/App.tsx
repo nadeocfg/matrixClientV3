@@ -69,6 +69,7 @@ const App = () => {
 
         // Get rooms(Chats)
         const rooms = instance.getRooms();
+        console.log(rooms);
 
         if (rooms.length > 0) {
           dispatch(

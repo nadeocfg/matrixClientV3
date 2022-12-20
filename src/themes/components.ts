@@ -1,19 +1,45 @@
+import colors from './colors';
 import theme from './theme';
 
 const components = {
   // Button styles
   Button: {
+    sizes: {
+      xs: {
+        _text: {
+          fontSize: 12,
+        },
+      },
+      sm: {
+        _text: {
+          fontSize: 14,
+        },
+      },
+      md: {
+        _text: {
+          fontSize: 16,
+        },
+      },
+      lg: {
+        _text: {
+          fontSize: 18,
+        },
+      },
+    },
     baseStyle: {
       _text: {
         fontWeight: 600,
+        fontSize: 24,
       },
       _dark: {
         bg: theme.dark.button.primary.bgColor,
+        padding: 2.5,
         _text: { color: theme.dark.button.primary.textColor },
         _pressed: { bg: theme.light.button.primary.bgColor },
       },
       _light: {
         bg: theme.light.button.primary.bgColor,
+        padding: 2.5,
         _text: { color: theme.light.button.primary.textColor },
         _pressed: { bg: theme.dark.button.primary.bgColor },
       },
@@ -75,7 +101,10 @@ const components = {
   // Input styles
   Input: {
     baseStyle: {
-      borderRadius: 5,
+      padding: 3,
+      borderRadius: 10,
+      bgColor: colors.rose[200],
+      fontSize: 16,
     },
   },
 
@@ -87,9 +116,9 @@ const components = {
   // ActionSheetItem
   ActionsheetItem: {
     baseStyle: {
-      paddingTop: 2,
-      paddingBottom: 2,
-      borderTopWidth: 1,
+      paddingTop: 4,
+      paddingBottom: 4,
+      borderTopWidth: 0.5,
       _light: {
         borderColor: theme.light.text,
       },
@@ -102,7 +131,6 @@ const components = {
   // Checkbox
   Checkbox: {
     baseStyle: {
-      borderRadius: 'full',
       _light: {
         bg: theme.transparent,
         borderColor: theme.light.button.primary,

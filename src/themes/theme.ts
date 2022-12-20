@@ -3,7 +3,7 @@ import colors from './colors';
 const theme = {
   transparent: colors.transparent,
   light: {
-    bgColor: colors.coolGray[50],
+    bgColor: colors.lightBg,
     transparentBg: colors.lightTransparentBg,
     button: {
       primary: {

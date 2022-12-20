@@ -25,7 +25,7 @@ const ActionsDrawer = () => {
           <Heading textAlign="center" mt={4} mb={2}>
             {actionsDrawerState.content.title}
           </Heading>
-          <Text textAlign="center" mb={4}>
+          <Text textAlign="center" mb={4} fontSize={16}>
             {actionsDrawerState.content.text}
           </Text>
         </Box>

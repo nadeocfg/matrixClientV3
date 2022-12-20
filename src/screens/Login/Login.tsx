@@ -16,7 +16,7 @@ import { StyleSheet } from 'react-native';
 import { CloseEyeIcon, EyeIcon } from '../../components/icons';
 import { MatrixContext } from '../../context/matrixContext';
 import { useAppDispatch } from '../../hooks/useDispatch';
-import { setAuthData, setAuthResponse } from '../../store/actions/authActions';
+import { setAuthResponse } from '../../store/actions/authActions';
 import {
   setActionsDrawerContent,
   setActionsDrawerVisible,
@@ -44,10 +44,6 @@ const Login: React.FC<PropsWithChildren<any>> = () => {
       ...formData,
       [name]: value,
     });
-
-    if (name !== 'password') {
-      dispatch(setAuthData({ name, data: value }));
-    }
   };
 
   const login = async () => {
@@ -125,6 +121,7 @@ const Login: React.FC<PropsWithChildren<any>> = () => {
 
       // Get rooms(Chats)
       const rooms = instance.getRooms();
+      console.log(rooms);
 
       if (rooms.length > 0) {
         dispatch(
@@ -161,25 +158,24 @@ const Login: React.FC<PropsWithChildren<any>> = () => {
 
         <Box style={styles.inner}>
           <FormControl>
-            <FormControl.Label px={2} _text={{ fontWeight: 'normal' }}>
+            <FormControl.Label _text={{ fontWeight: 'normal' }} pl={2}>
               Where your conversations will live
             </FormControl.Label>
             <Stack
-              pl={2}
               mb={8}
-              borderBottomWidth={1}
+              borderBottomWidth={0.5}
               paddingBottom={2}
               borderColor={theme[colorMode || 'light'].button.primary.bgColor}>
               <Input
                 fontSize="sm"
                 w="100%"
-                p="0"
                 variant="unstyled"
                 value={formData.server}
                 onChangeText={onChange('server')}
                 isDisabled={isDisabled}
                 InputRightElement={
                   <Button
+                    size="sm"
                     variant="outline"
                     px={2.5}
                     py={1.5}
@@ -193,9 +189,8 @@ const Login: React.FC<PropsWithChildren<any>> = () => {
           </FormControl>
 
           <FormControl>
-            <Stack mb={8} px={2}>
+            <Stack mb={8}>
               <Input
-                px={0}
                 fontSize="md"
                 w="100%"
                 variant="unstyled"
@@ -207,9 +202,8 @@ const Login: React.FC<PropsWithChildren<any>> = () => {
           </FormControl>
 
           <FormControl>
-            <Stack mb={8} px={2}>
+            <Stack mb={8}>
               <Input
-                px={0}
                 type={isPassword ? 'password' : 'text'}
                 fontSize="md"
                 w="100%"
@@ -218,7 +212,7 @@ const Login: React.FC<PropsWithChildren<any>> = () => {
                 value={formData.password}
                 onChangeText={onChange('password')}
                 InputRightElement={
-                  <Pressable onPress={() => setIsPassword(!isPassword)}>
+                  <Pressable mr={2} onPress={() => setIsPassword(!isPassword)}>
                     {isPassword ? (
                       <CloseEyeIcon color="#000" />
                     ) : (
@@ -230,6 +224,7 @@ const Login: React.FC<PropsWithChildren<any>> = () => {
               <Flex direction="row-reverse">
                 <Button
                   variant="link"
+                  size="sm"
                   onPress={() => navigate('ForgotPassword')}>
                   Forgot password
                 </Button>
@@ -242,7 +237,10 @@ const Login: React.FC<PropsWithChildren<any>> = () => {
 
         <Center flexDirection="row">
           Don’t have an account?{' '}
-          <Button variant="link" onPress={() => navigate('Registration')}>
+          <Button
+            variant="link"
+            size="sm"
+            onPress={() => navigate('Registration')}>
             Sign up
           </Button>
         </Center>

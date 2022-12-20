@@ -48,9 +48,8 @@ const Step3 = ({
 
       <Box style={styles.inner}>
         <FormControl>
-          <Stack mb={8} px={4}>
+          <Stack mb={8}>
             <Input
-              px={0}
               type={isPassword ? 'password' : 'text'}
               fontSize="md"
               w="100%"

@@ -31,6 +31,7 @@ const colors = {
   transparent: 'rgba(255, 255, 255, 0)',
   lightTransparentBg: 'rgba(249, 250, 251, 0.9)',
   darkTransparentBg: 'rgba(31, 41, 55, 0.9)',
+  lightBg: '#fafaff',
   // Primary colors
   rose: {
     50: '#fff1f2',

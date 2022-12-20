@@ -7,7 +7,7 @@ const TUModal = () => {
 
   return (
     <>
-      <Button variant="link" onPress={() => setOpen(true)}>
+      <Button variant="link" size="sm" onPress={() => setOpen(true)}>
         Terms of Use
       </Button>
       <Modal

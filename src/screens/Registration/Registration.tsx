@@ -6,6 +6,7 @@ import { useAppDispatch } from '../../hooks/useDispatch';
 import {
   setActionsDrawerContent,
   setActionsDrawerVisible,
+  setLoader,
 } from '../../store/actions/mainActions';
 import theme from '../../themes/theme';
 import isEmailValid from '../../utils/isEmailValid';
@@ -23,12 +24,16 @@ const Registration: React.FC<PropsWithChildren<any>> = () => {
     username: '',
     password: '',
     email: '',
-    isAgree: false,
+    sid: '',
   });
   const [isDisabled, setIsDisabled] = useState(true);
+  const [isAgree, setIsAgree] = useState(false);
   const [isPassword, setIsPassword] = useState(true);
+  const [isUsernameExist, setIsUsernameExist] = useState(false);
   const { colorMode } = useColorMode();
   const matrixContext = useContext(MatrixContext);
+
+  console.log(signUpData);
 
   const onChange = (name: string) => (value: string) => {
     setSignUpData({
@@ -37,14 +42,120 @@ const Registration: React.FC<PropsWithChildren<any>> = () => {
     });
   };
 
-  const register = async () => {
-    const { server, username, password, email } = signUpData;
+  const sendEmail = async () => {
+    const { server, email } = signUpData;
+
+    dispatch(setLoader(true));
 
     const instance = await matrixSdk.createClient({
       baseUrl: `https://${server}/`,
     });
 
     matrixContext.setInstance(instance);
+
+    instance
+      .requestRegisterEmailToken(email, 'matrix-client', 2)
+      .then(res => {
+        setSignUpData({
+          ...signUpData,
+          sid: res.sid,
+        });
+      })
+      .catch(err => {
+        dispatch(
+          setActionsDrawerContent({
+            title: err.data?.errcode || '',
+            text: err.data?.error || 'Something went wrong',
+            actions: [
+              {
+                title: 'Close',
+                onPress: () => dispatch(setActionsDrawerVisible(false)),
+              },
+            ],
+          }),
+        );
+
+        dispatch(setActionsDrawerVisible(true));
+      })
+      .finally(() => {
+        dispatch(setLoader(false));
+      });
+  };
+
+  const register = async () => {
+    const { username, password, server, sid } = signUpData;
+
+    dispatch(setLoader(true));
+
+    matrixContext.instance
+      ?.registerRequest({
+        password,
+        username,
+      })
+      .then(res => {
+        console.log(res);
+      })
+      .catch(err => {
+        console.log({ ...err });
+
+        matrixContext.instance?.register(username, password, err.data.session, {
+          type: 'm.login.dummy',
+        });
+
+        // matrixContext.instance?.registerRequest({
+        //   auth: {
+        //     type: 'm.login.email.identity',
+
+        //     threepid_creds: {
+        //       sid,
+        //       client_secret: 'matrix-client',
+        //     },
+        //     session: err.data.session,
+        //   },
+        // });
+      })
+      .finally(() => {
+        dispatch(setLoader(false));
+      });
+
+    // matrixContext.instance
+    //   ?.register(username, password, null, { type: 'm.login.dummy' })
+    //   .then(res => {
+    //     console.log(res.data);
+    //     dispatch(setLoader(false));
+    //     setCurrentStep(currentStep + 1);
+    //   })
+    //   .catch(err => {
+    //     console.log({ ...err });
+
+    //     matrixContext.instance
+    //       ?.register(username, password, err.data.session, {
+    //         type: 'm.login.dummy',
+    //       })
+    //       .then(res => {
+    //         console.log(res.data);
+    //         setCurrentStep(currentStep + 1);
+    //       })
+    //       .catch(error => {
+    //         dispatch(
+    //           setActionsDrawerContent({
+    //             title: error.data?.errcode || '',
+    //             text: error.data?.error || 'Something went wrong',
+    //             actions: [
+    //               {
+    //                 title: 'Close',
+    //                 onPress: () => dispatch(setActionsDrawerVisible(false)),
+    //               },
+    //             ],
+    //           }),
+    //         );
+
+    //         dispatch(setActionsDrawerVisible(true));
+    //       })
+    //       .finally(() => {
+    //         dispatch(setLoader(false));
+    //       });
+    //   });
   };
 
   const checkUsername = async () => {
@@ -59,22 +170,7 @@ const Registration: React.FC<PropsWithChildren<any>> = () => {
     instance
       .isUsernameAvailable(username)
       .then(res => {
-        if (!res) {
-          dispatch(
-            setActionsDrawerContent({
-              title: 'Error',
-              text: 'Username already taken',
-              actions: [
-                {
-                  title: 'Close',
-                  onPress: () => dispatch(setActionsDrawerVisible(false)),
-                },
-              ],
-            }),
-          );
-
-          dispatch(setActionsDrawerVisible(true));
-        }
+        setIsUsernameExist(!res);
       })
       .catch(err => {
         dispatch(
@@ -100,7 +196,7 @@ const Registration: React.FC<PropsWithChildren<any>> = () => {
         !signUpData.server ||
         !signUpData.username ||
         !signUpData.password ||
-        !signUpData.isAgree
+        !isAgree
       ) {
         dispatch(
           setActionsDrawerContent({
@@ -138,6 +234,13 @@ const Registration: React.FC<PropsWithChildren<any>> = () => {
         dispatch(setActionsDrawerVisible(true));
         return;
       }
+
+      // sendEmail();
+    }
+
+    if (currentStep === 2) {
+      register();
+      return;
     }
 
     setCurrentStep(currentStep + 1);
@@ -178,9 +281,11 @@ const Registration: React.FC<PropsWithChildren<any>> = () => {
             server={signUpData.server}
             password={signUpData.password}
             username={signUpData.username}
-            isAgree={signUpData.isAgree}
+            isAgree={isAgree}
+            setIsAgree={setIsAgree}
             onChange={onChange}
             checkUsername={checkUsername}
+            isUsernameExist={isUsernameExist}
             onNext={onNext}
             styles={styles}
           />

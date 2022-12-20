@@ -40,9 +40,8 @@ const Step1 = ({ email, onChangeEmail, onNext, styles }: Step1Props) => {
 
       <Box style={styles.inner}>
         <FormControl>
-          <Stack mb={8} px={4}>
+          <Stack mb={8}>
             <Input
-              px={0}
               fontSize="md"
               w="100%"
               variant="unstyled"

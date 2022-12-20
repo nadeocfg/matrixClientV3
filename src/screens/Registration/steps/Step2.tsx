@@ -47,9 +47,8 @@ const Step2 = ({
 
       <Box style={styles.inner}>
         <FormControl>
-          <Stack mb={8} px={4}>
+          <Stack mb={8}>
             <Input
-              px={0}
               fontSize="md"
               w="100%"
               variant="unstyled"
@@ -65,7 +64,7 @@ const Step2 = ({
 
       <Center flexDirection="column">
         Did not receive an email?
-        <Button variant="link" onPress={resendEmail}>
+        <Button variant="link" size="sm" onPress={resendEmail}>
           Resend email
         </Button>
       </Center>

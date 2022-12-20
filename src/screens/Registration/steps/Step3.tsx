@@ -33,7 +33,7 @@ const Step3 = ({ resendEmail, onNext, styles }: Step3Props) => {
 
       <Center flexDirection="column">
         Did not receive an email?
-        <Button variant="link" onPress={resendEmail}>
+        <Button variant="link" size="sm" onPress={resendEmail}>
           Resend email
         </Button>
       </Center>

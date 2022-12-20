@@ -1,4 +1,4 @@
-import React, { PropsWithChildren, useEffect } from 'react';
+import React, { PropsWithChildren, useContext, useEffect } from 'react';
 import { useAppDispatch } from '../../hooks/useDispatch';
 import { useAppSelector } from '../../hooks/useSelector';
 import {
@@ -13,6 +13,7 @@ import { navigate } from '../../utils/navigation';
 import { useColorMode, Text, Center, ScrollView, Button } from 'native-base';
 import theme from '../../themes/theme';
 import nativeAlert from '../../utils/nativeAlert';
+import { MatrixContext } from '../../context/matrixContext';
 
 const Home: React.FC<PropsWithChildren<any>> = () => {
   const dispatch = useAppDispatch();
@@ -24,6 +25,7 @@ const Home: React.FC<PropsWithChildren<any>> = () => {
   );
   const { colorMode, setColorMode } = useColorMode();
   const currentState = useAppSelector((state: StoreModel) => state);
+  const matrixContext = useContext(MatrixContext);
 
   useEffect(() => {
     dispatch(setLoader(false));
@@ -63,8 +65,17 @@ const Home: React.FC<PropsWithChildren<any>> = () => {
   const clearStoreAction = () => {
     dispatch(clearStore());
     navigate('Login');
+    matrixContext.instance?.stopClient();
+    matrixContext.setInstance(null);
 
     console.log(currentState);
+  };
+
+  const sendMessage = () => {
+    matrixContext.instance?.sendMessage('!BvsFQCHpiKgoYFAwVS:matrix.org', {
+      msgtype: 'm.text',
+      body: 'Test message',
+    });
   };
 
   return (
@@ -105,6 +116,9 @@ const Home: React.FC<PropsWithChildren<any>> = () => {
         </Button>
         <Button onPress={clearStoreAction} mb="10">
           Clear store
+        </Button>
+        <Button onPress={sendMessage} mb="10">
+          Send message
         </Button>
       </Center>
     </ScrollView>
