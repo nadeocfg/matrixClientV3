@@ -1,4 +1,3 @@
-import colors from './colors';
 import theme from './theme';
 
 const components = {
@@ -103,7 +102,6 @@ const components = {
     baseStyle: {
       padding: 3,
       borderRadius: 10,
-      bgColor: colors.rose[200],
       fontSize: 16,
     },
   },

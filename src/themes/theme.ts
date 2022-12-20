@@ -1,7 +1,11 @@
 import colors from './colors';
 
+// Define our color variables for theme
+
 const theme = {
   transparent: colors.transparent,
+
+  // Light mode colors
   light: {
     bgColor: colors.lightBg,
     transparentBg: colors.lightTransparentBg,
@@ -13,6 +17,8 @@ const theme = {
     },
     text: colors.text[900],
   },
+
+  // Dark mode colors
   dark: {
     bgColor: colors.coolGray[800],
     transparentBg: colors.darkTransparentBg,

@@ -12,7 +12,6 @@ import { StoreModel } from '../../types/storeTypes';
 import { navigate } from '../../utils/navigation';
 import { useColorMode, Text, Center, ScrollView, Button } from 'native-base';
 import theme from '../../themes/theme';
-import nativeAlert from '../../utils/nativeAlert';
 import { MatrixContext } from '../../context/matrixContext';
 
 const Home: React.FC<PropsWithChildren<any>> = () => {
@@ -40,10 +39,6 @@ const Home: React.FC<PropsWithChildren<any>> = () => {
 
     dispatch(setColorModeAction(incomingMode));
     setColorMode(incomingMode);
-  };
-
-  const showAlert = () => {
-    nativeAlert('Alert title', 'alert message');
   };
 
   const showDrawer = () => {
@@ -107,9 +102,6 @@ const Home: React.FC<PropsWithChildren<any>> = () => {
         </Button>
         <Button onPress={changeColorMode} mb="10">
           Change color mode
-        </Button>
-        <Button onPress={showAlert} mb="10">
-          Show Alert
         </Button>
         <Button onPress={showDrawer} mb="10">
           Show Drawer
