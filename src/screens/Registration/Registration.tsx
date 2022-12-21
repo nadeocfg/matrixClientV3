@@ -9,12 +9,14 @@ import React, {
 import { StyleSheet } from 'react-native';
 import { MatrixContext } from '../../context/matrixContext';
 import { useAppDispatch } from '../../hooks/useDispatch';
+import { setAuthResponse } from '../../store/actions/authActions';
 import {
   setActionsDrawerContent,
   setActionsDrawerVisible,
   setLoader,
 } from '../../store/actions/mainActions';
 import theme from '../../themes/theme';
+import { AuthResponseModel } from '../../types/storeTypes';
 import isEmailValid from '../../utils/isEmailValid';
 import matrixSdk from '../../utils/matrix';
 import { navigate } from '../../utils/navigation';
@@ -174,6 +176,8 @@ const Registration: React.FC<PropsWithChildren<any>> = () => {
           userId: res.user_id,
           deviceId: res.device_id,
         });
+
+        dispatch(setAuthResponse(res as AuthResponseModel));
 
         // Set new instance to context provider
         matrixContext.setInstance(instance);

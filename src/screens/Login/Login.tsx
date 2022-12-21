@@ -91,7 +91,7 @@ const Login: React.FC<PropsWithChildren<any>> = () => {
 
         // Start matrix client
         instance.startClient({
-          initialSyncLimit: 10,
+          initialSyncLimit: 1,
           includeArchivedRooms: false,
           lazyLoadMembers: true,
         });
@@ -114,7 +114,7 @@ const Login: React.FC<PropsWithChildren<any>> = () => {
       });
 
     // Initial sync of matrix client
-    instance.once('sync' as any, (state: string) => {
+    instance.on('sync' as any, (state: string) => {
       console.log('STATE');
       console.log(state);
       dispatch(setLoader(false));

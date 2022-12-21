@@ -18,13 +18,14 @@ import { setRooms } from './store/actions/roomsActions';
 import { setLoader } from './store/actions/mainActions';
 import RoomItem from './screens/RoomItem';
 import RoomList from './screens/RoomList';
+import { RootStackModel } from './types/rootStackType';
 
 const App = () => {
   const { setColorMode } = useColorMode();
   const storeColorMode = useAppSelector(
     (state: StoreModel) => state.mainStore.colorMode,
   );
-  const Stack = createNativeStackNavigator();
+  const Stack = createNativeStackNavigator<RootStackModel>();
   const matrixContext = useContext(MatrixContext);
   const authResponse = useAppSelector(
     (state: StoreModel) => state.authStore.authResponse,
@@ -58,13 +59,13 @@ const App = () => {
 
       // Start matrix client
       instance.startClient({
-        initialSyncLimit: 10,
+        initialSyncLimit: 1,
         includeArchivedRooms: false,
         lazyLoadMembers: true,
       });
 
       // Initial sync of matrix client
-      instance.once('sync' as any, (state: string) => {
+      instance.on('sync' as any, (state: string) => {
         console.log('STATE');
         console.log(state);
         dispatch(setLoader(false));

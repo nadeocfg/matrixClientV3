@@ -13,6 +13,7 @@ import { navigate } from '../../utils/navigation';
 import { useColorMode, Text, Center, ScrollView, Button } from 'native-base';
 import theme from '../../themes/theme';
 import { MatrixContext } from '../../context/matrixContext';
+import LogOutButton from '../../components/LogOutButton';
 
 const Home: React.FC<PropsWithChildren<any>> = () => {
   const dispatch = useAppDispatch();
@@ -22,7 +23,7 @@ const Home: React.FC<PropsWithChildren<any>> = () => {
   const currentColorMode = useAppSelector(
     (state: StoreModel) => state.mainStore.colorMode,
   );
-  const { colorMode, setColorMode } = useColorMode();
+  const { setColorMode } = useColorMode();
   const currentState = useAppSelector((state: StoreModel) => state);
   const matrixContext = useContext(MatrixContext);
 
@@ -78,12 +79,6 @@ const Home: React.FC<PropsWithChildren<any>> = () => {
         <Text fontSize="lg" display="flex" mb="10">
           This is Home screen
         </Text>
-        <Text fontSize="lg" display="flex" mb="10">
-          isLoading: {isLoading ? 'TRUE' : 'FALSE'}
-        </Text>
-        <Text fontSize="lg" display="flex" mb="10">
-          colorMode: {colorMode}
-        </Text>
         <Button onPress={changeLoading} mb="10">
           Set loader
         </Button>
@@ -105,6 +100,7 @@ const Home: React.FC<PropsWithChildren<any>> = () => {
         <Button onPress={showDrawer} mb="10">
           Show Drawer
         </Button>
+        <LogOutButton mb={10} />
         <Button onPress={clearStoreAction} mb="10">
           Clear store
         </Button>
