@@ -9,26 +9,76 @@ import {
   Stack,
   Text,
 } from 'native-base';
-import React from 'react';
+import React, { useCallback, useRef } from 'react';
 import { StyleProp } from 'react-native';
+import Recaptcha, { RecaptchaHandles } from 'react-native-recaptcha-that-works';
 import { MockedLogo } from '../../../components/icons';
+import { useAppDispatch } from '../../../hooks/useDispatch';
+import {
+  setActionsDrawerContent,
+  setActionsDrawerVisible,
+} from '../../../store/actions/mainActions';
 import theme from '../../../themes/theme';
 
 interface Step2Props {
   email: string;
+  recaptchaKey: string;
+  server: string;
   onChange: Function;
   onNext: () => void;
   resendEmail: () => void;
   styles: StyleProp<any>;
+  handleRecaptcha: (token: string) => void;
 }
 
 const Step2 = ({
   email,
+  recaptchaKey,
   onChange,
   onNext,
   resendEmail,
+  handleRecaptcha,
   styles,
 }: Step2Props) => {
+  const $recaptcha = useRef<RecaptchaHandles>(null);
+  const dispatch = useAppDispatch();
+
+  const openRecaptcha = useCallback(() => {
+    $recaptcha.current?.open();
+  }, []);
+
+  const handleClosePress = useCallback(() => {
+    $recaptcha.current?.close();
+  }, []);
+
+  const onError = (err?: string) => {
+    console.log(err);
+
+    dispatch(
+      setActionsDrawerContent({
+        title: 'Error',
+        text: err || 'Something went wrong, try again',
+        actions: [
+          {
+            title: 'Close',
+            onPress: () => dispatch(setActionsDrawerVisible(false)),
+          },
+        ],
+      }),
+    );
+
+    dispatch(setActionsDrawerVisible(true));
+  };
+
+  const onVerify = (token: string) => {
+    handleRecaptcha(token);
+    onNext();
+  };
+
+  const onLoad = () => {
+    console.log('Recaptcha loaded');
+  };
+
   return (
     <ScrollView
       contentContainerStyle={styles.container}
@@ -59,7 +109,7 @@ const Step2 = ({
           </Stack>
         </FormControl>
 
-        <Button onPress={onNext}>Next</Button>
+        <Button onPress={openRecaptcha}>Next</Button>
       </Box>
 
       <Center flexDirection="column">
@@ -68,6 +118,26 @@ const Step2 = ({
           Resend email
         </Button>
       </Center>
+
+      <Recaptcha
+        ref={$recaptcha}
+        headerComponent={<Button onPress={handleClosePress}>Cancel</Button>}
+        siteKey={recaptchaKey}
+        // baseUrl={server}
+        baseUrl="http://127.0.0.1"
+        // Key from matrix.org
+        // siteKey="6LcgI54UAAAAABGdGmruw6DdOocFpYVdjYBRe4zb"
+
+        // Test key
+        // siteKey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI"
+        size={'normal'}
+        onError={onError}
+        onExpire={onError}
+        onVerify={onVerify}
+        onLoad={onLoad}
+        enterprise={false}
+        hideBadge={false}
+      />
     </ScrollView>
   );
 };

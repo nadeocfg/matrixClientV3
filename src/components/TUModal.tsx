@@ -1,9 +1,17 @@
-import { Button, Modal } from 'native-base';
+import { Button, Link, Modal } from 'native-base';
 import React, { useState } from 'react';
 import theme from '../themes/theme';
 
-const TUModal = () => {
+interface TUModalProps {
+  termsLink: string;
+}
+
+const TUModal = ({ termsLink }: TUModalProps) => {
   const [open, setOpen] = useState(false);
+
+  if (termsLink) {
+    return <Link href={termsLink}>Terms of Use</Link>;
+  }
 
   return (
     <>

@@ -25,6 +25,7 @@ interface Step1Props {
   username: string;
   password: string;
   isAgree: boolean;
+  termsLink: string;
   setIsAgree: (isAgree: boolean) => void;
   isUsernameExist: boolean;
   onChange: Function;
@@ -39,6 +40,7 @@ interface Step1Props {
 
 const Step1 = ({
   server,
+  termsLink,
   username,
   password,
   onChange,
@@ -80,6 +82,7 @@ const Step1 = ({
             paddingBottom={2}
             borderColor={theme[colorMode || 'light'].button.primary.bgColor}>
             <Input
+              pl={2}
               fontSize="sm"
               w="100%"
               variant="unstyled"
@@ -141,7 +144,7 @@ const Step1 = ({
           </Stack>
         </FormControl>
 
-        <Button onPress={onNext} isDisabled={!isAgree}>
+        <Button onPress={onNext} isDisabled={!isAgree || isUsernameExist}>
           Next
         </Button>
         <Checkbox
@@ -150,7 +153,7 @@ const Step1 = ({
           onChange={() => setIsAgree(!isAgree)}
           accessibilityLabel="I agree with the Terms of Use and Privacy Policy">
           <Box flexDirection="row" flexWrap="wrap" ml={0}>
-            I agree with the <TUModal /> and <PPModal />
+            I agree with the <TUModal termsLink={termsLink} /> and <PPModal />
           </Box>
         </Checkbox>
       </Box>

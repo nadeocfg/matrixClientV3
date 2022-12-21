@@ -17,6 +17,7 @@ import { useAppDispatch } from './hooks/useDispatch';
 import { setRooms } from './store/actions/roomsActions';
 import { setLoader } from './store/actions/mainActions';
 import RoomItem from './screens/RoomItem';
+import RoomList from './screens/RoomList';
 
 const App = () => {
   const { setColorMode } = useColorMode();
@@ -118,6 +119,11 @@ const App = () => {
           options={{ headerShown: false }}
           name="RoomItem"
           component={RoomItem}
+        />
+        <Stack.Screen
+          options={{ headerShown: false }}
+          name="RoomList"
+          component={RoomList}
         />
       </Stack.Navigator>
 

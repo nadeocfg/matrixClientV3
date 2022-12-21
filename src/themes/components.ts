@@ -1,6 +1,25 @@
 import theme from './theme';
 
 const components = {
+  // Link
+  Link: {
+    baseStyle: {
+      _text: {
+        fontWeight: 400,
+        textDecorationLine: 'none',
+      },
+      _dark: {
+        _text: {
+          color: theme.dark.button.primary.bgColor,
+        },
+      },
+      _light: {
+        _text: {
+          color: theme.light.button.primary.bgColor,
+        },
+      },
+    },
+  },
   // Button styles
   Button: {
     sizes: {
