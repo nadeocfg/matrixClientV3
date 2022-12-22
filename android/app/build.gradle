@@ -79,7 +79,9 @@ import org.apache.tools.ant.taskdefs.condition.Os
  */
 
 project.ext.react = [
-    enableHermes: true,  // clean and rebuild if changing
+    enableHermes: false,  // clean and rebuild if changing
+    devDisabledInDev: true, // Disable dev server in dev release
+    bundleInDebug: true, // add bundle to dev apk
 ]
 
 apply from: "../../node_modules/react-native/react.gradle"
@@ -206,7 +208,6 @@ android {
         abi {
             reset()
             enable enableSeparateBuildPerCPUArchitecture
-            universalApk false  // If true, also generate a universal APK
             include (*reactNativeArchitectures())
         }
     }
@@ -216,6 +217,12 @@ android {
             storePassword 'android'
             keyAlias 'androiddebugkey'
             keyPassword 'android'
+        }
+        release {
+            storeFile file('techwings.keystore')
+            storePassword 'techwings'
+            keyAlias 'techwings'
+            keyPassword 'techwings'
         }
     }
     buildTypes {
