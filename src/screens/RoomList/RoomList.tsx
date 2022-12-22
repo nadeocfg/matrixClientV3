@@ -77,9 +77,9 @@ const RoomList = () => {
           key={item.roomId}
           roomId={item.roomId}
           message={
-            item.timeline[item.timeline.length - 1].event.type ===
+            item.timeline[item.timeline.length - 1]?.event?.type ===
             'm.room.message'
-              ? item.timeline[item.timeline.length - 1].event.content?.body
+              ? item.timeline[item.timeline.length - 1]?.event?.content?.body
               : '...'
           }
           name={item.name}

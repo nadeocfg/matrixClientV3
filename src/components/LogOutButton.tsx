@@ -10,18 +10,21 @@ const LogOutButton = (props: IButtonProps) => {
   const dispatch = useAppDispatch();
 
   const logOut = async () => {
-    const instance = matrixContext.instance;
+    if (matrixContext.instance) {
+      matrixContext.instance.stopClient();
 
-    if (instance) {
-      await instance.logout();
-      await instance.stopClient();
+      try {
+        await matrixContext.instance.logout();
+      } catch {
+        // ignore if failed to logout
+      }
 
       matrixContext.setInstance(null);
     }
 
     dispatch(clearStore());
 
-    navigate('Home');
+    navigate('Login');
   };
 
   return (

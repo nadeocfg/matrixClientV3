@@ -209,6 +209,70 @@ const components = {
       },
     },
   },
+
+  // IconButton
+  IconButton: {
+    baseStyle: {
+      _pressed: {
+        _light: {
+          _icon: {
+            color: theme.light.button.primary.bgColor,
+          },
+        },
+        _dark: {
+          _icon: {
+            color: theme.dark.button.primary.bgColor,
+          },
+        },
+        _ios: {
+          _icon: {
+            size: '2xl',
+          },
+        },
+      },
+      _ios: {
+        _icon: {
+          size: '2xl',
+        },
+      },
+    },
+    variants: {
+      ghost: {
+        _light: {
+          _icon: {
+            color: theme.dark.button.primary.bgColor,
+          },
+        },
+        _dark: {
+          _icon: {
+            color: theme.light.button.primary.bgColor,
+          },
+        },
+        _pressed: {
+          _light: {
+            _icon: {
+              color: theme.light.button.primary.bgColor,
+            },
+          },
+          _dark: {
+            _icon: {
+              color: theme.dark.button.primary.bgColor,
+            },
+          },
+          _ios: {
+            _icon: {
+              size: '2xl',
+            },
+          },
+        },
+        _ios: {
+          _icon: {
+            size: '2xl',
+          },
+        },
+      },
+    },
+  },
 };
 
 export default components;

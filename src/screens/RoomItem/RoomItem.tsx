@@ -68,6 +68,7 @@ const RoomItem = (
         setMessages(res.messages);
       })
       .catch(err => {
+        console.log(err);
         dispatch(
           setActionsDrawerContent({
             title: err.data?.errcode || '',
@@ -91,6 +92,7 @@ const RoomItem = (
         setMessage('');
       })
       .catch(err => {
+        console.log(err);
         if (err.event?.error?.message) {
           dispatch(
             setActionsDrawerContent({

@@ -15,11 +15,11 @@ import { MatrixContext } from './context/matrixContext';
 import matrixSdk from './utils/matrix';
 import { useAppDispatch } from './hooks/useDispatch';
 import { setRooms } from './store/actions/roomsActions';
-import { setLoader } from './store/actions/mainActions';
 import RoomItem from './screens/RoomItem';
 import RoomList from './screens/RoomList';
 import { RootStackModel } from './types/rootStackType';
 import validateUrl from './utils/validateUrl';
+import CreateRoom from './screens/CreateRoom';
 
 const App = () => {
   const { setColorMode } = useColorMode();
@@ -45,8 +45,6 @@ const App = () => {
 
   const checkInstance = async () => {
     if (authResponse.access_token) {
-      dispatch(setLoader(true));
-
       // Create a new instance of matrix client
       const instance = await matrixSdk.createClient({
         baseUrl: validateUrl(authResponse.home_server),
@@ -69,7 +67,6 @@ const App = () => {
       instance.on('sync' as any, (state: string) => {
         console.log('STATE');
         console.log(state);
-        dispatch(setLoader(false));
 
         // Get rooms(Chats)
         const rooms = instance.getRooms();
@@ -126,6 +123,11 @@ const App = () => {
           options={{ headerShown: false }}
           name="RoomList"
           component={RoomList}
+        />
+        <Stack.Screen
+          options={{ headerShown: false }}
+          name="CreateRoom"
+          component={CreateRoom}
         />
       </Stack.Navigator>
 

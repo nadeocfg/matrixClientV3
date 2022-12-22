@@ -12,6 +12,7 @@ import {
 } from '../constants/mainConstants';
 
 export const clearStore = () => {
+  console.log('CLEAR_STORE ACTION');
   return {
     type: CLEAR_STORE,
   };

@@ -29,46 +29,7 @@ const RoomHeader: React.FC<PropsWithChildren<RoomHeaderProps>> = ({
       _dark={{
         bg: theme.dark.button.primary.bgColor,
       }}>
-      <IconButton
-        onPress={goBack}
-        icon={<ChevronLeftIcon />}
-        borderRadius="full"
-        _light={{
-          _icon: {
-            color: theme.dark.button.primary.bgColor,
-          },
-        }}
-        _dark={{
-          _icon: {
-            color: theme.light.button.primary.bgColor,
-          },
-        }}
-        _hover={{
-          bg: 'orange.600:alpha.20',
-        }}
-        _pressed={{
-          _light: {
-            _icon: {
-              color: theme.light.button.primary.bgColor,
-            },
-          },
-          _dark: {
-            _icon: {
-              color: theme.dark.button.primary.bgColor,
-            },
-          },
-          _ios: {
-            _icon: {
-              size: '2xl',
-            },
-          },
-        }}
-        _ios={{
-          _icon: {
-            size: '2xl',
-          },
-        }}
-      />
+      <IconButton variant="ghost" onPress={goBack} icon={<ChevronLeftIcon />} />
       <Image
         src={avatar}
         alt="Avatar of room"

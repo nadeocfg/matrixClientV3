@@ -126,6 +126,7 @@ const Registration: React.FC<PropsWithChildren<any>> = () => {
         });
       })
       .catch(err => {
+        console.log(err);
         dispatch(
           setActionsDrawerContent({
             title: err.data?.errcode || '',
@@ -189,6 +190,7 @@ const Registration: React.FC<PropsWithChildren<any>> = () => {
         navigate('RoomList');
       })
       .catch(err => {
+        console.log(err);
         // If we got 401 error, thats mean not all registration steps are done
         if (err.httpStatus === 401) {
           setFlowResponse(err.data);
@@ -245,6 +247,7 @@ const Registration: React.FC<PropsWithChildren<any>> = () => {
         setIsUsernameExist(!res);
       })
       .catch(err => {
+        console.log(err);
         dispatch(
           setActionsDrawerContent({
             title: err.data?.errcode || '',

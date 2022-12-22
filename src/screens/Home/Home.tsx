@@ -15,9 +15,6 @@ import LogOutButton from '../../components/LogOutButton';
 
 const Home: React.FC<PropsWithChildren<any>> = () => {
   const dispatch = useAppDispatch();
-  const isLoading = useAppSelector(
-    (state: StoreModel) => state.mainStore.isLoading,
-  );
   const currentColorMode = useAppSelector(
     (state: StoreModel) => state.mainStore.colorMode,
   );
@@ -25,11 +22,7 @@ const Home: React.FC<PropsWithChildren<any>> = () => {
 
   useEffect(() => {
     dispatch(setLoader(false));
-  }, [dispatch]);
-
-  const changeLoading = () => {
-    dispatch(setLoader(!isLoading));
-  };
+  }, []);
 
   const changeColorMode = () => {
     const incomingMode = currentColorMode === 'dark' ? 'light' : 'dark';
@@ -60,17 +53,11 @@ const Home: React.FC<PropsWithChildren<any>> = () => {
         <Text fontSize="lg" display="flex" mb="10">
           This is Home screen
         </Text>
-        <Button onPress={changeLoading} mb="10">
-          Set loader
-        </Button>
         <Button onPress={() => navigate('Login')} mb="10">
           Go to Login
         </Button>
         <Button onPress={() => navigate('Registration')} mb="10">
           Go to Registration
-        </Button>
-        <Button onPress={() => navigate('RoomItem')} mb="10">
-          Go to Room Item
         </Button>
         <Button onPress={() => navigate('RoomList')} mb="10">
           Go to Room List
@@ -81,7 +68,7 @@ const Home: React.FC<PropsWithChildren<any>> = () => {
         <Button onPress={showDrawer} mb="10">
           Show Drawer
         </Button>
-        <LogOutButton mb={10} />
+        <LogOutButton />
       </Center>
     </ScrollView>
   );
