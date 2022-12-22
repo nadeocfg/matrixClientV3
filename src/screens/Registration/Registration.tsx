@@ -20,6 +20,7 @@ import { AuthResponseModel } from '../../types/storeTypes';
 import isEmailValid from '../../utils/isEmailValid';
 import matrixSdk from '../../utils/matrix';
 import { navigate } from '../../utils/navigation';
+import validateUrl from '../../utils/validateUrl';
 import Step1 from './steps/Step1';
 import Step2 from './steps/Step2';
 import Step3 from './steps/Step3';
@@ -29,7 +30,7 @@ const Registration: React.FC<PropsWithChildren<any>> = () => {
   const dispatch = useAppDispatch();
   const [currentStep, setCurrentStep] = useState(0);
   const [signUpData, setSignUpData] = useState({
-    server: 'matrix.org',
+    server: 'dev.techwings.com:8448',
     username: '',
     password: '',
     email: '',
@@ -110,7 +111,7 @@ const Registration: React.FC<PropsWithChildren<any>> = () => {
     dispatch(setLoader(true));
 
     const instance = await matrixSdk.createClient({
-      baseUrl: `https://${server}/`,
+      baseUrl: validateUrl(server),
     });
 
     const clientSecret = instance.generateClientSecret();
@@ -129,12 +130,6 @@ const Registration: React.FC<PropsWithChildren<any>> = () => {
           setActionsDrawerContent({
             title: err.data?.errcode || '',
             text: err.data?.error || 'Something went wrong',
-            actions: [
-              {
-                title: 'Close',
-                onPress: () => dispatch(setActionsDrawerVisible(false)),
-              },
-            ],
           }),
         );
 
@@ -151,8 +146,10 @@ const Registration: React.FC<PropsWithChildren<any>> = () => {
     dispatch(setLoader(true));
 
     const tempInstance = await matrixSdk.createClient({
-      baseUrl: `https://${server}/`,
+      baseUrl: validateUrl(server),
     });
+
+    console.log(tempInstance);
 
     const data: IRegisterRequestParams = {};
 
@@ -171,7 +168,7 @@ const Registration: React.FC<PropsWithChildren<any>> = () => {
       .then(async res => {
         // If all registration steps done, start matrix client
         const instance = await matrixSdk.createClient({
-          baseUrl: `https://${server}/`,
+          baseUrl: validateUrl(server),
           accessToken: res.access_token,
           userId: res.user_id,
           deviceId: res.device_id,
@@ -212,12 +209,6 @@ const Registration: React.FC<PropsWithChildren<any>> = () => {
               setActionsDrawerContent({
                 title: 'Verify email',
                 text: `Please check your email (${signUpData.email}) and validate before continuing further.`,
-                actions: [
-                  {
-                    title: 'Close',
-                    onPress: () => dispatch(setActionsDrawerVisible(false)),
-                  },
-                ],
               }),
             );
 
@@ -231,12 +222,6 @@ const Registration: React.FC<PropsWithChildren<any>> = () => {
           setActionsDrawerContent({
             title: err.data?.errcode || '',
             text: err.data?.error || 'Something went wrong',
-            actions: [
-              {
-                title: 'Close',
-                onPress: () => dispatch(setActionsDrawerVisible(false)),
-              },
-            ],
           }),
         );
 
@@ -251,7 +236,7 @@ const Registration: React.FC<PropsWithChildren<any>> = () => {
     const { server, username } = signUpData;
 
     const instance = await matrixSdk.createClient({
-      baseUrl: `https://${server}/`,
+      baseUrl: validateUrl(server),
     });
 
     instance
@@ -264,12 +249,6 @@ const Registration: React.FC<PropsWithChildren<any>> = () => {
           setActionsDrawerContent({
             title: err.data?.errcode || '',
             text: err.data?.error || 'Something went wrong',
-            actions: [
-              {
-                title: 'Close',
-                onPress: () => dispatch(setActionsDrawerVisible(false)),
-              },
-            ],
           }),
         );
 
@@ -289,12 +268,6 @@ const Registration: React.FC<PropsWithChildren<any>> = () => {
           setActionsDrawerContent({
             title: 'Error',
             text: 'All fields is required',
-            actions: [
-              {
-                title: 'Ok',
-                onPress: () => dispatch(setActionsDrawerVisible(false)),
-              },
-            ],
           }),
         );
 
@@ -311,12 +284,6 @@ const Registration: React.FC<PropsWithChildren<any>> = () => {
           setActionsDrawerContent({
             title: 'Error',
             text: 'Email is not valid',
-            actions: [
-              {
-                title: 'Ok',
-                onPress: () => dispatch(setActionsDrawerVisible(false)),
-              },
-            ],
           }),
         );
 

@@ -30,14 +30,22 @@ const ActionsDrawer = () => {
           </Text>
         </Box>
 
-        {actionsDrawerState.content.actions.map((item, index) => (
-          <Actionsheet.Item
-            onPress={() => item.onPress()}
-            key={index}
-            alignItems="center">
-            {item.title}
-          </Actionsheet.Item>
-        ))}
+        {actionsDrawerState.content.actions &&
+          actionsDrawerState.content.actions.length === 0 && (
+            <Actionsheet.Item onPress={onClose} alignItems="center">
+              Close
+            </Actionsheet.Item>
+          )}
+
+        {actionsDrawerState.content.actions &&
+          actionsDrawerState.content.actions.map((item, index) => (
+            <Actionsheet.Item
+              onPress={() => item.onPress()}
+              key={index}
+              alignItems="center">
+              {item.title}
+            </Actionsheet.Item>
+          ))}
       </Actionsheet.Content>
     </Actionsheet>
   );

@@ -14,12 +14,12 @@ const LogOutButton = (props: IButtonProps) => {
 
     if (instance) {
       await instance.logout();
-      await instance.clearStores();
       await instance.stopClient();
 
-      dispatch(clearStore());
       matrixContext.setInstance(null);
     }
+
+    dispatch(clearStore());
 
     navigate('Home');
   };

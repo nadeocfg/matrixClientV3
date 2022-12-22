@@ -1,8 +1,7 @@
-import React, { PropsWithChildren, useContext, useEffect } from 'react';
+import React, { PropsWithChildren, useEffect } from 'react';
 import { useAppDispatch } from '../../hooks/useDispatch';
 import { useAppSelector } from '../../hooks/useSelector';
 import {
-  clearStore,
   setActionsDrawerContent,
   setActionsDrawerVisible,
   setColorMode as setColorModeAction,
@@ -12,7 +11,6 @@ import { StoreModel } from '../../types/storeTypes';
 import { navigate } from '../../utils/navigation';
 import { useColorMode, Text, Center, ScrollView, Button } from 'native-base';
 import theme from '../../themes/theme';
-import { MatrixContext } from '../../context/matrixContext';
 import LogOutButton from '../../components/LogOutButton';
 
 const Home: React.FC<PropsWithChildren<any>> = () => {
@@ -24,12 +22,10 @@ const Home: React.FC<PropsWithChildren<any>> = () => {
     (state: StoreModel) => state.mainStore.colorMode,
   );
   const { setColorMode } = useColorMode();
-  const currentState = useAppSelector((state: StoreModel) => state);
-  const matrixContext = useContext(MatrixContext);
 
   useEffect(() => {
     dispatch(setLoader(false));
-  }, []);
+  }, [dispatch]);
 
   const changeLoading = () => {
     dispatch(setLoader(!isLoading));
@@ -48,23 +44,8 @@ const Home: React.FC<PropsWithChildren<any>> = () => {
       setActionsDrawerContent({
         title: 'Error',
         text: 'Email not found',
-        actions: [
-          {
-            title: 'OK',
-            onPress: () => dispatch(setActionsDrawerVisible(false)),
-          },
-        ],
       }),
     );
-  };
-
-  const clearStoreAction = () => {
-    dispatch(clearStore());
-    navigate('Login');
-    matrixContext.instance?.stopClient();
-    matrixContext.setInstance(null);
-
-    console.log(currentState);
   };
 
   return (
@@ -101,9 +82,6 @@ const Home: React.FC<PropsWithChildren<any>> = () => {
           Show Drawer
         </Button>
         <LogOutButton mb={10} />
-        <Button onPress={clearStoreAction} mb="10">
-          Clear store
-        </Button>
       </Center>
     </ScrollView>
   );

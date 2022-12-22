@@ -26,10 +26,11 @@ import { setRooms } from '../../store/actions/roomsActions';
 import theme from '../../themes/theme';
 import matrixSdk from '../../utils/matrix';
 import { navigate } from '../../utils/navigation';
+import validateUrl from '../../utils/validateUrl';
 
 const Login: React.FC<PropsWithChildren<any>> = () => {
   const [formData, setFormData] = useState({
-    server: 'matrix.org',
+    server: 'dev.techwings.com:8448',
     username: '',
     password: '',
   });
@@ -55,12 +56,6 @@ const Login: React.FC<PropsWithChildren<any>> = () => {
         setActionsDrawerContent({
           title: 'Error',
           text: 'All fields are required',
-          actions: [
-            {
-              title: 'Close',
-              onPress: () => dispatch(setActionsDrawerVisible(false)),
-            },
-          ],
         }),
       );
 
@@ -76,7 +71,7 @@ const Login: React.FC<PropsWithChildren<any>> = () => {
 
     // Create a new matrix client instance
     const instance = await matrixSdk.createClient({
-      baseUrl: `https://${server}/`,
+      baseUrl: validateUrl(server),
       deviceId: 'matrix-client-app',
     });
 
@@ -95,22 +90,19 @@ const Login: React.FC<PropsWithChildren<any>> = () => {
           includeArchivedRooms: false,
           lazyLoadMembers: true,
         });
+
+        navigate('RoomList');
       })
       .catch(err => {
         dispatch(
           setActionsDrawerContent({
             title: err.data?.errcode || '',
             text: err.data?.error || 'Something went wrong',
-            actions: [
-              {
-                title: 'Close',
-                onPress: () => dispatch(setActionsDrawerVisible(false)),
-              },
-            ],
           }),
         );
 
         dispatch(setActionsDrawerVisible(true));
+        dispatch(setLoader(false));
       });
 
     // Initial sync of matrix client

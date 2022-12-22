@@ -12,10 +12,20 @@ const components = {
         _text: {
           color: theme.dark.button.primary.bgColor,
         },
+        _pressed: {
+          _text: {
+            color: theme.light.button.primary.bgColor,
+          },
+        },
       },
       _light: {
         _text: {
           color: theme.light.button.primary.bgColor,
+        },
+        _pressed: {
+          _text: {
+            color: theme.dark.button.primary.bgColor,
+          },
         },
       },
     },
@@ -49,21 +59,24 @@ const components = {
         fontWeight: 600,
         fontSize: 24,
       },
-      _dark: {
-        bg: theme.dark.button.primary.bgColor,
-        padding: 2.5,
-        _text: { color: theme.dark.button.primary.textColor },
-        _pressed: { bg: theme.light.button.primary.bgColor },
-      },
-      _light: {
-        bg: theme.light.button.primary.bgColor,
-        padding: 2.5,
-        _text: { color: theme.light.button.primary.textColor },
-        _pressed: { bg: theme.dark.button.primary.bgColor },
-      },
       borderRadius: 10,
     },
     variants: {
+      // Default button styles
+      solid: {
+        _dark: {
+          bg: theme.dark.button.primary.bgColor,
+          _text: { color: theme.dark.button.primary.textColor },
+          _pressed: { bg: theme.light.button.primary.bgColor },
+        },
+        _light: {
+          bg: theme.light.button.primary.bgColor,
+          _text: { color: theme.light.button.primary.textColor },
+          _pressed: { bg: theme.dark.button.primary.bgColor },
+        },
+      },
+
+      // Outline styles
       outline: {
         _dark: {
           _text: {
@@ -86,6 +99,8 @@ const components = {
           },
         },
       },
+
+      // Link styles
       link: {
         _text: {
           fontWeight: 400,
@@ -99,6 +114,10 @@ const components = {
           bg: theme.transparent,
           _pressed: {
             bg: theme.transparent,
+            color: theme.light.button.primary.bgColor,
+            _text: {
+              textDecorationLine: 'none',
+            },
           },
         },
         _light: {
@@ -110,6 +129,10 @@ const components = {
           bg: theme.transparent,
           _pressed: {
             bg: theme.transparent,
+            color: theme.dark.button.primary.bgColor,
+            _text: {
+              textDecorationLine: 'none',
+            },
           },
         },
       },

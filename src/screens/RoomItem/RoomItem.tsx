@@ -1,4 +1,4 @@
-import { Box, Button, Center, Heading, Input, ScrollView } from 'native-base';
+import { Box, Button, Input, ScrollView } from 'native-base';
 import React, { useState, useContext, useEffect } from 'react';
 import theme from '../../themes/theme';
 import { StyleSheet } from 'react-native';
@@ -11,17 +11,27 @@ import {
 } from '../../store/actions/mainActions';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackModel } from '../../types/rootStackType';
+import { IMessagesChunk } from '../../types/roomInitialSync';
+import RoomHeader from './components/RoomHeader';
 
 const RoomItem = (
   props: NativeStackScreenProps<RootStackModel, 'RoomItem'>,
 ) => {
   const dispatch = useAppDispatch();
   const matrixContext = useContext(MatrixContext);
-  const [currentRoomId, setCurrentRoomId] = useState('');
   const [message, setMessage] = useState('');
+  const [roomData, setRoomData] = useState({
+    fullAvatar: '',
+    avatar: '',
+    name: '',
+    roomId: '',
+  });
+  const [messages, setMessages] = useState<IMessagesChunk>();
 
   useEffect(() => {
-    setCurrentRoomId(props.route.params.roomId || '');
+    if (props.route.params.roomId) {
+      initialRoomSync(props.route.params.roomId);
+    }
   }, [props.route.params.roomId]);
 
   useEffect(() => {
@@ -30,14 +40,55 @@ const RoomItem = (
     }
   }, [matrixContext.instance]);
 
-  const changeRoomId = (value: string) => setCurrentRoomId(value);
+  const initialRoomSync = async (roomId: string) => {
+    const roomInfo = await matrixContext.instance?.getRoom(roomId);
+    if (roomInfo) {
+      const avatarUrl = roomInfo.getAvatarUrl(
+        matrixContext.instance?.baseUrl || '',
+        48,
+        48,
+        'crop',
+      );
+
+      const fullAvatarUrl = matrixContext.instance?.mxcUrlToHttp(
+        roomInfo.getMxcAvatarUrl() || '',
+      );
+
+      setRoomData({
+        avatar: avatarUrl || '',
+        fullAvatar: fullAvatarUrl || '',
+        roomId: props.route.params.roomId,
+        name: props.route.params.roomName,
+      });
+    }
+
+    matrixContext.instance
+      ?.roomInitialSync(roomId, 10)
+      .then(res => {
+        setMessages(res.messages);
+      })
+      .catch(err => {
+        dispatch(
+          setActionsDrawerContent({
+            title: err.data?.errcode || '',
+            text: err.data?.error || 'Something went wrong',
+          }),
+        );
+
+        dispatch(setActionsDrawerVisible(true));
+      });
+  };
+
   const changeMessage = (value: string) => setMessage(value);
 
   const sendMessage = () => {
     matrixContext.instance
-      ?.sendMessage(currentRoomId, {
+      ?.sendMessage(roomData.roomId, {
         msgtype: 'm.text',
         body: message,
+      })
+      .then(() => {
+        setMessage('');
       })
       .catch(err => {
         if (err.event?.error?.message) {
@@ -45,12 +96,6 @@ const RoomItem = (
             setActionsDrawerContent({
               title: 'Error',
               text: err.event.error.message,
-              actions: [
-                {
-                  title: 'Close',
-                  onPress: () => dispatch(setActionsDrawerVisible(false)),
-                },
-              ],
             }),
           );
 
@@ -63,12 +108,6 @@ const RoomItem = (
           setActionsDrawerContent({
             title: err.data?.errcode || '',
             text: err.data?.error || 'Something went wrong',
-            actions: [
-              {
-                title: 'Close',
-                onPress: () => dispatch(setActionsDrawerVisible(false)),
-              },
-            ],
           }),
         );
 
@@ -77,42 +116,31 @@ const RoomItem = (
   };
 
   return (
-    <ScrollView
-      contentContainerStyle={styles.container}
-      p={4}
-      _light={{
-        bg: theme.light.bgColor,
-      }}
-      _dark={{
-        bg: theme.dark.bgColor,
-      }}>
-      <Box style={styles.inner}>
-        <Center mb={12}>
-          <Heading>Send message</Heading>
-        </Center>
-
-        <Input
-          mb={4}
-          fontSize="md"
-          w="100%"
-          variant="unstyled"
-          placeholder="Room ID"
-          value={currentRoomId}
-          onChangeText={changeRoomId}
-        />
-
-        <Input
-          mb={4}
-          fontSize="md"
-          w="100%"
-          variant="unstyled"
-          placeholder="Message"
-          value={message}
-          onChangeText={changeMessage}
-        />
-        <Button onPress={sendMessage}>Send</Button>
-      </Box>
-    </ScrollView>
+    <>
+      <RoomHeader name={roomData.name} avatar={roomData.avatar} />
+      <ScrollView
+        contentContainerStyle={styles.container}
+        p={4}
+        _light={{
+          bg: theme.light.bgColor,
+        }}
+        _dark={{
+          bg: theme.dark.bgColor,
+        }}>
+        <Box style={styles.inner}>
+          <Input
+            mb={4}
+            fontSize="md"
+            w="100%"
+            variant="unstyled"
+            placeholder="Message"
+            value={message}
+            onChangeText={changeMessage}
+          />
+          <Button onPress={sendMessage}>Send</Button>
+        </Box>
+      </ScrollView>
+    </>
   );
 };
 

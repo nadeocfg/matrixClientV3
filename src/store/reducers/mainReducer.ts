@@ -60,7 +60,11 @@ const mainReducer = (state = initialState, action: any) => {
         ...state,
         actionsDrawer: {
           ...state.actionsDrawer,
-          content: action.payload,
+          content: {
+            title: action.payload.title,
+            text: action.payload.text,
+            actions: action.payload.actions || [],
+          },
         },
       };
 

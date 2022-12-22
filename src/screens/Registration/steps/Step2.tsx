@@ -19,6 +19,7 @@ import {
   setActionsDrawerVisible,
 } from '../../../store/actions/mainActions';
 import theme from '../../../themes/theme';
+import validateUrl from '../../../utils/validateUrl';
 
 interface Step2Props {
   email: string;
@@ -33,6 +34,7 @@ interface Step2Props {
 
 const Step2 = ({
   email,
+  server,
   recaptchaKey,
   onChange,
   onNext,
@@ -58,12 +60,6 @@ const Step2 = ({
       setActionsDrawerContent({
         title: 'Error',
         text: err || 'Something went wrong, try again',
-        actions: [
-          {
-            title: 'Close',
-            onPress: () => dispatch(setActionsDrawerVisible(false)),
-          },
-        ],
       }),
     );
 
@@ -124,7 +120,7 @@ const Step2 = ({
         headerComponent={<Button onPress={handleClosePress}>Cancel</Button>}
         siteKey={recaptchaKey}
         // baseUrl={server}
-        baseUrl="http://127.0.0.1"
+        baseUrl={validateUrl(server)}
         // Key from matrix.org
         // siteKey="6LcgI54UAAAAABGdGmruw6DdOocFpYVdjYBRe4zb"
 

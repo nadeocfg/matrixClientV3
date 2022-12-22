@@ -39,8 +39,8 @@ const RoomList = () => {
     }
   }, []);
 
-  const onSelectRoom = (roomId: string) => {
-    navigate('RoomItem', { roomId: roomId });
+  const onSelectRoom = (roomId: string, roomName: string) => {
+    navigate('RoomItem', { roomId: roomId, roomName: roomName });
   };
 
   if (roomList.length === 0) {

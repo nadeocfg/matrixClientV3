@@ -3,6 +3,6 @@ export type RootStackModel = {
   Login: undefined;
   ForgotPassword: undefined;
   Registration: undefined;
-  RoomItem: { roomId: string };
+  RoomItem: { roomId: string; roomName: string };
   RoomList: undefined;
 };

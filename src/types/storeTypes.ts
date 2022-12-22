@@ -21,7 +21,7 @@ export interface ActionsDrawerModel {
 export interface ActionsDrawerContentModel {
   title: string;
   text: string;
-  actions: ActionsDrawerActionModel[];
+  actions?: ActionsDrawerActionModel[];
 }
 
 export interface ActionsDrawerActionModel {

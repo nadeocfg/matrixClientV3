@@ -19,6 +19,7 @@ import { setLoader } from './store/actions/mainActions';
 import RoomItem from './screens/RoomItem';
 import RoomList from './screens/RoomList';
 import { RootStackModel } from './types/rootStackType';
+import validateUrl from './utils/validateUrl';
 
 const App = () => {
   const { setColorMode } = useColorMode();
@@ -48,7 +49,7 @@ const App = () => {
 
       // Create a new instance of matrix client
       const instance = await matrixSdk.createClient({
-        baseUrl: `https://${authResponse.home_server}/`,
+        baseUrl: validateUrl(authResponse.home_server),
         accessToken: authResponse.access_token,
         userId: authResponse.user_id,
         deviceId: authResponse.device_id,

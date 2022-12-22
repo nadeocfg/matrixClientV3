@@ -5,7 +5,7 @@ type RoomListItemProps = {
   name: string;
   message: string;
   roomId: string;
-  onSelectRoom: (roomId: string) => void;
+  onSelectRoom: (roomId: string, roomName: string) => void;
 } & IPressableProps;
 
 const RoomListItem = ({
@@ -16,7 +16,7 @@ const RoomListItem = ({
   ...props
 }: RoomListItemProps) => {
   return (
-    <Pressable onPress={() => onSelectRoom(roomId)} {...props}>
+    <Pressable onPress={() => onSelectRoom(roomId, name)} {...props}>
       {({ isPressed }) => {
         return (
           <Box

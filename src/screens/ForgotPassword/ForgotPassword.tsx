@@ -46,12 +46,6 @@ const ForgotPassword = () => {
           setActionsDrawerContent({
             title: 'Error',
             text: 'Email is not valid',
-            actions: [
-              {
-                title: 'Ok',
-                onPress: () => dispatch(setActionsDrawerVisible(false)),
-              },
-            ],
           }),
         );
 
