@@ -5,6 +5,10 @@ const validateUrl = (url: string) => {
 
   let formattedUrl = url;
 
+  if (url === 'dev.techwings.com') {
+    formattedUrl = url + ':8448';
+  }
+
   if (!formattedUrl.endsWith('/')) {
     formattedUrl += '/';
   }

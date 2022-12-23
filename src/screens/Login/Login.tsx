@@ -94,7 +94,7 @@ const Login: React.FC<PropsWithChildren<any>> = () => {
         navigate('RoomList');
       })
       .catch(err => {
-        console.log(err);
+        console.log({ ...err });
         dispatch(
           setActionsDrawerContent({
             title: err.data?.errcode || '',

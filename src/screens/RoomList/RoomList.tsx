@@ -20,23 +20,20 @@ const RoomList = () => {
   useEffect(() => {
     // Get rooms(Chats)
     const rooms = matrixContext.instance?.getRooms() || [];
-    console.log(rooms);
 
-    if (rooms.length > 0) {
-      dispatch(
-        setRooms(
-          rooms.map(item => {
-            return {
-              myUserId: item.myUserId,
-              name: item.name,
-              normalizedName: item.normalizedName,
-              roomId: item.roomId,
-              timeline: item.timeline,
-            };
-          }),
-        ),
-      );
-    }
+    dispatch(
+      setRooms(
+        rooms.map(item => {
+          return {
+            myUserId: item.myUserId,
+            name: item.name,
+            normalizedName: item.normalizedName,
+            roomId: item.roomId,
+            timeline: item.timeline,
+          };
+        }),
+      ),
+    );
   }, []);
 
   const onSelectRoom = (roomId: string, roomName: string) => {

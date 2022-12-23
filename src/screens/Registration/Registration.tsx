@@ -65,7 +65,19 @@ const Registration: React.FC<PropsWithChildren<any>> = () => {
   const { colorMode } = useColorMode();
   const matrixContext = useContext(MatrixContext);
 
-  useEffect(() => {}, []);
+  useEffect(() => {
+    if (matrixContext.instance) {
+      matrixContext.instance.stopClient();
+
+      try {
+        matrixContext.instance.logout();
+      } catch {
+        // ignore if failed to logout
+      }
+    }
+
+    getFlow();
+  }, []);
 
   const onChange = (name: string) => (value: string) => {
     setSignUpData({
@@ -126,7 +138,7 @@ const Registration: React.FC<PropsWithChildren<any>> = () => {
         });
       })
       .catch(err => {
-        console.log(err);
+        console.log({ ...err });
         dispatch(
           setActionsDrawerContent({
             title: err.data?.errcode || '',
@@ -149,8 +161,6 @@ const Registration: React.FC<PropsWithChildren<any>> = () => {
     const tempInstance = await matrixSdk.createClient({
       baseUrl: validateUrl(server),
     });
-
-    console.log(tempInstance);
 
     const data: IRegisterRequestParams = {};
 
@@ -190,17 +200,10 @@ const Registration: React.FC<PropsWithChildren<any>> = () => {
         navigate('RoomList');
       })
       .catch(err => {
-        console.log(err);
+        console.log({ ...err });
         // If we got 401 error, thats mean not all registration steps are done
         if (err.httpStatus === 401) {
           setFlowResponse(err.data);
-
-          if (
-            !err.data.completed ||
-            !err.data.completed.includes('m.login.terms')
-          ) {
-            handleTerms();
-          }
 
           if (
             err.data.completed &&
@@ -247,7 +250,7 @@ const Registration: React.FC<PropsWithChildren<any>> = () => {
         setIsUsernameExist(!res);
       })
       .catch(err => {
-        console.log(err);
+        console.log({ ...err });
         dispatch(
           setActionsDrawerContent({
             title: err.data?.errcode || '',
@@ -278,7 +281,7 @@ const Registration: React.FC<PropsWithChildren<any>> = () => {
         return;
       }
 
-      getFlow();
+      handleTerms();
     }
 
     if (currentStep === 1) {

@@ -37,13 +37,10 @@ const App = () => {
     setColorMode(storeColorMode);
 
     checkInstance();
-
-    return () => {
-      matrixContext.instance?.stopClient();
-    };
   }, []);
 
   const checkInstance = async () => {
+    console.log(authResponse);
     if (authResponse.access_token) {
       // Create a new instance of matrix client
       const instance = await matrixSdk.createClient({
@@ -57,16 +54,24 @@ const App = () => {
       matrixContext.setInstance(instance);
 
       // Start matrix client
-      instance.startClient({
-        initialSyncLimit: 1,
-        includeArchivedRooms: false,
-        lazyLoadMembers: true,
-      });
+      instance
+        .startClient({
+          initialSyncLimit: 1,
+          includeArchivedRooms: false,
+          lazyLoadMembers: true,
+        })
+        .catch(err => {
+          console.log({ ...err });
+        });
 
       // Initial sync of matrix client
-      instance.on('sync' as any, (state: string) => {
+      instance.once('sync' as any, (state: string) => {
         console.log('STATE');
         console.log(state);
+
+        if (state === 'ERROR') {
+          return;
+        }
 
         // Get rooms(Chats)
         const rooms = instance.getRooms();
