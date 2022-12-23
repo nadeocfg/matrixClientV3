@@ -9,6 +9,9 @@ import colors from './src/themes/colors';
 import fonts from './src/themes/fonts';
 import components from './src/themes/components';
 import { MatrixContextProvider } from './src/context/matrixContext';
+import { registerGlobals } from 'react-native-webrtc';
+
+registerGlobals();
 
 const AppWrapper = () => {
   const theme = extendTheme({
