@@ -6,4 +6,5 @@ export type RootStackModel = {
   RoomItem: { roomId: string; roomName: string };
   RoomList: undefined;
   CreateRoom: undefined;
+  ProfileSettings: undefined;
 };

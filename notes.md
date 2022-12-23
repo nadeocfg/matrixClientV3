@@ -9,6 +9,12 @@ npx react-native bundle --platform android --dev false --entry-file index.js --b
 ./gradlew assembleRelease
 ```
 
+## For .aab format(less size than .apk)
+
+```
+./gradlew bundleRelease
+```
+
 ## For correct work matrxi-js-sdk on React Native app:
 
 ### Libraries:

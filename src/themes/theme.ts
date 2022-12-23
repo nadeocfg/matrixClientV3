@@ -15,6 +15,11 @@ const theme = {
         textColor: colors.text[50],
       },
     },
+    input: {
+      outline: {
+        bgColor: colors.lightGreyTransparent,
+      },
+    },
     text: colors.text[900],
   },
 
@@ -26,6 +31,11 @@ const theme = {
       primary: {
         bgColor: colors.darkBlue[200],
         textColor: colors.text[50],
+      },
+    },
+    input: {
+      outline: {
+        bgColor: colors.lightGreyTransparent,
       },
     },
     text: colors.text[50],

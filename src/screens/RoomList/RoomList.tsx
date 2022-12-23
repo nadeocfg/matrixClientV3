@@ -9,6 +9,7 @@ import { useAppDispatch } from '../../hooks/useDispatch';
 import { setRooms } from '../../store/actions/roomsActions';
 import RoomListItem from '../../components/RoomListItem';
 import { navigate } from '../../utils/navigation';
+import RoomListHeader from './components/RoomListHeader';
 
 const RoomList = () => {
   const dispatch = useAppDispatch();
@@ -40,51 +41,50 @@ const RoomList = () => {
     navigate('RoomItem', { roomId: roomId, roomName: roomName });
   };
 
-  if (roomList.length === 0) {
-    return (
-      <Center
-        style={styles.container}
+  return (
+    <>
+      <RoomListHeader />
+
+      <ScrollView
+        contentContainerStyle={styles.container}
+        p={4}
         _light={{
           bg: theme.light.bgColor,
         }}
         _dark={{
           bg: theme.dark.bgColor,
         }}>
-        <Heading>No active chats</Heading>
-      </Center>
-    );
-  }
+        {roomList.length === 0 && (
+          <Center
+            style={styles.container}
+            _light={{
+              bg: theme.light.bgColor,
+            }}
+            _dark={{
+              bg: theme.dark.bgColor,
+            }}>
+            <RoomListHeader />
+            <Heading>No active chats</Heading>
+          </Center>
+        )}
 
-  return (
-    <ScrollView
-      contentContainerStyle={styles.container}
-      p={4}
-      _light={{
-        bg: theme.light.bgColor,
-      }}
-      _dark={{
-        bg: theme.dark.bgColor,
-      }}>
-      <Center mb={4}>
-        <Heading>Chat List</Heading>
-      </Center>
-
-      {roomList.map(item => (
-        <RoomListItem
-          key={item.roomId}
-          roomId={item.roomId}
-          message={
-            item.timeline[item.timeline.length - 1]?.event?.type ===
-            'm.room.message'
-              ? item.timeline[item.timeline.length - 1]?.event?.content?.body
-              : '...'
-          }
-          name={item.name}
-          onSelectRoom={onSelectRoom}
-          mb={4}
-        />
-      ))}
-    </ScrollView>
+        {roomList.map(item => (
+          <RoomListItem
+            key={item.roomId}
+            roomId={item.roomId}
+            message={
+              item.timeline[item.timeline.length - 1]?.event?.type ===
+              'm.room.message'
+                ? item.timeline[item.timeline.length - 1]?.event?.content?.body
+                : '...'
+            }
+            name={item.name}
+            onSelectRoom={onSelectRoom}
+            mb={4}
+          />
+        ))}
+      </ScrollView>
+    </>
   );
 };
 

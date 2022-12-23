@@ -1,6 +1,18 @@
 import theme from './theme';
 
 const components = {
+  // Heading
+  Heading: {
+    baseStyle: {
+      _dark: {
+        color: theme.dark.button.primary.textColor,
+      },
+      _light: {
+        color: theme.light.button.primary.textColor,
+      },
+    },
+  },
+
   // Link
   Link: {
     baseStyle: {
@@ -30,6 +42,7 @@ const components = {
       },
     },
   },
+
   // Button styles
   Button: {
     sizes: {
@@ -145,6 +158,18 @@ const components = {
       padding: 3,
       borderRadius: 10,
       fontSize: 16,
+    },
+    variants: {
+      outline: {
+        _dark: {
+          bg: theme.dark.input.outline.bgColor,
+          fontSize: 16,
+        },
+        _light: {
+          bg: theme.dark.input.outline.bgColor,
+          fontSize: 16,
+        },
+      },
     },
   },
 
