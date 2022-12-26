@@ -62,6 +62,9 @@ const Home: React.FC<PropsWithChildren<any>> = () => {
         <Button onPress={() => navigate('RoomList')} mb="10">
           Go to Room List
         </Button>
+        <Button onPress={() => navigate('ProfileSettings')} mb="10">
+          Go to Profile settings
+        </Button>
         <Button onPress={changeColorMode} mb="10">
           Change color mode
         </Button>

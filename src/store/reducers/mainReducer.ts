@@ -10,7 +10,7 @@ import {
 
 const initialState: MainStoreModel = {
   isLoading: false,
-  colorMode: 'dark',
+  colorMode: 'light',
   snackbar: {
     type: 'error',
     message: '',

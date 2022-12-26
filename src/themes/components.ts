@@ -5,10 +5,12 @@ const components = {
   Heading: {
     baseStyle: {
       _dark: {
-        color: theme.dark.button.primary.textColor,
+        _text: {
+          color: theme.dark.button.primary.textColor,
+        },
       },
       _light: {
-        color: theme.light.button.primary.textColor,
+        _text: { color: theme.light.button.primary.textColor },
       },
     },
   },
@@ -158,17 +160,40 @@ const components = {
       padding: 3,
       borderRadius: 10,
       fontSize: 16,
+      bg: theme.chip.bg,
     },
     variants: {
       outline: {
         _dark: {
           bg: theme.dark.input.outline.bgColor,
+          borderColor: theme.dark.input.outline.bgColor,
           fontSize: 16,
+          _focus: {
+            borderColor: theme.dark.input.outline.bgColor,
+          },
         },
         _light: {
           bg: theme.dark.input.outline.bgColor,
+          borderColor: theme.dark.input.outline.bgColor,
           fontSize: 16,
+          _focus: {
+            borderColor: theme.dark.input.outline.bgColor,
+          },
         },
+        _focus: {
+          bg: theme.dark.input.outline.bgColor,
+        },
+      },
+    },
+  },
+
+  // TextArea
+  TextArea: {
+    baseStyle: {
+      backgroundColor: theme.chip.bg,
+      _focus: {
+        backgroundColor: theme.transparent,
+        borderColor: theme.transparent,
       },
     },
   },
@@ -198,38 +223,62 @@ const components = {
     baseStyle: {
       _light: {
         bg: theme.transparent,
-        borderColor: theme.light.button.primary,
+        borderColor: theme.defaultGrey,
         borderWidth: 1,
         _icon: {
-          color: theme.light.text,
+          color: theme.defaultGrey,
         },
         _checked: {
-          borderColor: theme.light.button.primary,
-          bg: theme.light.button.primary,
+          borderColor: theme.defaultGrey,
+          bg: theme.transparent,
+          _hover: {
+            borderColor: theme.defaultGrey,
+            bg: theme.transparent,
+          },
+          _pressed: {
+            borderColor: theme.defaultGrey,
+            bg: theme.transparent,
+          },
         },
+
         _hover: {
           borderColor: theme.light.text,
         },
         _pressed: {
-          borderColor: theme.light.text,
+          bg: theme.transparent,
+        },
+        _focus: {
+          borderColor: theme.defaultGrey,
         },
       },
       _dark: {
         bg: theme.transparent,
-        borderColor: theme.dark.button.primary,
+        borderColor: theme.defaultGrey,
         borderWidth: 1,
         _icon: {
-          color: theme.dark.text,
+          color: theme.defaultGrey,
         },
         _checked: {
-          borderColor: theme.dark.button.primary,
-          bg: theme.dark.button.primary,
+          borderColor: theme.defaultGrey,
+          bg: theme.transparent,
+          _hover: {
+            borderColor: theme.defaultGrey,
+            bg: theme.transparent,
+          },
+          _pressed: {
+            borderColor: theme.defaultGrey,
+            bg: theme.transparent,
+          },
         },
         _hover: {
-          borderColor: theme.dark.text,
+          bg: theme.transparent,
         },
         _pressed: {
-          borderColor: theme.dark.text,
+          bg: theme.transparent,
+          borderColor: theme.defaultGrey,
+        },
+        _focus: {
+          bg: theme.transparent,
         },
       },
     },
@@ -238,6 +287,10 @@ const components = {
   // IconButton
   IconButton: {
     baseStyle: {
+      _icon: {
+        color: theme.light.button.primary.textColor,
+      },
+      borderRadius: 'full',
       _pressed: {
         _light: {
           _icon: {

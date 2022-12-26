@@ -115,3 +115,25 @@ export const MagnifierIcon = ({ color = '#3C3C43', ...rest }: any) => {
     </Svg>
   );
 };
+
+export const CloseIcon = ({ color = '#38383A', ...rest }: any) => {
+  return (
+    <Svg width="11" height="12" viewBox="0 0 11 12" fill="none" {...rest}>
+      <Rect
+        y="2.06079"
+        width="2"
+        height="13"
+        rx="1"
+        transform="rotate(-45 0 2.06079)"
+        fill={color}
+      />
+      <Rect
+        width="2"
+        height="13"
+        rx="1"
+        transform="matrix(-0.707107 -0.707107 -0.707107 0.707107 10.6294 2.12134)"
+        fill={color}
+      />
+    </Svg>
+  );
+};

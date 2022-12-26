@@ -1,7 +1,7 @@
 import { MatrixClient } from 'matrix-js-sdk';
 import React, { PropsWithChildren, useState, createContext } from 'react';
 
-interface MatrixContextModel {
+export interface MatrixContextModel {
   instance: null | MatrixClient;
   setInstance: (instance: MatrixClient | null) => void;
 }

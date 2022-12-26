@@ -20,7 +20,7 @@ const RoomList = () => {
 
   useEffect(() => {
     // Get rooms(Chats)
-    const rooms = matrixContext.instance?.getRooms() || [];
+    const rooms = matrixContext.instance?.getVisibleRooms() || [];
 
     dispatch(
       setRooms(

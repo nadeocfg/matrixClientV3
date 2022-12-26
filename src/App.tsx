@@ -20,6 +20,7 @@ import RoomList from './screens/RoomList';
 import { RootStackModel } from './types/rootStackType';
 import validateUrl from './utils/validateUrl';
 import CreateRoom from './screens/CreateRoom';
+import ProfileSettings from './screens/ProfileSettings';
 
 const App = () => {
   const { setColorMode } = useColorMode();
@@ -133,6 +134,11 @@ const App = () => {
           options={{ headerShown: false }}
           name="CreateRoom"
           component={CreateRoom}
+        />
+        <Stack.Screen
+          options={{ headerShown: false }}
+          name="ProfileSettings"
+          component={ProfileSettings}
         />
       </Stack.Navigator>
 

@@ -6,9 +6,10 @@ import { navigationRef } from '../utils/navigation';
 interface BaseHeaderProps {
   title: string;
   action?: JSX.Element;
+  backAction?: () => void;
 }
 
-const BaseHeader = ({ title, action = <></> }: BaseHeaderProps) => {
+const BaseHeader = ({ title, action = <></>, backAction }: BaseHeaderProps) => {
   const goBack = () => navigationRef.goBack();
 
   return (
@@ -23,7 +24,11 @@ const BaseHeader = ({ title, action = <></> }: BaseHeaderProps) => {
       _dark={{
         bg: theme.dark.button.primary.bgColor,
       }}>
-      <IconButton variant="ghost" onPress={goBack} icon={<ChevronLeftIcon />} />
+      <IconButton
+        variant="ghost"
+        onPress={backAction ? backAction : goBack}
+        icon={<ChevronLeftIcon />}
+      />
       <Heading>{title}</Heading>
       <Box>{action}</Box>
     </Box>

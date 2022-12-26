@@ -1,52 +1,94 @@
-import { Box, Button, Input, ScrollView } from 'native-base';
+import { Box, Button, PresenceTransition } from 'native-base';
 import React, { useState, useContext, useEffect } from 'react';
 import theme from '../../themes/theme';
 import { StyleSheet } from 'react-native';
 import BaseHeader from '../../components/BaseHeader';
-import { MagnifierIcon } from '../../components/icons';
 import { MatrixContext } from '../../context/matrixContext';
 import {
   setActionsDrawerContent,
   setActionsDrawerVisible,
+  setLoader,
 } from '../../store/actions/mainActions';
 import { useAppDispatch } from '../../hooks/useDispatch';
+import { UserDirectoryItemModel } from '../../types/userDirectoryItemModel';
+import Step1 from './components/Step1';
+import Step2 from './components/Step2';
+import { navigate, navigationRef } from '../../utils/navigation';
+import { Visibility } from 'matrix-js-sdk';
+
+interface SearchDataModel {
+  searchValue: string;
+  isSearching: boolean;
+}
+
+interface RoomDataModel {
+  visibility: Visibility;
+  name: string;
+  topic: string;
+}
 
 const CreateRoom = () => {
   const dispatch = useAppDispatch();
-  const [searchValue, setSearchValue] = useState('');
+  const [searchData, setSearchData] = useState<SearchDataModel>({
+    searchValue: '',
+    isSearching: false,
+  });
+  const [foundedUsers, setFoundedUsers] = useState<UserDirectoryItemModel[]>(
+    [],
+  );
+  const [selectedUsers, setSelectedUsers] = useState<UserDirectoryItemModel[]>(
+    [],
+  );
   const matrixContext = useContext(MatrixContext);
+  const [currentStep, setCurrentStep] = useState(0);
+  const [roomData, setRoomData] = useState<RoomDataModel>({
+    name: '',
+    topic: '',
+    visibility: Visibility.Private,
+  });
 
   useEffect(() => {
     let timer: NodeJS.Timeout;
 
-    if (searchValue.trim().length > 3) {
+    if (searchData.searchValue.trim().length > 3) {
       timer = setTimeout(() => {
-        search(searchValue);
+        search(searchData.searchValue);
       }, 1000);
     }
 
     return () => {
       clearTimeout(timer);
     };
-  }, [searchValue]);
+  }, [searchData.searchValue]);
 
   const NextButton = () => {
-    return <Button variant="ghost">Next</Button>;
+    return (
+      <Button variant="ghost" onPress={onNext}>
+        Next
+      </Button>
+    );
   };
 
-  const onChange = (value: string) => {
-    setSearchValue(value);
+  const onSearchValueChange = (value: string) => {
+    setSearchData({
+      ...searchData,
+      searchValue: value,
+    });
   };
 
   const search = (value: string) => {
-    console.log('init search');
+    setSearchData({
+      ...searchData,
+      isSearching: true,
+    });
+
     matrixContext.instance
       ?.searchUserDirectory({
         term: value.trim(),
         limit: 10,
       })
       .then(res => {
-        console.log(res);
+        setFoundedUsers(res.results);
       })
       .catch(err => {
         console.log({ ...err });
@@ -59,32 +101,167 @@ const CreateRoom = () => {
         );
 
         dispatch(setActionsDrawerVisible(true));
+      })
+      .finally(() => {
+        setSearchData({
+          ...searchData,
+          isSearching: false,
+        });
+      });
+  };
+
+  const isUserInclude = (userId: string) => {
+    return selectedUsers.filter(item => item.user_id === userId).length > 0;
+  };
+
+  const onSelectUser = (user: UserDirectoryItemModel) => {
+    const isSelected = isUserInclude(user.user_id);
+
+    if (isSelected) {
+      setSelectedUsers(
+        selectedUsers.filter(item => item.user_id !== user.user_id),
+      );
+    } else {
+      setSelectedUsers([...selectedUsers, user]);
+    }
+  };
+
+  const onNext = () => {
+    if (currentStep === 1) {
+      if (!roomData.name) {
+        dispatch(
+          setActionsDrawerContent({
+            title: 'Missing group name',
+            text: 'A group name is required',
+          }),
+        );
+
+        dispatch(setActionsDrawerVisible(true));
+        return;
+      }
+
+      createRoom();
+      return;
+    }
+    setCurrentStep(currentStep + 1);
+  };
+
+  const onPrev = () => {
+    if (currentStep === 0) {
+      return navigationRef.goBack();
+    }
+
+    setCurrentStep(currentStep - 1);
+  };
+
+  const onChangeRoomData = (name: keyof RoomDataModel) => (value: string) => {
+    setRoomData({
+      ...roomData,
+      [name]: value,
+    });
+  };
+
+  const createRoom = () => {
+    const userIds = selectedUsers.reduce<string[]>((acc, item) => {
+      acc.push(item.user_id);
+      return acc;
+    }, []);
+
+    dispatch(setLoader(true));
+
+    matrixContext.instance
+      ?.createRoom({
+        invite: userIds,
+        name: roomData.name,
+        topic: roomData.topic,
+        visibility: roomData.visibility,
+      })
+      .then(res => {
+        console.log(res);
+        navigate('RoomList');
+      })
+      .catch(err => {
+        console.log({ ...err });
+
+        dispatch(
+          setActionsDrawerContent({
+            title: err.data?.errcode || '',
+            text: err.data?.error || 'Something went wrong',
+          }),
+        );
+
+        dispatch(setActionsDrawerVisible(true));
+      })
+      .finally(() => {
+        dispatch(setLoader(false));
       });
   };
 
   return (
-    <>
-      <BaseHeader title="Select Members" action={<NextButton />} />
-      <ScrollView
-        contentContainerStyle={styles.container}
-        p={4}
-        _light={{
-          bg: theme.light.bgColor,
-        }}
-        _dark={{
-          bg: theme.dark.bgColor,
-        }}>
-        <Box style={styles.inner}>
-          <Input
-            variant="outline"
-            InputLeftElement={<MagnifierIcon style={{ marginLeft: 4 }} />}
-            placeholder="Search by username"
-            value={searchValue}
-            onChangeText={onChange}
+    <Box
+      style={styles.container}
+      _light={{
+        bg: theme.light.bgColor,
+      }}
+      _dark={{
+        bg: theme.dark.bgColor,
+      }}>
+      <BaseHeader
+        title="Select Members"
+        backAction={onPrev}
+        action={<NextButton />}
+      />
+
+      {currentStep === 0 && (
+        <PresenceTransition
+          visible={currentStep === 0}
+          initial={{
+            translateX: 500,
+          }}
+          animate={{
+            translateX: 0,
+            transition: {
+              duration: 300,
+            },
+          }}
+          style={styles.inner}>
+          <Step1
+            matrixContext={matrixContext}
+            foundedUsers={foundedUsers}
+            isSearching={searchData.isSearching}
+            isUserInclude={isUserInclude}
+            onSearchValueChange={onSearchValueChange}
+            onSelectUser={onSelectUser}
+            searchValue={searchData.searchValue}
+            selectedUsers={selectedUsers}
           />
-        </Box>
-      </ScrollView>
-    </>
+        </PresenceTransition>
+      )}
+
+      {currentStep === 1 && (
+        <PresenceTransition
+          visible={currentStep === 1}
+          initial={{
+            translateX: 500,
+          }}
+          animate={{
+            translateX: 0,
+            transition: {
+              duration: 300,
+            },
+          }}
+          style={styles.inner}>
+          <Step2
+            matrixContext={matrixContext}
+            onChange={onChangeRoomData}
+            selectedUsers={selectedUsers}
+            roomName={roomData.name}
+            roomTopic={roomData.topic}
+            visibility={roomData.visibility}
+          />
+        </PresenceTransition>
+      )}
+    </Box>
   );
 };
 

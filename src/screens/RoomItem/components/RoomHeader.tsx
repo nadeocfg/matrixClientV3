@@ -1,6 +1,5 @@
 import { Box, ChevronLeftIcon, Heading, IconButton, Image } from 'native-base';
 import React, { PropsWithChildren } from 'react';
-import { ArrowLeftIcon } from '../../../components/icons';
 import theme from '../../../themes/theme';
 import { navigationRef } from '../../../utils/navigation';
 

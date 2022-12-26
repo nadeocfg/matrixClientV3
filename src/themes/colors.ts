@@ -33,6 +33,8 @@ const colors = {
   darkTransparentBg: 'rgba(31, 41, 55, 0.9)',
   lightGreyTransparent: 'rgba(118, 118, 128, 0.12)',
   lightBg: '#fafaff',
+  defaultGrey: '#38383A',
+  chipBg: 'rgba(235, 235, 245, 0.6)',
   // Primary colors
   rose: {
     50: '#fff1f2',

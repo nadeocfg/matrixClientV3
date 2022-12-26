@@ -4,6 +4,10 @@ import colors from './colors';
 
 const theme = {
   transparent: colors.transparent,
+  defaultGrey: colors.defaultGrey,
+  chip: {
+    bg: colors.chipBg,
+  },
 
   // Light mode colors
   light: {
