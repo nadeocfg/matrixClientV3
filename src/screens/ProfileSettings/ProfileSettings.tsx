@@ -1,5 +1,7 @@
-import { Heading, ScrollView } from 'native-base';
+import { ScrollView } from 'native-base';
 import React from 'react';
+import BaseHeader from '../../components/BaseHeader';
+import LogOutButton from '../../components/LogOutButton';
 import theme from '../../themes/theme';
 
 const ProfileSettings = () => {
@@ -11,7 +13,10 @@ const ProfileSettings = () => {
       _dark={{
         bg: theme.dark.bgColor,
       }}>
-      <Heading>Settings and privacy</Heading>
+      <BaseHeader
+        title="Settings and privacy"
+        action={<LogOutButton variant="ghost" />}
+      />
     </ScrollView>
   );
 };

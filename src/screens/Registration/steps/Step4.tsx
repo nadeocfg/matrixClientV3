@@ -13,7 +13,7 @@ interface Step4Props {
 
 const Step4 = ({ styles }: Step4Props) => {
   const userId = useAppSelector(
-    (state: StoreModel) => state.authStore.authResponse.user_id,
+    (state: StoreModel) => state.userStore.authResponse.user_id,
   );
 
   return (

@@ -16,7 +16,7 @@ import { StyleSheet } from 'react-native';
 import { CloseEyeIcon, EyeIcon } from '../../components/icons';
 import { MatrixContext } from '../../context/matrixContext';
 import { useAppDispatch } from '../../hooks/useDispatch';
-import { setAuthResponse } from '../../store/actions/authActions';
+import { setAuthResponse, setUserData } from '../../store/actions/userActions';
 import {
   setActionsDrawerContent,
   setActionsDrawerVisible,
@@ -81,7 +81,7 @@ const Login: React.FC<PropsWithChildren<any>> = () => {
     // Login into matrix network
     instance
       .loginWithPassword(username, password)
-      .then(res => {
+      .then(async res => {
         dispatch(setAuthResponse(res));
 
         // Start matrix client
@@ -90,6 +90,12 @@ const Login: React.FC<PropsWithChildren<any>> = () => {
           includeArchivedRooms: false,
           lazyLoadMembers: true,
         });
+
+        const userData = await instance.getUser(res.user_id);
+
+        if (userData) {
+          dispatch(setUserData(userData));
+        }
 
         navigate('RoomList');
       })

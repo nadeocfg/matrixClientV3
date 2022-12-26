@@ -9,7 +9,7 @@ import React, {
 import { StyleSheet } from 'react-native';
 import { MatrixContext } from '../../context/matrixContext';
 import { useAppDispatch } from '../../hooks/useDispatch';
-import { setAuthResponse } from '../../store/actions/authActions';
+import { setAuthResponse } from '../../store/actions/userActions';
 import {
   setActionsDrawerContent,
   setActionsDrawerVisible,

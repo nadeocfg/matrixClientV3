@@ -1,4 +1,4 @@
-import React, { useEffect, useContext } from 'react';
+import React, { useEffect, useContext, useState } from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Login from './screens/Login';
 import Registration from './screens/Registration';
@@ -21,6 +21,11 @@ import { RootStackModel } from './types/rootStackType';
 import validateUrl from './utils/validateUrl';
 import CreateRoom from './screens/CreateRoom';
 import ProfileSettings from './screens/ProfileSettings';
+import { setUserData } from './store/actions/userActions';
+import {
+  setActionsDrawerContent,
+  setActionsDrawerVisible,
+} from './store/actions/mainActions';
 
 const App = () => {
   const { setColorMode } = useColorMode();
@@ -30,7 +35,7 @@ const App = () => {
   const Stack = createNativeStackNavigator<RootStackModel>();
   const matrixContext = useContext(MatrixContext);
   const authResponse = useAppSelector(
-    (state: StoreModel) => state.authStore.authResponse,
+    (state: StoreModel) => state.userStore.authResponse,
   );
   const dispatch = useAppDispatch();
 
@@ -51,6 +56,10 @@ const App = () => {
         deviceId: authResponse.device_id,
       });
 
+      if (instance.isLoggedIn()) {
+        setIsLoggedIn(true);
+      }
+
       // Set new instance to context provider
       matrixContext.setInstance(instance);
 
@@ -60,6 +69,12 @@ const App = () => {
           initialSyncLimit: 1,
           includeArchivedRooms: false,
           lazyLoadMembers: true,
+        })
+        .then(async () => {
+          const userData = await instance.getUser(authResponse.user_id);
+          if (userData) {
+            dispatch(setUserData(userData));
+          }
         })
         .catch(err => {
           console.log({ ...err });
@@ -97,9 +112,43 @@ const App = () => {
     }
   };
 
+  const onChangeRoute = ({ route, navigation }: any) => {
+    const protectedRoutes = [
+      'ForgotPassword',
+      'RoomItem',
+      'RoomList',
+      'CreateRoom',
+      'ProfileSettings',
+    ];
+
+    return {
+      transitionEnd: () => {
+        if (
+          protectedRoutes.includes(route.name) &&
+          !authResponse.access_token
+        ) {
+          dispatch(
+            setActionsDrawerContent({
+              title: 'Route error',
+              text: 'You are not logged in',
+            }),
+          );
+
+          dispatch(setActionsDrawerVisible(true));
+
+          if (!navigation.canGoBack()) {
+            return navigation.push('Login');
+          }
+
+          return navigation.goBack();
+        }
+      },
+    };
+  };
+
   return (
     <NavigationContainer ref={navigationRef}>
-      <Stack.Navigator initialRouteName="Home">
+      <Stack.Navigator screenListeners={onChangeRoute} initialRouteName="Home">
         <Stack.Screen
           options={{ headerShown: false }}
           name="Home"

@@ -17,6 +17,7 @@ const RoomList = () => {
     (state: StoreModel) => state.roomsStore.rooms,
   );
   const matrixContext = useContext(MatrixContext);
+  const userData = useAppSelector((state: StoreModel) => state.userStore.user);
 
   useEffect(() => {
     // Get rooms(Chats)
@@ -43,7 +44,11 @@ const RoomList = () => {
 
   return (
     <>
-      <RoomListHeader />
+      <RoomListHeader
+        userAvatar={
+          matrixContext.instance?.mxcUrlToHttp(userData.avatarUrl) || ''
+        }
+      />
 
       <ScrollView
         contentContainerStyle={styles.container}
@@ -63,7 +68,6 @@ const RoomList = () => {
             _dark={{
               bg: theme.dark.bgColor,
             }}>
-            <RoomListHeader />
             <Heading>No active chats</Heading>
           </Center>
         )}

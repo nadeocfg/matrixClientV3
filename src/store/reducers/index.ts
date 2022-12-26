@@ -1,11 +1,11 @@
 import { combineReducers } from 'redux';
 import mainStore from './mainReducer';
-import authStore from './authReducer';
+import userStore from './userReducer';
 import roomsStore from './roomsReducer';
 
 const rootReducer = combineReducers({
   mainStore,
-  authStore,
+  userStore,
   roomsStore,
 });
 

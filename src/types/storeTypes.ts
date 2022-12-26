@@ -2,7 +2,7 @@ import { MatrixEvent } from 'matrix-js-sdk';
 
 export interface StoreModel {
   mainStore: MainStoreModel;
-  authStore: AuthStoreModel;
+  userStore: UserStoreModel;
   roomsStore: RoomsModel;
 }
 
@@ -35,8 +35,9 @@ export interface SnackbarModel {
   isVisible: boolean;
 }
 
-export interface AuthStoreModel {
+export interface UserStoreModel {
   authResponse: AuthResponseModel;
+  user: UserDataModel;
 }
 
 export interface AuthResponseModel {
@@ -49,6 +50,18 @@ export interface AuthResponseModel {
       base_url: string;
     };
   };
+}
+
+export interface UserDataModel {
+  userId: string;
+  displayName: string;
+  rawDisplayName: string;
+  avatarUrl: string;
+  presenceStatusMsg: string;
+  presence: string;
+  lastActiveAgo: number;
+  lastPresenceTs: number;
+  currentlyActive: boolean;
 }
 
 export interface RoomsModel {

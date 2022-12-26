@@ -2,7 +2,11 @@ import { Button, IButtonProps } from 'native-base';
 import React, { useContext } from 'react';
 import { MatrixContext } from '../context/matrixContext';
 import { useAppDispatch } from '../hooks/useDispatch';
-import { clearStore } from '../store/actions/mainActions';
+import {
+  clearStore,
+  setActionsDrawerContent,
+  setActionsDrawerVisible,
+} from '../store/actions/mainActions';
 import { navigate } from '../utils/navigation';
 
 const LogOutButton = (props: IButtonProps) => {
@@ -27,10 +31,33 @@ const LogOutButton = (props: IButtonProps) => {
     navigate('Login');
   };
 
+  const confirm = () => {
+    dispatch(
+      setActionsDrawerContent({
+        title: 'Logout',
+        text: 'Are you sure you want to log out',
+        actions: [
+          {
+            title: 'Log out',
+            onPress: logOut,
+          },
+          {
+            title: 'Cancel',
+            onPress: () => dispatch(setActionsDrawerVisible(false)),
+          },
+        ],
+      }),
+    );
+
+    dispatch(setActionsDrawerVisible(true));
+  };
+
   return (
-    <Button {...props} onPress={logOut}>
-      Logout
-    </Button>
+    <>
+      <Button {...props} _text={{ textAlign: 'right' }} onPress={confirm}>
+        Logout
+      </Button>
+    </>
   );
 };
 

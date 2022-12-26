@@ -7,13 +7,21 @@ import {
   useColorMode,
 } from 'native-base';
 import React from 'react';
+import DefaultAvatar from '../../../components/DefaultAvatar';
 import { DotsIcon } from '../../../components/icons';
+import { useAppSelector } from '../../../hooks/useSelector';
 import theme from '../../../themes/theme';
 import { RootStackModel } from '../../../types/rootStackType';
+import { StoreModel } from '../../../types/storeTypes';
 import { navigate } from '../../../utils/navigation';
 
-const RoomListHeader: React.FC = () => {
+interface RoomListHeaderProps {
+  userAvatar: string;
+}
+
+const RoomListHeader = ({ userAvatar }: RoomListHeaderProps) => {
   const { colorMode } = useColorMode();
+  const userData = useAppSelector((state: StoreModel) => state.userStore.user);
 
   const goTo = (screen: keyof RootStackModel) => {
     navigate(screen);
@@ -31,13 +39,21 @@ const RoomListHeader: React.FC = () => {
       _dark={{
         bg: theme.dark.button.primary.bgColor,
       }}>
-      <Image
-        src={''}
-        alt="Avatar of room"
-        borderRadius="full"
-        width={12}
-        height={12}
-      />
+      {userAvatar ? (
+        <Image
+          src={userAvatar}
+          alt="Avatar of user"
+          borderRadius="full"
+          width={12}
+          height={12}
+        />
+      ) : (
+        <DefaultAvatar
+          name={userData.userId ? userData.userId[1] : ''}
+          width={12}
+        />
+      )}
+
       <Heading>Chats</Heading>
       <Menu
         offset={16}

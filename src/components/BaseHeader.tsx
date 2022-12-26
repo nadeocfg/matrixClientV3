@@ -24,13 +24,20 @@ const BaseHeader = ({ title, action = <></>, backAction }: BaseHeaderProps) => {
       _dark={{
         bg: theme.dark.button.primary.bgColor,
       }}>
-      <IconButton
-        variant="ghost"
-        onPress={backAction ? backAction : goBack}
-        icon={<ChevronLeftIcon />}
-      />
-      <Heading>{title}</Heading>
-      <Box>{action}</Box>
+      <Box flexBasis={'20%'} justifyContent="flex-start">
+        <IconButton
+          width={12}
+          flexBasis={0}
+          variant="ghost"
+          onPress={backAction ? backAction : goBack}
+          icon={<ChevronLeftIcon />}
+        />
+      </Box>
+
+      <Heading size="md" flexBasis={'60%'} textAlign="center">
+        {title}
+      </Heading>
+      <Box flexBasis={'20%'}>{action}</Box>
     </Box>
   );
 };
