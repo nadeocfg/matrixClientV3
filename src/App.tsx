@@ -21,13 +21,14 @@ import { RootStackModel } from './types/rootStackType';
 import validateUrl from './utils/validateUrl';
 import CreateRoom from './screens/CreateRoom';
 import ProfileSettings from './screens/ProfileSettings';
-import { setUserData } from './store/actions/userActions';
+import { setUserAvatarAndName, setUserData } from './store/actions/userActions';
 import {
   setActionsDrawerContent,
   setActionsDrawerVisible,
 } from './store/actions/mainActions';
 import PasswordSettings from './screens/ProfileSettings/screens/PasswordSettings';
 import DeactivateAccountSettings from './screens/ProfileSettings/screens/DeactivateAccountSettings';
+import PersonalInformationSettings from './screens/ProfileSettings/screens/PersonalInformationSettings';
 
 const App = () => {
   const { setColorMode } = useColorMode();
@@ -70,9 +71,20 @@ const App = () => {
         })
         .then(async () => {
           const userData = await instance.getUser(authResponse.user_id);
+          console.log(userData);
           if (userData) {
             dispatch(setUserData(userData));
           }
+
+          instance.getProfileInfo(authResponse.user_id).then(res => {
+            console.log(res);
+            dispatch(
+              setUserAvatarAndName({
+                displayname: res.displayname || '',
+                avatar_url: res.avatar_url || '',
+              }),
+            );
+          });
         })
         .catch(err => {
           console.log({ ...err });
@@ -117,6 +129,11 @@ const App = () => {
       'RoomList',
       'CreateRoom',
       'ProfileSettings',
+      'PersonalInformationSettings',
+      'PasswordSettings',
+      'DeactivateAccountSettings',
+      'TermsOfUseSettings',
+      'PrivacyPolicySettings',
     ];
 
     return {
@@ -195,7 +212,7 @@ const App = () => {
         <Stack.Screen
           options={{ headerShown: false }}
           name="PersonalInformationSettings"
-          component={PasswordSettings}
+          component={PersonalInformationSettings}
         />
         <Stack.Screen
           options={{ headerShown: false }}

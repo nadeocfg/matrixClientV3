@@ -1,5 +1,9 @@
 import { UserStoreModel } from '../../types/storeTypes';
-import { SET_AUTH_RESPONSE, SET_USER_DATA } from '../constants/userConstants';
+import {
+  SET_AUTH_RESPONSE,
+  SET_USER_AVATAR_AND_NAME,
+  SET_USER_DATA,
+} from '../constants/userConstants';
 import { CLEAR_STORE } from '../constants/mainConstants';
 
 const initialState: UserStoreModel = {
@@ -40,6 +44,16 @@ const userReducer = (state = initialState, action: any) => {
       return {
         ...state,
         user: action.payload,
+      };
+
+    case SET_USER_AVATAR_AND_NAME:
+      return {
+        ...state,
+        user: {
+          ...state.user,
+          displayName: action.payload.displayname,
+          avatarUrl: action.payload.avatar_url,
+        },
       };
 
     case CLEAR_STORE:

@@ -184,6 +184,43 @@ const components = {
           },
         };
       },
+
+      // Custom button style, used in PersonalInformationSettings
+      chip: ({ colorScheme }: InterfaceButtonProps) => {
+        return {
+          bg: `${colorScheme}.700`,
+          borderRadius: 100,
+          paddingTop: 2,
+          paddingBottom: 2,
+          paddingLeft: 4,
+          paddingRight: 4,
+          _text: {
+            color: 'text.50',
+          },
+          _icon: {
+            color: 'text.50',
+          },
+          _spinner: {
+            color: 'text.50',
+          },
+          _hover: {
+            bg: `${colorScheme}.400`,
+          },
+          _pressed: {
+            bg: `${colorScheme}.300`,
+          },
+
+          _dark: {
+            bg: `${colorScheme}.700`,
+            _hover: {
+              bg: `${colorScheme}.200`,
+            },
+            _pressed: {
+              bg: `${colorScheme}.100`,
+            },
+          },
+        };
+      },
     },
   },
 
