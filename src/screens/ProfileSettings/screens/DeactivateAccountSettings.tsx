@@ -5,45 +5,84 @@ import {
   FormControl,
   Input,
   Modal,
+  Pressable,
   ScrollView,
   Text,
 } from 'native-base';
-import React, { useState, useContext, useEffect } from 'react';
+import React, { useState, useContext } from 'react';
 import BaseHeader from '../../../components/BaseHeader';
 import theme from '../../../themes/theme';
 import { StyleSheet } from 'react-native';
 import { MatrixContext } from '../../../context/matrixContext';
 import { useAppDispatch } from '../../../hooks/useDispatch';
 import {
+  clearStore,
   setActionsDrawerContent,
   setActionsDrawerVisible,
+  setLoader,
 } from '../../../store/actions/mainActions';
+import { CloseEyeIcon, EyeIcon } from '../../../components/icons';
+import { StoreModel } from '../../../types/storeTypes';
+import { useAppSelector } from '../../../hooks/useSelector';
+import { navigate } from '../../../utils/navigation';
 
 const DeactivateAccountSettings = () => {
   const [isChecked, setIsChecked] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [passwordData, setPasswordData] = useState({
+    password: '',
+    isPassword: true,
+  });
   const [session, setSession] = useState('');
   const matrixContext = useContext(MatrixContext);
   const dispatch = useAppDispatch();
+  const user = useAppSelector((state: StoreModel) => state.userStore.user);
 
-  useEffect(() => {
-    deactivateFlow();
-  }, []);
+  const changePasswordData = (name: string) => (value: any) => {
+    console.log(name);
+    if (name === 'isPassword') {
+      setPasswordData({
+        ...passwordData,
+        isPassword: !passwordData.isPassword,
+      });
+
+      return;
+    }
+
+    setPasswordData({
+      ...passwordData,
+      [name]: value,
+    });
+  };
 
   const onChange = (value: boolean) => {
     setIsChecked(value);
   };
 
   const deactivateFlow = (auth: any = {}) => {
+    dispatch(setLoader(true));
+
     matrixContext.instance
       ?.deactivateAccount(auth, isChecked)
-      .then(res => {
-        console.log(res);
+      .then(async () => {
+        matrixContext.instance?.stopClient();
+
+        try {
+          await matrixContext.instance?.logout();
+        } catch {
+          // ignore if failed to logout
+        }
+
+        matrixContext.setInstance(null);
+
+        dispatch(clearStore());
+
+        navigate('Login');
       })
       .catch(err => {
         console.log({ ...err });
         // If we got 401 error, thats mean not all registration steps are done
-        if (err.httpStatus === 401) {
+        if (err.httpStatus === 401 && !err.data.errcode) {
           setSession(err.data.session);
           return;
         }
@@ -56,7 +95,23 @@ const DeactivateAccountSettings = () => {
         );
 
         dispatch(setActionsDrawerVisible(true));
+      })
+      .finally(() => {
+        dispatch(setLoader(false));
       });
+  };
+
+  const initDeactivateFlow = () => {
+    deactivateFlow({
+      session,
+      type: 'm.login.password',
+      user: user.userId,
+      identifier: {
+        type: 'm.id.user',
+        user: user.userId,
+      },
+      password: passwordData.password,
+    });
   };
 
   const changeModal = () => {
@@ -112,15 +167,34 @@ const DeactivateAccountSettings = () => {
               <FormControl.Label>
                 Confirm your identity by entering your account password below.
               </FormControl.Label>
-              <Input />
+              <Input
+                type={passwordData.isPassword ? 'password' : 'text'}
+                fontSize="md"
+                w="100%"
+                variant="unstyled"
+                placeholder="Password"
+                value={passwordData.password}
+                onChangeText={changePasswordData('password')}
+                InputRightElement={
+                  <Pressable mr={2} onPress={changePasswordData('isPassword')}>
+                    {passwordData.isPassword ? (
+                      <CloseEyeIcon color="#000" />
+                    ) : (
+                      <EyeIcon color="#000" />
+                    )}
+                  </Pressable>
+                }
+              />
             </FormControl>
           </Modal.Body>
           <Modal.Footer>
             <Button.Group space={2}>
-              <Button variant="ghost" onPress={changeModal}>
-                Cancel
+              <Button
+                variant="subtle"
+                onPress={initDeactivateFlow}
+                colorScheme="error">
+                Deactivate
               </Button>
-              <Button onPress={changeModal}>Save</Button>
             </Button.Group>
           </Modal.Footer>
         </Modal.Content>

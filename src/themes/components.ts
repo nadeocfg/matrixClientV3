@@ -1,3 +1,4 @@
+import { InterfaceButtonProps } from 'native-base/lib/typescript/components/primitives/Button/types';
 import theme from './theme';
 
 const components = {
@@ -150,6 +151,38 @@ const components = {
             },
           },
         },
+      },
+
+      // Subtle styles(looks like similar button but with colorScheme like danger, warning, error, success)
+      subtle: ({ colorScheme }: InterfaceButtonProps) => {
+        return {
+          bg: `${colorScheme}.700`,
+          _text: {
+            color: 'text.50',
+          },
+          _icon: {
+            color: 'text.50',
+          },
+          _spinner: {
+            color: 'text.50',
+          },
+          _hover: {
+            bg: `${colorScheme}.400`,
+          },
+          _pressed: {
+            bg: `${colorScheme}.300`,
+          },
+
+          _dark: {
+            bg: `${colorScheme}.700`,
+            _hover: {
+              bg: `${colorScheme}.200`,
+            },
+            _pressed: {
+              bg: `${colorScheme}.100`,
+            },
+          },
+        };
       },
     },
   },
