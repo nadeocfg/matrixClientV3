@@ -1,10 +1,64 @@
-import { ScrollView } from 'native-base';
+import {
+  Box,
+  Flex,
+  FormControl,
+  ScrollView,
+  Switch,
+  Text,
+  useColorMode,
+} from 'native-base';
 import React from 'react';
 import BaseHeader from '../../components/BaseHeader';
+import { QuestionMarkRounded } from '../../components/icons';
 import LogOutButton from '../../components/LogOutButton';
+import MenuList from '../../components/MenuList';
+import { useAppDispatch } from '../../hooks/useDispatch';
+import { useAppSelector } from '../../hooks/useSelector';
 import theme from '../../themes/theme';
+import { StoreModel } from '../../types/storeTypes';
+import { setColorMode as setColorModeAction } from '../../store/actions/mainActions';
 
 const ProfileSettings = () => {
+  const dispatch = useAppDispatch();
+  const currentColorMode = useAppSelector(
+    (state: StoreModel) => state.mainStore.colorMode,
+  );
+  const { setColorMode } = useColorMode();
+
+  const changeColorMode = () => {
+    const incomingMode = currentColorMode === 'dark' ? 'light' : 'dark';
+
+    dispatch(setColorModeAction(incomingMode));
+    setColorMode(incomingMode);
+  };
+  const menuItems = [
+    {
+      title: 'Personal information',
+      route: 'PersonalInformationSettings',
+      icon: <QuestionMarkRounded />,
+    },
+    {
+      title: 'Password',
+      route: 'PasswordSettings',
+      icon: <QuestionMarkRounded />,
+    },
+    {
+      title: 'Deactivate account permamently',
+      route: 'DeactivateAccountSettings',
+      icon: <QuestionMarkRounded />,
+    },
+    {
+      title: 'Terms of Use',
+      route: 'TermsOfUseSettings',
+      icon: <QuestionMarkRounded />,
+    },
+    {
+      title: 'Privacy Policy',
+      route: 'PrivacyPolicySettings',
+      icon: <QuestionMarkRounded />,
+    },
+  ];
+
   return (
     <ScrollView
       _light={{
@@ -17,6 +71,27 @@ const ProfileSettings = () => {
         title="Settings and privacy"
         action={<LogOutButton variant="ghost" />}
       />
+
+      <MenuList mt={8} withIcons items={menuItems} />
+
+      <Box mt={8} mx={4}>
+        <FormControl mb={4}>
+          <Flex direction="row" justify="space-between" align="center">
+            <Text fontSize={16}>Notifications</Text>
+            <Switch size="lg" />
+          </Flex>
+        </FormControl>
+        <FormControl>
+          <Flex direction="row" justify="space-between" align="center">
+            <Text fontSize={16}>Dark Mode</Text>
+            <Switch
+              size="lg"
+              isChecked={currentColorMode === 'dark'}
+              onToggle={changeColorMode}
+            />
+          </Flex>
+        </FormControl>
+      </Box>
     </ScrollView>
   );
 };

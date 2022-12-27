@@ -33,6 +33,7 @@ const RoomListHeader = ({ userAvatar }: RoomListHeaderProps) => {
       flexDirection="row"
       justifyContent="space-between"
       alignItems="center"
+      height={16}
       _light={{
         bg: theme.light.button.primary.bgColor,
       }}

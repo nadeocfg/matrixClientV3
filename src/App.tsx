@@ -1,4 +1,4 @@
-import React, { useEffect, useContext, useState } from 'react';
+import React, { useEffect, useContext } from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Login from './screens/Login';
 import Registration from './screens/Registration';
@@ -26,6 +26,8 @@ import {
   setActionsDrawerContent,
   setActionsDrawerVisible,
 } from './store/actions/mainActions';
+import PasswordSettings from './screens/ProfileSettings/screens/PasswordSettings';
+import DeactivateAccountSettings from './screens/ProfileSettings/screens/DeactivateAccountSettings';
 
 const App = () => {
   const { setColorMode } = useColorMode();
@@ -55,10 +57,6 @@ const App = () => {
         userId: authResponse.user_id,
         deviceId: authResponse.device_id,
       });
-
-      if (instance.isLoggedIn()) {
-        setIsLoggedIn(true);
-      }
 
       // Set new instance to context provider
       matrixContext.setInstance(instance);
@@ -188,6 +186,31 @@ const App = () => {
           options={{ headerShown: false }}
           name="ProfileSettings"
           component={ProfileSettings}
+        />
+        <Stack.Screen
+          options={{ headerShown: false }}
+          name="PasswordSettings"
+          component={PasswordSettings}
+        />
+        <Stack.Screen
+          options={{ headerShown: false }}
+          name="PersonalInformationSettings"
+          component={PasswordSettings}
+        />
+        <Stack.Screen
+          options={{ headerShown: false }}
+          name="DeactivateAccountSettings"
+          component={DeactivateAccountSettings}
+        />
+        <Stack.Screen
+          options={{ headerShown: false }}
+          name="TermsOfUseSettings"
+          component={PasswordSettings}
+        />
+        <Stack.Screen
+          options={{ headerShown: false }}
+          name="PrivacyPolicySettings"
+          component={PasswordSettings}
         />
       </Stack.Navigator>
 

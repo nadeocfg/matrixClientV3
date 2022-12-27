@@ -94,6 +94,17 @@ export const ArrowLeftIcon = ({ color = '#3C3C43' } = {}) => {
   );
 };
 
+export const ArrowRightIcon = ({ color = '#38383A' }: { color?: string }) => {
+  return (
+    <Svg width="8" height="13" viewBox="0 0 8 13" fill="none">
+      <Path
+        d="M7.17676 6.41699C7.17676 6.15674 7.08154 5.94092 6.87842 5.73779L1.99072 0.958008C1.82568 0.792969 1.62891 0.716797 1.39404 0.716797C0.917969 0.716797 0.530762 1.09131 0.530762 1.56738C0.530762 1.80225 0.632324 2.01807 0.803711 2.18945L5.14551 6.41064L0.803711 10.6445C0.632324 10.8159 0.530762 11.0254 0.530762 11.2666C0.530762 11.7427 0.917969 12.1235 1.39404 12.1235C1.62891 12.1235 1.82568 12.041 1.99072 11.876L6.87842 7.09619C7.08789 6.89307 7.17676 6.67725 7.17676 6.41699Z"
+        fill={color}
+      />
+    </Svg>
+  );
+};
+
 export const DotsIcon = ({ color = '#38383A' }: { color?: string }) => {
   return (
     <Svg width="24" height="24" viewBox="0 0 24 24" fill="none">
@@ -133,6 +144,38 @@ export const CloseIcon = ({ color = '#38383A', ...rest }: any) => {
         rx="1"
         transform="matrix(-0.707107 -0.707107 -0.707107 0.707107 10.6294 2.12134)"
         fill={color}
+      />
+    </Svg>
+  );
+};
+
+export const QuestionMarkRounded = ({
+  color = '#38383A',
+}: {
+  color?: string;
+}) => {
+  return (
+    <Svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+      <Path
+        d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z"
+        stroke={color}
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      />
+      <Path
+        d="M9.08997 8.99999C9.32507 8.33166 9.78912 7.7681 10.3999 7.40912C11.0107 7.05015 11.7289 6.91893 12.4271 7.0387C13.1254 7.15848 13.7588 7.52151 14.215 8.06352C14.6713 8.60552 14.921 9.29151 14.92 9.99999C14.92 12 11.92 13 11.92 13"
+        stroke={color}
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      />
+      <Path
+        d="M12 17H12.01"
+        stroke={color}
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
       />
     </Svg>
   );

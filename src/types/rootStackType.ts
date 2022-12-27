@@ -7,4 +7,9 @@ export type RootStackModel = {
   RoomList: undefined;
   CreateRoom: undefined;
   ProfileSettings: undefined;
+  PersonalInformationSettings: undefined;
+  PasswordSettings: undefined;
+  DeactivateAccountSettings: undefined;
+  TermsOfUseSettings: undefined;
+  PrivacyPolicySettings: undefined;
 };

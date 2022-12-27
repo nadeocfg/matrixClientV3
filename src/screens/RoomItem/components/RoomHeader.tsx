@@ -22,13 +22,20 @@ const RoomHeader: React.FC<PropsWithChildren<RoomHeaderProps>> = ({
       flexDirection="row"
       justifyContent="flex-start"
       alignItems="center"
+      height={16}
       _light={{
         bg: theme.light.button.primary.bgColor,
       }}
       _dark={{
         bg: theme.dark.button.primary.bgColor,
       }}>
-      <IconButton variant="ghost" onPress={goBack} icon={<ChevronLeftIcon />} />
+      <IconButton
+        width={12}
+        height={12}
+        variant="ghost"
+        onPress={goBack}
+        icon={<ChevronLeftIcon />}
+      />
       <Image
         src={avatar}
         alt="Avatar of room"

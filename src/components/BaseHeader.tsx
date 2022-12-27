@@ -18,6 +18,7 @@ const BaseHeader = ({ title, action = <></>, backAction }: BaseHeaderProps) => {
       flexDirection="row"
       justifyContent="space-between"
       alignItems="center"
+      height={16}
       _light={{
         bg: theme.light.button.primary.bgColor,
       }}
@@ -27,7 +28,7 @@ const BaseHeader = ({ title, action = <></>, backAction }: BaseHeaderProps) => {
       <Box flexBasis={'20%'} justifyContent="flex-start">
         <IconButton
           width={12}
-          flexBasis={0}
+          height={12}
           variant="ghost"
           onPress={backAction ? backAction : goBack}
           icon={<ChevronLeftIcon />}

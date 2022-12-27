@@ -351,6 +351,15 @@ const components = {
       },
     },
   },
+
+  // Pressable
+  Pressable: {
+    baseStyle: {
+      _pressed: {
+        bg: theme.light.input.outline.bgColor,
+      },
+    },
+  },
 };
 
 export default components;
