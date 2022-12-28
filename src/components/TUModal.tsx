@@ -10,13 +10,13 @@ const TUModal = ({ termsLink }: TUModalProps) => {
   const [open, setOpen] = useState(false);
 
   if (termsLink) {
-    return <Link href={termsLink}>Terms of Use</Link>;
+    return <Link href={termsLink}>Terms of Use and Privacy Policy</Link>;
   }
 
   return (
     <>
       <Button variant="link" size="sm" onPress={() => setOpen(true)}>
-        Terms of Use
+        Terms of Use and Privacy Policy
       </Button>
       <Modal
         isOpen={open}

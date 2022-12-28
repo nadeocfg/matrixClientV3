@@ -15,7 +15,7 @@ npx react-native bundle --platform android --dev false --entry-file index.js --b
 ./gradlew bundleRelease
 ```
 
-## For correct work matrxi-js-sdk on React Native app:
+## For correct work matrix-js-sdk on React Native app:
 
 ### Libraries:
 

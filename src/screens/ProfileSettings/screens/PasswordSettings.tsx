@@ -49,6 +49,18 @@ const PasswordSettings = () => {
   };
 
   const changePassword = () => {
+    if (passwordData.newPassword !== passwordData.repeatNewPassword) {
+      dispatch(
+        setActionsDrawerContent({
+          title: 'Error',
+          text: 'New passwords are not equal',
+        }),
+      );
+
+      dispatch(setActionsDrawerVisible(true));
+      return;
+    }
+
     dispatch(setLoader(true));
 
     matrixInstance.instance
@@ -102,7 +114,7 @@ const PasswordSettings = () => {
               fontSize="md"
               w="100%"
               variant="unstyled"
-              placeholder="Password"
+              placeholder="Current password"
               value={passwordData.currentPassword}
               onChangeText={onChange('currentPassword')}
               InputRightElement={
@@ -124,7 +136,7 @@ const PasswordSettings = () => {
               fontSize="md"
               w="100%"
               variant="unstyled"
-              placeholder="Password"
+              placeholder="New password"
               value={passwordData.newPassword}
               onChangeText={onChange('newPassword')}
               InputRightElement={
@@ -148,7 +160,7 @@ const PasswordSettings = () => {
               fontSize="md"
               w="100%"
               variant="unstyled"
-              placeholder="Password"
+              placeholder="Repeat new password"
               value={passwordData.repeatNewPassword}
               onChangeText={onChange('repeatNewPassword')}
               InputRightElement={

@@ -13,7 +13,7 @@ import { useAppDispatch } from '../../hooks/useDispatch';
 import { UserDirectoryItemModel } from '../../types/userDirectoryItemModel';
 import Step1 from './components/Step1';
 import Step2 from './components/Step2';
-import { navigate, navigationRef } from '../../utils/navigation';
+import { navigationRef } from '../../utils/navigation';
 import { Visibility } from 'matrix-js-sdk';
 
 interface SearchDataModel {
@@ -178,7 +178,10 @@ const CreateRoom = () => {
       })
       .then(res => {
         console.log(res);
-        navigate('RoomList');
+        navigationRef.reset({
+          index: 0,
+          routes: [{ name: 'RoomList' }],
+        });
       })
       .catch(err => {
         console.log({ ...err });

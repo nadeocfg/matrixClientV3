@@ -25,7 +25,7 @@ import {
 import { setRooms } from '../../store/actions/roomsActions';
 import theme from '../../themes/theme';
 import matrixSdk from '../../utils/matrix';
-import { navigate } from '../../utils/navigation';
+import { navigate, navigationRef } from '../../utils/navigation';
 import validateUrl from '../../utils/validateUrl';
 
 const Login: React.FC<PropsWithChildren<any>> = () => {
@@ -97,7 +97,10 @@ const Login: React.FC<PropsWithChildren<any>> = () => {
           dispatch(setUserData(userData));
         }
 
-        navigate('RoomList');
+        navigationRef.reset({
+          index: 0,
+          routes: [{ name: 'RoomList' }],
+        });
       })
       .catch(err => {
         console.log({ ...err });
@@ -113,13 +116,13 @@ const Login: React.FC<PropsWithChildren<any>> = () => {
       });
 
     // Initial sync of matrix client
-    instance.on('sync' as any, (state: string) => {
+    instance.once('sync' as any, (state: string) => {
       console.log('STATE');
       console.log(state);
       dispatch(setLoader(false));
 
       // Get rooms(Chats)
-      const rooms = instance.getRooms();
+      const rooms = instance.getVisibleRooms();
       console.log(rooms);
 
       if (rooms.length > 0) {
@@ -132,6 +135,8 @@ const Login: React.FC<PropsWithChildren<any>> = () => {
                 normalizedName: item.normalizedName,
                 roomId: item.roomId,
                 timeline: item.timeline,
+                avatar_url: item.getMxcAvatarUrl(),
+                unreadCount: item.getUnreadNotificationCount(),
               };
             }),
           ),
@@ -224,7 +229,9 @@ const Login: React.FC<PropsWithChildren<any>> = () => {
                 <Button
                   variant="link"
                   size="sm"
-                  onPress={() => navigate('ForgotPassword')}>
+                  onPress={() =>
+                    navigate('ForgotPassword', { server: formData.server })
+                  }>
                   Forgot password
                 </Button>
               </Flex>

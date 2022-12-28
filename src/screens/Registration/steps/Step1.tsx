@@ -153,7 +153,7 @@ const Step1 = ({
           onChange={() => setIsAgree(!isAgree)}
           accessibilityLabel="I agree with the Terms of Use and Privacy Policy">
           <Box flexDirection="row" flexWrap="wrap" ml={0}>
-            I agree with the <TUModal termsLink={termsLink} /> and <PPModal />
+            I agree with the <TUModal termsLink={termsLink} />
           </Box>
         </Checkbox>
       </Box>

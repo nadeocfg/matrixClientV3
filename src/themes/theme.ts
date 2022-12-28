@@ -15,7 +15,7 @@ const theme = {
     transparentBg: colors.lightTransparentBg,
     button: {
       primary: {
-        bgColor: colors.darkBlue[700],
+        bgColor: colors.primary[700],
         textColor: colors.text[50],
       },
     },
@@ -33,8 +33,8 @@ const theme = {
     transparentBg: colors.darkTransparentBg,
     button: {
       primary: {
-        bgColor: colors.darkBlue[200],
-        textColor: colors.text[50],
+        bgColor: colors.primary[200],
+        textColor: colors.text[800],
       },
     },
     input: {

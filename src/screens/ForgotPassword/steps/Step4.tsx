@@ -3,13 +3,13 @@ import React from 'react';
 import { StyleProp } from 'react-native';
 import { MockedLogo } from '../../../components/icons';
 import theme from '../../../themes/theme';
-import { navigate } from '../../../utils/navigation';
 
 interface Step4Props {
+  onFinishResetPassword: () => void;
   styles?: StyleProp<any>;
 }
 
-const Step4 = ({ styles }: Step4Props) => {
+const Step4 = ({ styles, onFinishResetPassword }: Step4Props) => {
   return (
     <ScrollView
       contentContainerStyle={styles.container}
@@ -29,7 +29,7 @@ const Step4 = ({ styles }: Step4Props) => {
       <Box style={styles.inner} />
 
       <Center>
-        <Button onPress={() => navigate('Login')} w="100%">
+        <Button onPress={onFinishResetPassword} w="100%">
           Log in
         </Button>
       </Center>

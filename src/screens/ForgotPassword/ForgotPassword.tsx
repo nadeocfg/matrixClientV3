@@ -1,26 +1,41 @@
 import { PresenceTransition, ScrollView } from 'native-base';
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import theme from '../../themes/theme';
 import Step1 from './steps/Step1';
 import { StyleSheet } from 'react-native';
 import { useAppDispatch } from '../../hooks/useDispatch';
 import isEmailValid from '../../utils/isEmailValid';
 import {
+  clearStore,
   setActionsDrawerContent,
   setActionsDrawerVisible,
 } from '../../store/actions/mainActions';
 import Step2 from './steps/Step2';
 import Step3 from './steps/Step3';
 import Step4 from './steps/Step4';
+import matrixSdk from '../../utils/matrix';
+import validateUrl from '../../utils/validateUrl';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { RootStackModel } from '../../types/rootStackType';
+import { MatrixContext } from '../../context/matrixContext';
+import { navigate } from '../../utils/navigation';
 
-const ForgotPassword = () => {
+const ForgotPassword = (
+  props: NativeStackScreenProps<RootStackModel, 'ForgotPassword'>,
+) => {
   const dispatch = useAppDispatch();
   const [email, setEmail] = useState('');
   const [newPassword, setNewPassword] = useState({
     password: '',
     isPassword: true,
   });
+  const [emailData, setEmailData] = useState({
+    attempt: 1,
+    sid: '',
+    secret: '',
+  });
   const [currentStep, setCurrentStep] = useState(0);
+  const matrixContext = useContext(MatrixContext);
 
   const onChangeEmail = (value: string) => setEmail(value);
 
@@ -52,13 +67,120 @@ const ForgotPassword = () => {
         dispatch(setActionsDrawerVisible(true));
         return;
       }
+
+      requestToken();
+      return;
+    }
+
+    if (currentStep === 2) {
+      if (!newPassword.password) {
+        dispatch(
+          setActionsDrawerContent({
+            title: 'Error',
+            text: 'Input new password',
+          }),
+        );
+
+        dispatch(setActionsDrawerVisible(true));
+        return;
+      }
+
+      updatePassword();
+      return;
     }
 
     setCurrentStep(currentStep + 1);
   };
 
   const resendEmail = () => {
-    console.log('resend email');
+    requestToken(emailData.attempt + 1);
+
+    setEmailData({
+      ...emailData,
+      attempt: emailData.attempt + 1,
+    });
+  };
+
+  const updatePassword = () => {
+    const auth = {
+      type: 'm.login.email.identity',
+      threepid_creds: {
+        sid: emailData.sid,
+        client_secret: emailData.secret,
+      },
+      threepidCreds: {
+        sid: emailData.sid,
+        client_secret: emailData.secret,
+      },
+    };
+
+    matrixContext.instance
+      ?.setPassword(auth, newPassword.password)
+      .then(() => {
+        setCurrentStep(currentStep + 1);
+      })
+      .catch(err => {
+        console.log({ ...err });
+        dispatch(
+          setActionsDrawerContent({
+            title: err.data?.errcode || '',
+            text: err.data?.error || 'Something went wrong',
+          }),
+        );
+
+        dispatch(setActionsDrawerVisible(true));
+      });
+  };
+
+  const requestToken = async (attempt: number = emailData.attempt) => {
+    const instance = await matrixSdk.createClient({
+      baseUrl: validateUrl(props.route.params.server),
+      deviceId: 'matrix-client-app',
+    });
+
+    matrixContext.setInstance(instance);
+
+    const clientSecret = instance.generateClientSecret();
+
+    instance
+      .requestPasswordEmailToken(email, clientSecret, attempt)
+      .then(res => {
+        setEmailData({
+          ...emailData,
+          sid: res.sid,
+          secret: clientSecret,
+        });
+        setCurrentStep(currentStep + 1);
+      })
+      .catch(err => {
+        console.log({ ...err });
+        dispatch(
+          setActionsDrawerContent({
+            title: err.data?.errcode || '',
+            text: err.data?.error || 'Something went wrong',
+          }),
+        );
+
+        dispatch(setActionsDrawerVisible(true));
+      });
+  };
+
+  const onFinishResetPassword = async () => {
+    if (matrixContext.instance) {
+      matrixContext.instance.stopClient();
+
+      try {
+        await matrixContext.instance.logout();
+      } catch {
+        // ignore if failed to logout
+      }
+
+      matrixContext.setInstance(null);
+    }
+
+    dispatch(clearStore());
+
+    navigate('Login');
   };
 
   return (
@@ -150,7 +272,10 @@ const ForgotPassword = () => {
             },
           }}
           style={styles.inner}>
-          <Step4 styles={styles} />
+          <Step4
+            onFinishResetPassword={onFinishResetPassword}
+            styles={styles}
+          />
         </PresenceTransition>
       )}
     </ScrollView>

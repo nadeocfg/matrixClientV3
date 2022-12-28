@@ -100,7 +100,7 @@ const App = () => {
         }
 
         // Get rooms(Chats)
-        const rooms = instance.getRooms();
+        const rooms = instance.getVisibleRooms();
         console.log(rooms);
 
         if (rooms.length > 0) {
@@ -113,6 +113,8 @@ const App = () => {
                   normalizedName: item.normalizedName,
                   roomId: item.roomId,
                   timeline: item.timeline,
+                  avatar_url: item.getMxcAvatarUrl(),
+                  unreadCount: item.getUnreadNotificationCount(),
                 };
               }),
             ),
@@ -124,7 +126,6 @@ const App = () => {
 
   const onChangeRoute = ({ route, navigation }: any) => {
     const protectedRoutes = [
-      'ForgotPassword',
       'RoomItem',
       'RoomList',
       'CreateRoom',

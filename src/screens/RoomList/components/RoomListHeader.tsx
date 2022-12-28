@@ -4,6 +4,7 @@ import {
   IconButton,
   Image,
   Menu,
+  Pressable,
   useColorMode,
 } from 'native-base';
 import React from 'react';
@@ -34,26 +35,29 @@ const RoomListHeader = ({ userAvatar }: RoomListHeaderProps) => {
       justifyContent="space-between"
       alignItems="center"
       height={16}
+      px={4}
       _light={{
         bg: theme.light.button.primary.bgColor,
       }}
       _dark={{
         bg: theme.dark.button.primary.bgColor,
       }}>
-      {userAvatar ? (
-        <Image
-          src={userAvatar}
-          alt="Avatar of user"
-          borderRadius="full"
-          width={12}
-          height={12}
-        />
-      ) : (
-        <DefaultAvatar
-          name={userData.userId ? userData.userId[1] : ''}
-          width={12}
-        />
-      )}
+      <Pressable onPress={() => goTo('PersonalInformationSettings')}>
+        {userAvatar ? (
+          <Image
+            src={userAvatar}
+            alt="Avatar of user"
+            borderRadius="full"
+            width={10}
+            height={10}
+          />
+        ) : (
+          <DefaultAvatar
+            name={userData.userId ? userData.userId[1] : ''}
+            width={10}
+          />
+        )}
+      </Pressable>
 
       <Heading>Chats</Heading>
       <Menu

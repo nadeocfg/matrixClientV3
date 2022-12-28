@@ -74,6 +74,8 @@ export interface RoomItemModel {
   normalizedName: string;
   roomId: string;
   timeline: MatrixEvent[];
+  avatar_url: string | null;
+  unreadCount: number | undefined;
 }
 
 export interface TimelineItemModel {

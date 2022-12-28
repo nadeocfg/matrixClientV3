@@ -7,7 +7,7 @@ import {
   setActionsDrawerContent,
   setActionsDrawerVisible,
 } from '../store/actions/mainActions';
-import { navigate } from '../utils/navigation';
+import { navigationRef } from '../utils/navigation';
 
 const LogOutButton = (props: IButtonProps) => {
   const matrixContext = useContext(MatrixContext);
@@ -28,7 +28,10 @@ const LogOutButton = (props: IButtonProps) => {
 
     dispatch(clearStore());
 
-    navigate('Login');
+    navigationRef.reset({
+      index: 0,
+      routes: [{ name: 'Login' }],
+    });
   };
 
   const confirm = () => {
@@ -54,7 +57,7 @@ const LogOutButton = (props: IButtonProps) => {
 
   return (
     <>
-      <Button {...props} _text={{ textAlign: 'right' }} onPress={confirm}>
+      <Button {...props} onPress={confirm}>
         Logout
       </Button>
     </>
