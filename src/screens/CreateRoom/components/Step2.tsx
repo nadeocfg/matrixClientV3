@@ -1,10 +1,12 @@
 import { Visibility } from 'matrix-js-sdk';
 import {
   Box,
+  Flex,
   FormControl,
   Heading,
   Image,
   Input,
+  Pressable,
   Radio,
   ScrollView,
   Stack,
@@ -14,7 +16,13 @@ import {
 import React from 'react';
 import { StyleSheet } from 'react-native';
 import DefaultAvatar from '../../../components/DefaultAvatar';
+import { ArrowRightIcon } from '../../../components/icons';
 import { MatrixContextModel } from '../../../context/matrixContext';
+import { useAppDispatch } from '../../../hooks/useDispatch';
+import {
+  setActionsDrawerContent,
+  setActionsDrawerVisible,
+} from '../../../store/actions/mainActions';
 import theme from '../../../themes/theme';
 import { UserDirectoryItemModel } from '../../../types/userDirectoryItemModel';
 
@@ -23,6 +31,7 @@ interface Step2Props {
   roomName: string;
   roomTopic: string;
   visibility: Visibility;
+  onChangeVisibility: (value: Visibility) => void;
   onChange: Function;
   matrixContext: MatrixContextModel;
 }
@@ -33,25 +42,54 @@ const Step2 = ({
   roomTopic,
   matrixContext,
   visibility,
+  onChangeVisibility,
   onChange,
 }: Step2Props) => {
+  const visibilityOptions = [
+    {
+      name: 'Private',
+      desc: 'Only people invited can find and join',
+      value: 'private',
+    },
+    {
+      name: 'Public',
+      desc: 'Anyone can find the room and join',
+      value: 'public',
+    },
+  ];
+  const dispatch = useAppDispatch();
+
+  const showVisibilitySwitcher = () => {
+    dispatch(
+      setActionsDrawerContent({
+        title: 'Who can access?',
+        text: '',
+        actions: [
+          {
+            title: 'Private',
+            desc: 'Only people invited can find and join',
+            onPress: () => onSelect(Visibility.Private),
+          },
+          {
+            title: 'Public',
+            desc: 'Anyone can find the room and join',
+            onPress: () => onSelect(Visibility.Public),
+          },
+        ],
+      }),
+    );
+
+    dispatch(setActionsDrawerVisible(true));
+  };
+
+  const onSelect = (value: Visibility) => {
+    onChangeVisibility(value);
+
+    dispatch(setActionsDrawerVisible(false));
+  };
+
   return (
     <Box m={4}>
-      <FormControl mb={4}>
-        <FormControl.Label>Visibility</FormControl.Label>
-        <Radio.Group
-          name="visibility"
-          accessibilityLabel="Group visibility"
-          value={visibility}
-          onChange={onChange('visibility')}>
-          <Radio value="public" my={2}>
-            Public
-          </Radio>
-          <Radio value="private" my={2}>
-            Private
-          </Radio>
-        </Radio.Group>
-      </FormControl>
       <FormControl>
         <Stack mb={4}>
           <Input
@@ -75,6 +113,23 @@ const Step2 = ({
           />
         </Stack>
       </FormControl>
+
+      <Pressable onPress={showVisibilitySwitcher}>
+        <Flex
+          direction="row"
+          align="center"
+          py={4}
+          px={4}
+          my={4}
+          bg="#fff"
+          borderRadius={8}>
+          <Text fontSize="md" flexGrow={1}>
+            {visibilityOptions.find(item => item.value === visibility)?.name}
+          </Text>
+
+          <ArrowRightIcon />
+        </Flex>
+      </Pressable>
 
       <ScrollView>
         <Heading size="md" color={theme.light.text} fontWeight={600} mt={4}>

@@ -1,5 +1,6 @@
 import { Box, ChevronLeftIcon, Heading, IconButton, Image } from 'native-base';
 import React, { PropsWithChildren } from 'react';
+import DefaultAvatar from '../../../components/DefaultAvatar';
 import theme from '../../../themes/theme';
 import { navigationRef } from '../../../utils/navigation';
 
@@ -36,14 +37,19 @@ const RoomHeader: React.FC<PropsWithChildren<RoomHeaderProps>> = ({
         onPress={goBack}
         icon={<ChevronLeftIcon />}
       />
-      <Image
-        src={avatar}
-        alt="Avatar of room"
-        borderRadius="full"
-        width={12}
-        height={12}
-      />
-      <Heading>{name}</Heading>
+      {avatar ? (
+        <Image
+          src={avatar}
+          alt="Avatar of room"
+          borderRadius="full"
+          width={12}
+          height={12}
+        />
+      ) : (
+        <DefaultAvatar name={name[0]} width={12} />
+      )}
+
+      <Heading ml={2}>{name}</Heading>
     </Box>
   );
 };

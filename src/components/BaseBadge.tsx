@@ -18,7 +18,7 @@ const BaseBadge = ({ value, ...props }: BadgeProps) => {
       rounded="full"
       zIndex={1}
       variant="solid">
-      {value}
+      {value > 99 ? '99+' : value}
     </Badge>
   );
 };

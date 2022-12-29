@@ -57,6 +57,7 @@ const App = () => {
         accessToken: authResponse.access_token,
         userId: authResponse.user_id,
         deviceId: authResponse.device_id,
+        timelineSupport: true,
       });
 
       // Set new instance to context provider
@@ -65,9 +66,9 @@ const App = () => {
       // Start matrix client
       instance
         .startClient({
-          initialSyncLimit: 1,
-          includeArchivedRooms: false,
+          initialSyncLimit: 10,
           lazyLoadMembers: true,
+          pollTimeout: 30000,
         })
         .then(async () => {
           const userData = await instance.getUser(authResponse.user_id);
@@ -91,10 +92,7 @@ const App = () => {
         });
 
       // Initial sync of matrix client
-      instance.once('sync' as any, (state: string) => {
-        console.log('STATE');
-        console.log(state);
-
+      instance.on('sync' as any, (state: string) => {
         if (state === 'ERROR') {
           return;
         }
@@ -124,6 +122,7 @@ const App = () => {
     }
   };
 
+  // Check if route need authorization
   const onChangeRoute = ({ route, navigation }: any) => {
     const protectedRoutes = [
       'RoomItem',

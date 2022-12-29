@@ -73,6 +73,7 @@ const Login: React.FC<PropsWithChildren<any>> = () => {
     const instance = await matrixSdk.createClient({
       baseUrl: validateUrl(server),
       deviceId: 'matrix-client-app',
+      timelineSupport: true,
     });
 
     // Set matrix client instance to React context
@@ -116,7 +117,7 @@ const Login: React.FC<PropsWithChildren<any>> = () => {
       });
 
     // Initial sync of matrix client
-    instance.once('sync' as any, (state: string) => {
+    instance.on('sync' as any, (state: string) => {
       console.log('STATE');
       console.log(state);
       dispatch(setLoader(false));

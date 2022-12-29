@@ -1,7 +1,6 @@
-import { Box, Button, Input, ScrollView } from 'native-base';
-import React, { useState, useContext, useEffect } from 'react';
+import { Button, Flex, Input, ScrollView } from 'native-base';
+import React, { useState, useContext, useEffect, useRef } from 'react';
 import theme from '../../themes/theme';
-import { StyleSheet } from 'react-native';
 import { MatrixContext } from '../../context/matrixContext';
 import { navigate } from '../../utils/navigation';
 import { useAppDispatch } from '../../hooks/useDispatch';
@@ -11,8 +10,10 @@ import {
 } from '../../store/actions/mainActions';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackModel } from '../../types/rootStackType';
-import { IMessagesChunk } from '../../types/roomInitialSync';
 import RoomHeader from './components/RoomHeader';
+import { IEventWithRoomId, MatrixEvent } from 'matrix-js-sdk';
+import { Keyboard } from 'react-native';
+import MessageItem from '../../components/MessageItem';
 
 const RoomItem = (
   props: NativeStackScreenProps<RootStackModel, 'RoomItem'>,
@@ -26,19 +27,64 @@ const RoomItem = (
     name: '',
     roomId: '',
   });
-  const [messages, setMessages] = useState<IMessagesChunk>();
+  const [timeline, setTimeline] = useState<{
+    start?: string | undefined;
+    end?: string | undefined;
+    chunk: IEventWithRoomId[];
+  }>({
+    chunk: [],
+  });
+  const scrollViewRef = useRef<any>(null);
 
   useEffect(() => {
     if (props.route.params.roomId) {
       initialRoomSync(props.route.params.roomId);
+
+      matrixContext.instance
+        ?.getJoinedRoomMembers(props.route.params.roomId)
+        .then(res => {
+          console.log(res);
+        });
+
+      matrixContext.instance?.members(props.route.params.roomId).then(res => {
+        console.log(res);
+      });
     }
-  }, [props.route.params.roomId]);
+  }, []);
+
+  useEffect(() => {
+    const showSubscription = Keyboard.addListener('keyboardDidShow', () => {
+      onSizeChange();
+    });
+    const hideSubscription = Keyboard.addListener('keyboardDidHide', () => {
+      onSizeChange();
+    });
+
+    return () => {
+      showSubscription.remove();
+      hideSubscription.remove();
+    };
+  }, []);
 
   useEffect(() => {
     if (!matrixContext.instance) {
       navigate('Home');
     }
   }, [matrixContext.instance]);
+
+  useEffect(() => {
+    const addNewMessages = (event: MatrixEvent) => {
+      setTimeline({
+        chunk: [...timeline.chunk, event.event as IEventWithRoomId],
+      });
+    };
+
+    matrixContext.instance?.on('Room.timeline', addNewMessages);
+
+    return () => {
+      matrixContext.instance?.removeListener('Room.timeline', addNewMessages);
+    };
+  }, [timeline, matrixContext.instance]);
 
   const initialRoomSync = async (roomId: string) => {
     const roomInfo = await matrixContext.instance?.getRoom(roomId);
@@ -57,15 +103,18 @@ const RoomItem = (
       setRoomData({
         avatar: avatarUrl || '',
         fullAvatar: fullAvatarUrl || '',
-        roomId: props.route.params.roomId,
+        roomId: roomId,
         name: props.route.params.roomName,
       });
     }
 
     matrixContext.instance
-      ?.roomInitialSync(roomId, 10)
+      ?.roomInitialSync(roomId, 20)
       .then(res => {
-        setMessages(res.messages);
+        console.log(res.messages);
+        if (res.messages) {
+          setTimeline(res.messages);
+        }
       })
       .catch(err => {
         console.log({ ...err });
@@ -83,6 +132,10 @@ const RoomItem = (
   const changeMessage = (value: string) => setMessage(value);
 
   const sendMessage = () => {
+    if (!message.trim()) {
+      return;
+    }
+
     matrixContext.instance
       ?.sendMessage(roomData.roomId, {
         msgtype: 'm.text',
@@ -117,42 +170,48 @@ const RoomItem = (
       });
   };
 
+  const onSizeChange = () => {
+    scrollViewRef.current?.scrollToEnd();
+  };
+
   return (
     <>
       <RoomHeader name={roomData.name} avatar={roomData.avatar} />
       <ScrollView
-        contentContainerStyle={styles.container}
-        p={4}
+        flex={1}
+        ref={scrollViewRef}
+        onContentSizeChange={onSizeChange}
+        px={4}
         _light={{
           bg: theme.light.bgColor,
         }}
         _dark={{
           bg: theme.dark.bgColor,
         }}>
-        <Box style={styles.inner}>
-          <Input
-            mb={4}
-            fontSize="md"
-            w="100%"
-            variant="unstyled"
-            placeholder="Message"
-            value={message}
-            onChangeText={changeMessage}
+        {timeline.chunk.map(timelineItem => (
+          <MessageItem
+            event={timelineItem}
+            userId={matrixContext.instance?.getUserId()}
+            key={timelineItem.event_id}
           />
-          <Button onPress={sendMessage}>Send</Button>
-        </Box>
+        ))}
       </ScrollView>
+      <Flex direction="row" align="center" p={2}>
+        <Input
+          flexBasis="80%"
+          flexGrow={1}
+          fontSize="sm"
+          variant="unstyled"
+          placeholder="Message"
+          value={message}
+          onChangeText={changeMessage}
+        />
+        <Button ml={2} onPress={sendMessage}>
+          Send
+        </Button>
+      </Flex>
     </>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  inner: {
-    flex: 1,
-  },
-});
 
 export default RoomItem;

@@ -38,14 +38,26 @@ const ActionsDrawer = () => {
           )}
 
         {actionsDrawerState.content.actions &&
-          actionsDrawerState.content.actions.map((item, index) => (
-            <Actionsheet.Item
-              onPress={() => item.onPress()}
-              key={index}
-              alignItems="center">
-              {item.title}
-            </Actionsheet.Item>
-          ))}
+          actionsDrawerState.content.actions.map((item, index) =>
+            item.desc ? (
+              <Actionsheet.Item
+                onPress={() => item.onPress()}
+                key={index}
+                alignItems="flex-start">
+                <Text fontSize="md" fontWeight={600}>
+                  {item.title}
+                </Text>
+                {item.desc}
+              </Actionsheet.Item>
+            ) : (
+              <Actionsheet.Item
+                onPress={() => item.onPress()}
+                key={index}
+                alignItems="center">
+                {item.title}
+              </Actionsheet.Item>
+            ),
+          )}
       </Actionsheet.Content>
     </Actionsheet>
   );

@@ -26,6 +26,7 @@ export interface ActionsDrawerContentModel {
 
 export interface ActionsDrawerActionModel {
   title: string;
+  desc?: string;
   onPress: () => void;
 }
 

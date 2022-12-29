@@ -161,6 +161,13 @@ const CreateRoom = () => {
     });
   };
 
+  const onChangeVisibility = (value: Visibility) => {
+    setRoomData({
+      ...roomData,
+      visibility: value,
+    });
+  };
+
   const createRoom = () => {
     const userIds = selectedUsers.reduce<string[]>((acc, item) => {
       acc.push(item.user_id);
@@ -257,6 +264,7 @@ const CreateRoom = () => {
           <Step2
             matrixContext={matrixContext}
             onChange={onChangeRoomData}
+            onChangeVisibility={onChangeVisibility}
             selectedUsers={selectedUsers}
             roomName={roomData.name}
             roomTopic={roomData.topic}
