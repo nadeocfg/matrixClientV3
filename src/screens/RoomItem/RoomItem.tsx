@@ -1,4 +1,12 @@
-import { Button, Flex, Input, ScrollView } from 'native-base';
+import {
+  Box,
+  Button,
+  Flex,
+  IconButton,
+  Input,
+  ScrollView,
+  Spinner,
+} from 'native-base';
 import React, { useState, useContext, useEffect, useRef } from 'react';
 import theme from '../../themes/theme';
 import { MatrixContext } from '../../context/matrixContext';
@@ -11,9 +19,14 @@ import {
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackModel } from '../../types/rootStackType';
 import RoomHeader from './components/RoomHeader';
-import { IEventWithRoomId, MatrixEvent } from 'matrix-js-sdk';
-import { Keyboard } from 'react-native';
+import { Direction, IEventWithRoomId, MatrixEvent } from 'matrix-js-sdk';
+import {
+  Keyboard,
+  NativeScrollEvent,
+  NativeSyntheticEvent,
+} from 'react-native';
 import MessageItem from '../../components/MessageItem';
+import { ArrowUpIcon, MicIcon } from '../../components/icons';
 
 const RoomItem = (
   props: NativeStackScreenProps<RootStackModel, 'RoomItem'>,
@@ -34,6 +47,7 @@ const RoomItem = (
   }>({
     chunk: [],
   });
+  const [isLoadingMessages, setIsLoadingMessages] = useState(false);
   const scrollViewRef = useRef<any>(null);
 
   useEffect(() => {
@@ -54,10 +68,10 @@ const RoomItem = (
 
   useEffect(() => {
     const showSubscription = Keyboard.addListener('keyboardDidShow', () => {
-      onSizeChange();
+      scrollToTop();
     });
     const hideSubscription = Keyboard.addListener('keyboardDidHide', () => {
-      onSizeChange();
+      scrollToTop();
     });
 
     return () => {
@@ -77,6 +91,11 @@ const RoomItem = (
       setTimeline({
         chunk: [...timeline.chunk, event.event as IEventWithRoomId],
       });
+
+      if (timeline.chunk.length <= 20) {
+        scrollViewRef.current?.scrollToEnd();
+      }
+      scrollViewRef.current?.scrollToEnd();
     };
 
     matrixContext.instance?.on('Room.timeline', addNewMessages);
@@ -111,7 +130,6 @@ const RoomItem = (
     matrixContext.instance
       ?.roomInitialSync(roomId, 20)
       .then(res => {
-        console.log(res.messages);
         if (res.messages) {
           setTimeline(res.messages);
         }
@@ -170,17 +188,81 @@ const RoomItem = (
       });
   };
 
-  const onSizeChange = () => {
-    scrollViewRef.current?.scrollToEnd();
+  const onScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
+    const { contentOffset } = event.nativeEvent;
+    if (contentOffset.y <= 0) {
+      fetchPrevMessages();
+    }
+  };
+
+  const fetchPrevMessages = () => {
+    if (isLoadingMessages || !timeline.start) {
+      return;
+    }
+
+    setIsLoadingMessages(true);
+
+    matrixContext.instance
+      ?.createMessagesRequest(
+        props.route.params.roomId,
+        timeline.start,
+        20,
+        Direction.Backward,
+      )
+      .then(res => {
+        setTimeline({
+          start: res.end,
+          chunk: res.chunk
+            .reverse()
+            .concat(timeline.chunk) as IEventWithRoomId[],
+        });
+      })
+      .catch(err => {
+        console.log({ ...err });
+        dispatch(
+          setActionsDrawerContent({
+            title: err.data?.errcode || '',
+            text: err.data?.error || 'Something went wrong',
+          }),
+        );
+
+        dispatch(setActionsDrawerVisible(true));
+      })
+      .finally(() => {
+        setIsLoadingMessages(false);
+      });
+  };
+
+  const scrollToTop = () => {
+    if (scrollViewRef.current) {
+      scrollViewRef.current.scrollToEnd();
+    }
   };
 
   return (
     <>
       <RoomHeader name={roomData.name} avatar={roomData.avatar} />
+
+      <Box
+        _light={{
+          bg: theme.light.bgColor,
+        }}
+        _dark={{
+          bg: theme.dark.bgColor,
+        }}>
+        {isLoadingMessages && (
+          <Spinner mt={4} accessibilityLabel="Loading messages" />
+        )}
+      </Box>
+
       <ScrollView
+        onContentSizeChange={
+          timeline.chunk.length <= 20 ? scrollToTop : () => {}
+        }
+        onScroll={onScroll}
+        _contentContainerStyle={{ paddingBottom: 4 }}
         flex={1}
         ref={scrollViewRef}
-        onContentSizeChange={onSizeChange}
         px={4}
         _light={{
           bg: theme.light.bgColor,
@@ -188,27 +270,42 @@ const RoomItem = (
         _dark={{
           bg: theme.dark.bgColor,
         }}>
-        {timeline.chunk.map(timelineItem => (
+        {timeline.chunk.map((timelineItem, index) => (
           <MessageItem
             event={timelineItem}
             userId={matrixContext.instance?.getUserId()}
+            isPrevSenderSame={
+              timelineItem.sender === timeline.chunk[index - 1]?.sender
+            }
             key={timelineItem.event_id}
           />
         ))}
       </ScrollView>
       <Flex direction="row" align="center" p={2}>
         <Input
+          p={1}
+          mr={2}
           flexBasis="80%"
           flexGrow={1}
           fontSize="sm"
-          variant="unstyled"
           placeholder="Message"
           value={message}
           onChangeText={changeMessage}
         />
-        <Button ml={2} onPress={sendMessage}>
-          Send
-        </Button>
+        {message ? (
+          <IconButton
+            onPress={sendMessage}
+            w={8}
+            h={8}
+            icon={<ArrowUpIcon color={theme.light.button.primary.bgColor} />}
+          />
+        ) : (
+          <IconButton
+            w={8}
+            h={8}
+            icon={<MicIcon color={theme.light.button.primary.bgColor} />}
+          />
+        )}
       </Flex>
     </>
   );

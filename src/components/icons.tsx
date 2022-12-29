@@ -105,6 +105,46 @@ export const ArrowRightIcon = ({ color = '#38383A' }: { color?: string }) => {
   );
 };
 
+export const MicIcon = ({ color = '#38383A' }: { color?: string }) => {
+  return (
+    <Svg width="13" height="20" viewBox="0 0 13 20" fill="none">
+      <Path
+        d="M6.50454 12.6548C8.31237 12.6548 9.5297 11.3012 9.5297 9.36618V3.28861C9.5297 1.34451 8.31237 0 6.50454 0C4.68763 0 3.4703 1.34451 3.4703 3.28861V9.36618C3.4703 11.3012 4.68763 12.6548 6.50454 12.6548ZM0 9.51153C0 13.0727 2.3529 15.5709 5.81412 15.8616V17.9783H2.44375C2.06219 17.9783 1.75332 18.2872 1.75332 18.6688C1.75332 19.0503 2.06219 19.3501 2.44375 19.3501H10.5563C10.9378 19.3501 11.2467 19.0503 11.2467 18.6688C11.2467 18.2872 10.9378 17.9783 10.5563 17.9783H7.18588V15.8616C10.6562 15.5709 13 13.0727 13 9.51153V7.66737C13 7.28581 12.7002 6.98602 12.3187 6.98602C11.9371 6.98602 11.6282 7.28581 11.6282 7.66737V9.45702C11.6282 12.5549 9.61146 14.608 6.50454 14.608C3.38854 14.608 1.37177 12.5549 1.37177 9.45702V7.66737C1.37177 7.28581 1.07198 6.98602 0.681342 6.98602C0.29979 6.98602 0 7.28581 0 7.66737V9.51153Z"
+        fill={color}
+      />
+    </Svg>
+  );
+};
+
+export const ArrowUpIcon = ({ color = '#38383A' }: { color?: string }) => {
+  return (
+    <Svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+      <Path
+        d="M15.9998 31C24.2841 31 30.9998 24.2843 30.9998 16C30.9998 7.71573 24.2841 1 15.9998 1C7.71555 1 0.999817 7.71573 0.999817 16C0.999817 24.2843 7.71555 31 15.9998 31Z"
+        fill={color}
+        stroke={color}
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      />
+      <Path
+        d="M21.9998 16L15.9998 10L9.99982 16"
+        stroke="white"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      />
+      <Path
+        d="M16 22V10"
+        stroke="white"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      />
+    </Svg>
+  );
+};
+
 export const DotsIcon = ({ color = '#38383A' }: { color?: string }) => {
   return (
     <Svg width="24" height="24" viewBox="0 0 24 24" fill="none">
