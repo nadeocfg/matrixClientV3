@@ -20,6 +20,7 @@ type RoomListItemProps = {
   avatarUrl: string | null;
   message?: string;
   roomId: string;
+  membership?: string;
   onSelectRoom: (roomId: string, roomName: string) => void;
 } & IPressableProps;
 
@@ -43,9 +44,13 @@ const RoomListItem = ({
     return url;
   };
 
+  const onPress = () => {
+    onSelectRoom(roomId, name);
+  };
+
   return (
     <Pressable
-      onPress={() => onSelectRoom(roomId, name)}
+      onPress={onPress}
       _pressed={{ backgroundColor: theme.light.input.outline.bgColor }}
       {...props}>
       <Box

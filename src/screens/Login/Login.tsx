@@ -137,6 +137,7 @@ const Login: React.FC<PropsWithChildren<any>> = () => {
                 roomId: item.roomId,
                 timeline: item.timeline,
                 avatar_url: item.getMxcAvatarUrl(),
+                membership: item.getMyMembership(),
                 unreadCount: item.getUnreadNotificationCount(),
               };
             }),

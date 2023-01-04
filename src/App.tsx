@@ -112,6 +112,7 @@ const App = () => {
                   normalizedName: item.normalizedName,
                   roomId: item.roomId,
                   timeline: item.timeline,
+                  membership: item.getMyMembership(),
                   avatar_url: item.getMxcAvatarUrl(),
                   unreadCount: item.getUnreadNotificationCount(),
                 };

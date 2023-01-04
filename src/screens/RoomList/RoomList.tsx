@@ -70,6 +70,7 @@ const RoomList = () => {
             roomId: item.roomId,
             timeline: item.timeline,
             avatar_url: item.getMxcAvatarUrl(),
+            membership: item.getMyMembership(),
             unreadCount: item.getUnreadNotificationCount(),
           };
         }),
@@ -204,8 +205,10 @@ const RoomList = () => {
             avatarUrl={item.avatar_url}
             roomId={item.roomId}
             message={
-              item.timeline[item.timeline.length - 1]?.event?.type ===
-              'm.room.message'
+              item.membership === 'invite'
+                ? "You're were invited"
+                : item.timeline[item.timeline.length - 1]?.event?.type ===
+                  'm.room.message'
                 ? item.timeline[item.timeline.length - 1]?.event?.content?.body
                 : '...'
             }
@@ -215,6 +218,7 @@ const RoomList = () => {
               item.timeline[item.timeline.length - 1]?.event?.origin_server_ts,
             )}
             unreadCount={item.unreadCount}
+            membership={item.membership}
           />
         ))}
       </ScrollView>

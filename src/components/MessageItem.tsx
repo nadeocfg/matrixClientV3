@@ -6,6 +6,9 @@ import theme from '../themes/theme';
 import { MatrixContext } from '../context/matrixContext';
 import { formatDate } from '../utils/formatDate';
 import DefaultAvatar from './DefaultAvatar';
+import getTimelineJSXMessages, {
+  GetTimelineJSXMessagesModel,
+} from '../utils/getTimelineJSXMessages';
 
 interface MessageItemProps {
   event: IEventWithRoomId;
@@ -17,6 +20,82 @@ const MessageItem = ({ event, userId, isPrevSenderSame }: MessageItemProps) => {
   const matrixContext = useContext(MatrixContext);
   const userData = matrixContext.instance?.getUser(event.sender || '');
   const isMyMessage = userId === event.sender;
+  const renderTimelineSystemMessage = getTimelineJSXMessages();
+
+  console.log(event);
+
+  const getMessage = (
+    membership: keyof GetTimelineJSXMessagesModel | undefined,
+  ): string => {
+    if (!membership) {
+      return '';
+    }
+
+    const sender = matrixContext.instance?.getUser(event.sender)?.displayName;
+    const username = event.content.displayname;
+    const reason = event.content.reason;
+
+    switch (membership) {
+      case 'join': {
+        return renderTimelineSystemMessage.join(username || '');
+      }
+
+      case 'leave': {
+        return renderTimelineSystemMessage.leave(sender || '');
+      }
+
+      case 'invite': {
+        return renderTimelineSystemMessage.invite(sender || '', username || '');
+      }
+
+      case 'cancelInvite': {
+        return renderTimelineSystemMessage.cancelInvite(
+          sender || '',
+          username || '',
+        );
+      }
+
+      case 'rejectInvite': {
+        return renderTimelineSystemMessage.rejectInvite(username || '');
+      }
+
+      case 'kick': {
+        return renderTimelineSystemMessage.kick(
+          sender || '',
+          username || '',
+          reason,
+        );
+      }
+
+      case 'ban': {
+        return renderTimelineSystemMessage.ban(
+          sender || '',
+          username || '',
+          reason,
+        );
+      }
+
+      case 'unban': {
+        return renderTimelineSystemMessage.unban(sender || '', username || '');
+      }
+
+      case 'avatarSets': {
+        return renderTimelineSystemMessage.avatarSets(username || '');
+      }
+
+      case 'avatarChanged': {
+        return renderTimelineSystemMessage.avatarChanged(username || '');
+      }
+
+      case 'avatarRemoved': {
+        return renderTimelineSystemMessage.avatarRemoved(username || '');
+      }
+
+      default: {
+        return '';
+      }
+    }
+  };
 
   if (event.type === 'm.room.member') {
     return (
@@ -52,8 +131,9 @@ const MessageItem = ({ event, userId, isPrevSenderSame }: MessageItemProps) => {
 
         <Box ml={2}>
           <Text>
-            {event.content.membership + ' '}
-            <Text fontWeight={600}>{event.content?.displayname}</Text>
+            {getMessage(
+              event.content?.membership as keyof GetTimelineJSXMessagesModel,
+            )}
           </Text>
           <Text fontSize="2xs">{formatDate(event.origin_server_ts)}</Text>
         </Box>

@@ -18,12 +18,14 @@ interface RoomHeaderProps {
   name: string;
   avatar: string;
   roomId: string;
+  membership: string;
 }
 
 const RoomHeader: React.FC<PropsWithChildren<RoomHeaderProps>> = ({
   name,
   avatar,
   roomId,
+  membership,
 }) => {
   const { colorMode } = useColorMode();
 
@@ -71,29 +73,31 @@ const RoomHeader: React.FC<PropsWithChildren<RoomHeaderProps>> = ({
         {name}
       </Heading>
 
-      <Menu
-        offset={16}
-        trigger={triggerProps => {
-          return (
-            <IconButton
-              width={12}
-              height={12}
-              variant="ghost"
-              {...triggerProps}
-              icon={
-                <DotsIcon
-                  color={
-                    colorMode === 'dark'
-                      ? theme.dark.button.primary.textColor
-                      : theme.light.button.primary.textColor
-                  }
-                />
-              }
-            />
-          );
-        }}>
-        <Menu.Item onPress={() => goTo('RoomSettings')}>Settings</Menu.Item>
-      </Menu>
+      {membership === 'join' && (
+        <Menu
+          offset={16}
+          trigger={triggerProps => {
+            return (
+              <IconButton
+                width={12}
+                height={12}
+                variant="ghost"
+                {...triggerProps}
+                icon={
+                  <DotsIcon
+                    color={
+                      colorMode === 'dark'
+                        ? theme.dark.button.primary.textColor
+                        : theme.light.button.primary.textColor
+                    }
+                  />
+                }
+              />
+            );
+          }}>
+          <Menu.Item onPress={() => goTo('RoomSettings')}>Settings</Menu.Item>
+        </Menu>
+      )}
     </Box>
   );
 };

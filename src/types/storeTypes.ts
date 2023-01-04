@@ -76,6 +76,7 @@ export interface RoomItemModel {
   roomId: string;
   timeline: MatrixEvent[];
   avatar_url: string | null;
+  membership: string;
   unreadCount: number | undefined;
 }
 

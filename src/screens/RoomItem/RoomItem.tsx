@@ -1,4 +1,14 @@
-import { Box, Flex, IconButton, Input, ScrollView, Spinner } from 'native-base';
+import {
+  Box,
+  Button,
+  Center,
+  Flex,
+  IconButton,
+  Input,
+  ScrollView,
+  Spinner,
+  Text,
+} from 'native-base';
 import React, { useState, useContext, useEffect, useRef } from 'react';
 import theme from '../../themes/theme';
 import { MatrixContext } from '../../context/matrixContext';
@@ -7,6 +17,7 @@ import { useAppDispatch } from '../../hooks/useDispatch';
 import {
   setActionsDrawerContent,
   setActionsDrawerVisible,
+  setLoader,
 } from '../../store/actions/mainActions';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackModel } from '../../types/rootStackType';
@@ -31,6 +42,7 @@ const RoomItem = (
     avatar: '',
     name: '',
     roomId: '',
+    membership: '',
   });
   const [timeline, setTimeline] = useState<{
     start?: string | undefined;
@@ -106,7 +118,12 @@ const RoomItem = (
         fullAvatar: fullAvatarUrl || '',
         roomId: roomId,
         name: props.route.params.roomName,
+        membership: roomInfo?.getMyMembership(),
       });
+    }
+
+    if (roomInfo?.getMyMembership() === 'invite') {
+      return;
     }
 
     matrixContext.instance
@@ -221,12 +238,66 @@ const RoomItem = (
     }
   };
 
+  const onJoin = () => {
+    dispatch(setLoader(true));
+
+    matrixContext.instance
+      ?.joinRoom(roomData.roomId)
+      .then(() => {
+        navigate('RoomItem', {
+          roomId: roomData.roomId,
+          roomName: roomData.name,
+        });
+      })
+      .catch(err => {
+        console.log({ ...err });
+
+        dispatch(
+          setActionsDrawerContent({
+            title: err.data?.errcode || '',
+            text: err.data?.error || 'Something went wrong',
+          }),
+        );
+
+        dispatch(setActionsDrawerVisible(true));
+      })
+      .finally(() => {
+        dispatch(setLoader(false));
+      });
+  };
+
+  const onLeave = () => {
+    dispatch(setLoader(true));
+
+    matrixContext.instance
+      ?.leave(roomData.roomId)
+      .then(() => {
+        navigate('RoomList');
+      })
+      .catch(err => {
+        console.log({ ...err });
+
+        dispatch(
+          setActionsDrawerContent({
+            title: err.data?.errcode || '',
+            text: err.data?.error || 'Something went wrong',
+          }),
+        );
+
+        dispatch(setActionsDrawerVisible(true));
+      })
+      .finally(() => {
+        dispatch(setLoader(false));
+      });
+  };
+
   return (
     <>
       <RoomHeader
         roomId={props.route.params.roomId}
         name={roomData.name}
         avatar={roomData.avatar}
+        membership={roomData.membership}
       />
 
       <Box
@@ -256,6 +327,22 @@ const RoomItem = (
         _dark={{
           bg: theme.dark.bgColor,
         }}>
+        {roomData.membership === 'invite' && (
+          <Center>
+            <Text flex={1} fontSize={16} mb={4} mt={8}>
+              Do you want to join <Text fontWeight={600}>{roomData.name}</Text>?
+            </Text>
+            <Flex flexDirection="row" align="center">
+              <Button variant="outline" mr={2} onPress={onLeave}>
+                Reject
+              </Button>
+              <Button variant="subtle" colorScheme="primary" onPress={onJoin}>
+                Join
+              </Button>
+            </Flex>
+          </Center>
+        )}
+
         {timeline.chunk.map((timelineItem, index) => (
           <MessageItem
             event={timelineItem}
@@ -267,32 +354,34 @@ const RoomItem = (
           />
         ))}
       </ScrollView>
-      <Flex direction="row" align="center" p={2}>
-        <Input
-          p={1}
-          mr={2}
-          flexBasis="80%"
-          flexGrow={1}
-          fontSize="sm"
-          placeholder="Message"
-          value={message}
-          onChangeText={changeMessage}
-        />
-        {message ? (
-          <IconButton
-            onPress={sendMessage}
-            w={8}
-            h={8}
-            icon={<ArrowUpIcon color={theme.light.button.primary.bgColor} />}
+      {roomData.membership === 'join' && (
+        <Flex direction="row" align="center" p={2}>
+          <Input
+            p={1}
+            mr={2}
+            flexBasis="80%"
+            flexGrow={1}
+            fontSize="sm"
+            placeholder="Message"
+            value={message}
+            onChangeText={changeMessage}
           />
-        ) : (
-          <IconButton
-            w={8}
-            h={8}
-            icon={<MicIcon color={theme.light.button.primary.bgColor} />}
-          />
-        )}
-      </Flex>
+          {message ? (
+            <IconButton
+              onPress={sendMessage}
+              w={8}
+              h={8}
+              icon={<ArrowUpIcon color={theme.light.button.primary.bgColor} />}
+            />
+          ) : (
+            <IconButton
+              w={8}
+              h={8}
+              icon={<MicIcon color={theme.light.button.primary.bgColor} />}
+            />
+          )}
+        </Flex>
+      )}
     </>
   );
 };
