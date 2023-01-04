@@ -1,6 +1,5 @@
-import { Box, Flex, Text } from 'native-base';
+import { Flex } from 'native-base';
 import React from 'react';
-import { StyleSheet } from 'react-native';
 import theme from '../themes/theme';
 
 interface DefaultAvatarProps {

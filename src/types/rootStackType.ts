@@ -12,4 +12,5 @@ export type RootStackModel = {
   DeactivateAccountSettings: undefined;
   TermsOfUseSettings: undefined;
   PrivacyPolicySettings: undefined;
+  RoomSettings: { roomId: string };
 };

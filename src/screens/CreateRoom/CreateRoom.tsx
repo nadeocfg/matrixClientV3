@@ -11,15 +11,11 @@ import {
 } from '../../store/actions/mainActions';
 import { useAppDispatch } from '../../hooks/useDispatch';
 import { UserDirectoryItemModel } from '../../types/userDirectoryItemModel';
-import Step1 from './components/Step1';
 import Step2 from './components/Step2';
 import { navigationRef } from '../../utils/navigation';
 import { Visibility } from 'matrix-js-sdk';
-
-interface SearchDataModel {
-  searchValue: string;
-  isSearching: boolean;
-}
+import SearchUsers from '../../components/SearchUsers';
+import { SearchDataModel } from '../../types/searchDataModel';
 
 interface RoomDataModel {
   visibility: Visibility;
@@ -235,7 +231,7 @@ const CreateRoom = () => {
             },
           }}
           style={styles.inner}>
-          <Step1
+          <SearchUsers
             matrixContext={matrixContext}
             foundedUsers={foundedUsers}
             isSearching={searchData.isSearching}

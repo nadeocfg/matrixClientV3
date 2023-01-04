@@ -1,12 +1,4 @@
-import {
-  Box,
-  Button,
-  Flex,
-  IconButton,
-  Input,
-  ScrollView,
-  Spinner,
-} from 'native-base';
+import { Box, Flex, IconButton, Input, ScrollView, Spinner } from 'native-base';
 import React, { useState, useContext, useEffect, useRef } from 'react';
 import theme from '../../themes/theme';
 import { MatrixContext } from '../../context/matrixContext';
@@ -53,16 +45,6 @@ const RoomItem = (
   useEffect(() => {
     if (props.route.params.roomId) {
       initialRoomSync(props.route.params.roomId);
-
-      matrixContext.instance
-        ?.getJoinedRoomMembers(props.route.params.roomId)
-        .then(res => {
-          console.log(res);
-        });
-
-      matrixContext.instance?.members(props.route.params.roomId).then(res => {
-        console.log(res);
-      });
     }
   }, []);
 
@@ -241,7 +223,11 @@ const RoomItem = (
 
   return (
     <>
-      <RoomHeader name={roomData.name} avatar={roomData.avatar} />
+      <RoomHeader
+        roomId={props.route.params.roomId}
+        name={roomData.name}
+        avatar={roomData.avatar}
+      />
 
       <Box
         _light={{

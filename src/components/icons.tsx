@@ -220,3 +220,36 @@ export const QuestionMarkRounded = ({
     </Svg>
   );
 };
+
+export const PlusRoundedIcon = ({ color = '#38383A' }: { color?: string }) => {
+  return (
+    <Svg width="30" height="30" viewBox="0 0 30 30" fill="none">
+      <G clip-path="url(#clip0_543_2682)">
+        <Path
+          d="M15 30C23.2843 30 30 23.2843 30 15C30 6.71573 23.2843 0 15 0C6.71573 0 0 6.71573 0 15C0 23.2843 6.71573 30 15 30Z"
+          fill="#EBEBF5"
+          fill-opacity="0.6"
+        />
+        <Path
+          d="M15 8V22"
+          stroke={color}
+          stroke-width="1.5"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+        <Path
+          d="M8 15H22"
+          stroke={color}
+          stroke-width="1.5"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+      </G>
+      <Defs>
+        <ClipPath id="clip0_543_2682">
+          <Rect width="30" height="30" fill="white" />
+        </ClipPath>
+      </Defs>
+    </Svg>
+  );
+};

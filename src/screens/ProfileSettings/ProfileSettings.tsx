@@ -48,13 +48,9 @@ const ProfileSettings = () => {
       icon: <QuestionMarkRounded />,
     },
     {
-      title: 'Terms of Use',
-      route: 'TermsOfUseSettings',
-      icon: <QuestionMarkRounded />,
-    },
-    {
-      title: 'Privacy Policy',
-      route: 'PrivacyPolicySettings',
+      title: 'Terms of Use & Privacy Policy',
+      route: 'https://dev.techwings.com:8448/_matrix/consent?v=1.0',
+      link: true,
       icon: <QuestionMarkRounded />,
     },
   ];

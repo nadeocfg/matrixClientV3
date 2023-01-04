@@ -59,7 +59,8 @@ const RoomListHeader = ({ userAvatar }: RoomListHeaderProps) => {
         )}
       </Pressable>
 
-      <Heading>Chats</Heading>
+      <Heading size="md">Chats</Heading>
+
       <Menu
         offset={16}
         trigger={triggerProps => {

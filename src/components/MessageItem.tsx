@@ -52,8 +52,8 @@ const MessageItem = ({ event, userId, isPrevSenderSame }: MessageItemProps) => {
 
         <Box ml={2}>
           <Text>
+            {event.content.membership + ' '}
             <Text fontWeight={600}>{event.content?.displayname}</Text>
-            {` ${event.content.membership} chat`}
           </Text>
           <Text fontSize="2xs">{formatDate(event.origin_server_ts)}</Text>
         </Box>

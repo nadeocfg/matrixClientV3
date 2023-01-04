@@ -1,20 +1,38 @@
-import { Box, ChevronLeftIcon, Heading, IconButton, Image } from 'native-base';
+import {
+  Box,
+  ChevronLeftIcon,
+  Heading,
+  IconButton,
+  Image,
+  Menu,
+  useColorMode,
+} from 'native-base';
 import React, { PropsWithChildren } from 'react';
 import DefaultAvatar from '../../../components/DefaultAvatar';
+import { DotsIcon } from '../../../components/icons';
 import theme from '../../../themes/theme';
-import { navigationRef } from '../../../utils/navigation';
+import { RootStackModel } from '../../../types/rootStackType';
+import { navigate, navigationRef } from '../../../utils/navigation';
 
 interface RoomHeaderProps {
   name: string;
   avatar: string;
+  roomId: string;
 }
 
 const RoomHeader: React.FC<PropsWithChildren<RoomHeaderProps>> = ({
   name,
   avatar,
+  roomId,
 }) => {
+  const { colorMode } = useColorMode();
+
   const goBack = () => {
     navigationRef.goBack();
+  };
+
+  const goTo = (screen: keyof RootStackModel) => {
+    navigate(screen, { roomId: roomId });
   };
 
   return (
@@ -49,7 +67,33 @@ const RoomHeader: React.FC<PropsWithChildren<RoomHeaderProps>> = ({
         <DefaultAvatar name={name[0]} width={12} />
       )}
 
-      <Heading ml={2}>{name}</Heading>
+      <Heading size="md" flexGrow={1} ml={2}>
+        {name}
+      </Heading>
+
+      <Menu
+        offset={16}
+        trigger={triggerProps => {
+          return (
+            <IconButton
+              width={12}
+              height={12}
+              variant="ghost"
+              {...triggerProps}
+              icon={
+                <DotsIcon
+                  color={
+                    colorMode === 'dark'
+                      ? theme.dark.button.primary.textColor
+                      : theme.light.button.primary.textColor
+                  }
+                />
+              }
+            />
+          );
+        }}>
+        <Menu.Item onPress={() => goTo('RoomSettings')}>Settings</Menu.Item>
+      </Menu>
     </Box>
   );
 };

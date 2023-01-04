@@ -29,6 +29,7 @@ import {
 import PasswordSettings from './screens/ProfileSettings/screens/PasswordSettings';
 import DeactivateAccountSettings from './screens/ProfileSettings/screens/DeactivateAccountSettings';
 import PersonalInformationSettings from './screens/ProfileSettings/screens/PersonalInformationSettings';
+import RoomSettings from './screens/RoomSettings';
 
 const App = () => {
   const { setColorMode } = useColorMode();
@@ -186,11 +187,6 @@ const App = () => {
         />
         <Stack.Screen
           options={{ headerShown: false }}
-          name="RoomItem"
-          component={RoomItem}
-        />
-        <Stack.Screen
-          options={{ headerShown: false }}
           name="RoomList"
           component={RoomList}
         />
@@ -198,6 +194,16 @@ const App = () => {
           options={{ headerShown: false }}
           name="CreateRoom"
           component={CreateRoom}
+        />
+        <Stack.Screen
+          options={{ headerShown: false }}
+          name="RoomItem"
+          component={RoomItem}
+        />
+        <Stack.Screen
+          options={{ headerShown: false }}
+          name="RoomSettings"
+          component={RoomSettings}
         />
         <Stack.Screen
           options={{ headerShown: false }}
