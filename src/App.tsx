@@ -32,6 +32,7 @@ import PersonalInformationSettings from './screens/ProfileSettings/screens/Perso
 import RoomSettings from './screens/RoomSettings';
 import RoomProfileSettings from './screens/RoomProfileSettings';
 import RoomPermissionSettings from './screens/RoomPermissionSettings';
+import UserProfile from './screens/UserProfile';
 
 const App = () => {
   const { setColorMode } = useColorMode();
@@ -251,6 +252,11 @@ const App = () => {
           options={{ headerShown: false }}
           name="RoomPermissionSettings"
           component={RoomPermissionSettings}
+        />
+        <Stack.Screen
+          options={{ headerShown: false }}
+          name="UserProfile"
+          component={UserProfile}
         />
       </Stack.Navigator>
 

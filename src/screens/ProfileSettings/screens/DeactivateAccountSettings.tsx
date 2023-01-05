@@ -39,7 +39,6 @@ const DeactivateAccountSettings = () => {
   const user = useAppSelector((state: StoreModel) => state.userStore.user);
 
   const changePasswordData = (name: string) => (value: any) => {
-    console.log(name);
     if (name === 'isPassword') {
       setPasswordData({
         ...passwordData,

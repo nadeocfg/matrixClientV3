@@ -15,4 +15,5 @@ export type RootStackModel = {
   RoomSettings: { roomId: string };
   RoomProfileSettings: { roomId: string };
   RoomPermissionSettings: { roomId: string };
+  UserProfile: { roomId?: string; userId: string };
 };

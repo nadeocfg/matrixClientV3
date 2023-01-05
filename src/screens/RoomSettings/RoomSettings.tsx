@@ -36,6 +36,7 @@ import {
 import { useAppDispatch } from '../../hooks/useDispatch';
 import MenuList, { ItemModel } from '../../components/MenuList';
 import { navigate } from '../../utils/navigation';
+import { useFocusEffect } from '@react-navigation/native';
 
 interface RoomSettingsProps
   extends NativeStackScreenProps<RootStackModel, 'RoomSettings'> {}
@@ -97,27 +98,29 @@ const RoomSettings = ({ route }: RoomSettingsProps) => {
     };
   }, [searchData.searchValue]);
 
-  useEffect(() => {
-    const room = matrixContext.instance?.getRoom(route.params.roomId);
+  useFocusEffect(
+    React.useCallback(() => {
+      const room = matrixContext.instance?.getRoom(route.params.roomId);
 
-    room?.loadMembersIfNeeded();
-    setRoomData(room);
-    setAvatar({
-      avatar:
-        room?.getAvatarUrl(
-          matrixContext.instance?.baseUrl || '',
-          64,
-          64,
-          'crop',
-        ) || '',
-      fullAvatar:
-        matrixContext.instance?.mxcUrlToHttp(room?.getMxcAvatarUrl() || '') ||
-        '',
-    });
-
-    setJoinedMembers(room?.getMembersWithMembership('join') || []);
-    setInvitedMembers(room?.getMembersWithMembership('invite') || []);
-  }, [route.params.roomId]);
+      room?.loadMembersIfNeeded().then(() => {
+        setJoinedMembers(room?.getMembersWithMembership('join') || []);
+        setInvitedMembers(room?.getMembersWithMembership('invite') || []);
+      });
+      setRoomData(room);
+      setAvatar({
+        avatar:
+          room?.getAvatarUrl(
+            matrixContext.instance?.baseUrl || '',
+            64,
+            64,
+            'crop',
+          ) || '',
+        fullAvatar:
+          matrixContext.instance?.mxcUrlToHttp(room?.getMxcAvatarUrl() || '') ||
+          '',
+      });
+    }, [route.params.roomId]),
+  );
 
   const search = (value: string) => {
     setSearchData({
@@ -321,7 +324,9 @@ const RoomSettings = ({ route }: RoomSettingsProps) => {
     );
   }
 
-  console.log(roomData?.currentState?.getStateEvents('m.room.topic'));
+  const openUser = (userId: string) => {
+    navigate('UserProfile', { userId, roomId: route.params.roomId });
+  };
 
   return (
     <>
@@ -384,41 +389,45 @@ const RoomSettings = ({ route }: RoomSettingsProps) => {
           </Pressable>
 
           {joinedMembers.map(member => (
-            <Box style={listStyle.listItem} key={member.userId}>
-              {member.getAvatarUrl(
-                matrixContext.instance?.baseUrl || '',
-                48,
-                48,
-                'crop',
-                false,
-                false,
-              ) ? (
-                <Image
-                  src={
-                    member.getAvatarUrl(
-                      matrixContext.instance?.baseUrl || '',
-                      48,
-                      48,
-                      'crop',
-                      false,
-                      false,
-                    ) || ''
-                  }
-                  alt="User avatar"
-                  borderRadius="full"
-                  width={8}
-                  height={8}
-                />
-              ) : (
-                <DefaultAvatar
-                  name={member.name ? member.name[0] : ''}
-                  width={8}
-                  fontSize={16}
-                />
-              )}
-              <Text ml={4}>{member.name}</Text>
-              <Text ml="auto">{getPowerLabel(member.powerLevel)}</Text>
-            </Box>
+            <Pressable
+              onPress={() => openUser(member.userId)}
+              key={member.userId}>
+              <Box style={listStyle.listItem}>
+                {member.getAvatarUrl(
+                  matrixContext.instance?.baseUrl || '',
+                  48,
+                  48,
+                  'crop',
+                  false,
+                  false,
+                ) ? (
+                  <Image
+                    src={
+                      member.getAvatarUrl(
+                        matrixContext.instance?.baseUrl || '',
+                        48,
+                        48,
+                        'crop',
+                        false,
+                        false,
+                      ) || ''
+                    }
+                    alt="User avatar"
+                    borderRadius="full"
+                    width={8}
+                    height={8}
+                  />
+                ) : (
+                  <DefaultAvatar
+                    name={member.name ? member.name[0] : ''}
+                    width={8}
+                    fontSize={16}
+                  />
+                )}
+                <Text ml={4}>{member.name}</Text>
+                <Text ml="auto">{getPowerLabel(member.powerLevel)}</Text>
+              </Box>
+            </Pressable>
           ))}
         </Box>
 

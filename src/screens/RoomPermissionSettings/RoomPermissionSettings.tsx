@@ -13,7 +13,8 @@ import {
 } from '../../store/actions/mainActions';
 import theme from '../../themes/theme';
 import { RootStackModel } from '../../types/rootStackType';
-import { navigate, navigationRef } from '../../utils/navigation';
+import { navigationRef } from '../../utils/navigation';
+import permissionVariants from '../../utils/permissionVariants';
 
 interface RoomPermissionSettingsProps
   extends NativeStackScreenProps<RootStackModel, 'RoomPermissionSettings'> {}
@@ -45,20 +46,6 @@ const RoomPermissionSettings = ({ route }: RoomPermissionSettingsProps) => {
     historical: 100,
   });
   const [canEdit, setCanEdit] = useState(false);
-  const variants = [
-    {
-      title: 'All members',
-      value: 0,
-    },
-    {
-      title: 'Moderators',
-      value: 50,
-    },
-    {
-      title: 'Admins',
-      value: 100,
-    },
-  ];
 
   useEffect(() => {
     const room = matrixContext.instance?.getRoom(route.params.roomId);
@@ -154,7 +141,7 @@ const RoomPermissionSettings = ({ route }: RoomPermissionSettingsProps) => {
           label="Send messages"
           onChange={onChange('events_default')}
           value={permissions.events_default}
-          items={variants}
+          items={permissionVariants}
         />
 
         <CustomRadio
@@ -163,7 +150,7 @@ const RoomPermissionSettings = ({ route }: RoomPermissionSettingsProps) => {
           label="Delete messages sent by others"
           onChange={onChange('redact')}
           value={permissions.redact}
-          items={variants}
+          items={permissionVariants}
         />
 
         <CustomRadio
@@ -172,7 +159,7 @@ const RoomPermissionSettings = ({ route }: RoomPermissionSettingsProps) => {
           label="Invite members"
           onChange={onChange('invite')}
           value={permissions.invite}
-          items={variants}
+          items={permissionVariants}
         />
 
         <CustomRadio
@@ -181,7 +168,7 @@ const RoomPermissionSettings = ({ route }: RoomPermissionSettingsProps) => {
           label="Kick members"
           onChange={onChange('kick')}
           value={permissions.kick}
-          items={variants}
+          items={permissionVariants}
         />
 
         <CustomRadio
@@ -190,7 +177,7 @@ const RoomPermissionSettings = ({ route }: RoomPermissionSettingsProps) => {
           label="Ban members"
           onChange={onChange('ban')}
           value={permissions.ban}
-          items={variants}
+          items={permissionVariants}
         />
 
         <CustomRadio
@@ -199,7 +186,7 @@ const RoomPermissionSettings = ({ route }: RoomPermissionSettingsProps) => {
           label="Change chat avatar"
           onChange={onChange('m.room.avatar')}
           value={permissions.events['m.room.avatar']}
-          items={variants}
+          items={permissionVariants}
         />
 
         <CustomRadio
@@ -208,7 +195,7 @@ const RoomPermissionSettings = ({ route }: RoomPermissionSettingsProps) => {
           label="Change chat name"
           onChange={onChange('m.room.name')}
           value={permissions.events['m.room.name']}
-          items={variants}
+          items={permissionVariants}
         />
 
         <CustomRadio
@@ -217,7 +204,7 @@ const RoomPermissionSettings = ({ route }: RoomPermissionSettingsProps) => {
           label="Change chat topic"
           onChange={onChange('m.room.topic')}
           value={permissions.events['m.room.topic']}
-          items={variants}
+          items={permissionVariants}
         />
 
         <CustomRadio
@@ -226,7 +213,7 @@ const RoomPermissionSettings = ({ route }: RoomPermissionSettingsProps) => {
           label="Change permissions"
           onChange={onChange('m.room.power_levels')}
           value={permissions.events['m.room.power_levels']}
-          items={variants}
+          items={permissionVariants}
         />
       </ScrollView>
     </>

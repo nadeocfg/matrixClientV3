@@ -180,7 +180,6 @@ const CreateRoom = () => {
         visibility: roomData.visibility,
       })
       .then(res => {
-        console.log(res);
         navigationRef.reset({
           index: 0,
           routes: [{ name: 'RoomList' }],

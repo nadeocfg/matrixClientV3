@@ -42,6 +42,7 @@ const CustomRadio = ({
         }}>
         {items.map((item, index) => (
           <Pressable
+            key={index}
             onPress={canEdit ? () => onChange(+item.value) : () => {}}
             px={4}
             py={4}
