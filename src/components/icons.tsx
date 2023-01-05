@@ -1,7 +1,11 @@
 import React from 'react';
 import { Path, G, Svg, Defs, ClipPath, Rect, Circle } from 'react-native-svg';
 
-export const CloseEyeIcon = ({ color }: any) => {
+interface IconProps {
+  color?: string;
+}
+
+export const CloseEyeIcon = ({ color }: IconProps) => {
   return (
     <Svg width="24" height="24" viewBox="0 0 24 24" fill="none">
       <G clipPath="url(#clip0_74_2822)">
@@ -34,7 +38,7 @@ export const CloseEyeIcon = ({ color }: any) => {
   );
 };
 
-export const EyeIcon = ({ color }: any) => {
+export const EyeIcon = ({ color }: IconProps) => {
   return (
     <Svg width="24" height="24" viewBox="0 0 24 24" fill="none">
       <G clipPath="url(#clip0_74_2819)">
@@ -82,7 +86,7 @@ export const MockedLogo = () => {
   );
 };
 
-export const ArrowLeftIcon = ({ color = '#3C3C43' } = {}) => {
+export const ArrowLeftIcon = ({ color = '#3C3C43' }: IconProps) => {
   return (
     <Svg width="24" height="24" viewBox="0 0 24 24" fill="none">
       <Path
@@ -94,7 +98,7 @@ export const ArrowLeftIcon = ({ color = '#3C3C43' } = {}) => {
   );
 };
 
-export const ArrowRightIcon = ({ color = '#38383A' }: { color?: string }) => {
+export const ArrowRightIcon = ({ color = '#38383A' }: IconProps) => {
   return (
     <Svg width="8" height="13" viewBox="0 0 8 13" fill="none">
       <Path
@@ -105,7 +109,7 @@ export const ArrowRightIcon = ({ color = '#38383A' }: { color?: string }) => {
   );
 };
 
-export const MicIcon = ({ color = '#38383A' }: { color?: string }) => {
+export const MicIcon = ({ color = '#38383A' }: IconProps) => {
   return (
     <Svg width="13" height="20" viewBox="0 0 13 20" fill="none">
       <Path
@@ -116,7 +120,7 @@ export const MicIcon = ({ color = '#38383A' }: { color?: string }) => {
   );
 };
 
-export const ArrowUpIcon = ({ color = '#38383A' }: { color?: string }) => {
+export const ArrowUpIcon = ({ color = '#38383A' }: IconProps) => {
   return (
     <Svg width="32" height="32" viewBox="0 0 32 32" fill="none">
       <Path
@@ -145,7 +149,7 @@ export const ArrowUpIcon = ({ color = '#38383A' }: { color?: string }) => {
   );
 };
 
-export const DotsIcon = ({ color = '#38383A' }: { color?: string }) => {
+export const DotsIcon = ({ color = '#38383A' }: IconProps) => {
   return (
     <Svg width="24" height="24" viewBox="0 0 24 24" fill="none">
       <Circle cx="12" cy="5" r="2" fill={color} />
@@ -155,9 +159,9 @@ export const DotsIcon = ({ color = '#38383A' }: { color?: string }) => {
   );
 };
 
-export const MagnifierIcon = ({ color = '#3C3C43', ...rest }: any) => {
+export const MagnifierIcon = ({ color = '#3C3C43' }: IconProps) => {
   return (
-    <Svg width="24" height="24" viewBox="0 0 24 24" fill="none" {...rest}>
+    <Svg width="24" height="24" viewBox="0 0 24 24" fill="none">
       <Path
         d="M10.3833 16.7666C11.7695 16.7666 13.0479 16.3184 14.0938 15.5713L18.0283 19.5059C18.2109 19.6885 18.4517 19.7798 18.709 19.7798C19.2485 19.7798 19.6304 19.3647 19.6304 18.8335C19.6304 18.5845 19.5474 18.3438 19.3647 18.1694L15.4551 14.2515C16.2769 13.1724 16.7666 11.8359 16.7666 10.3833C16.7666 6.87207 13.8945 4 10.3833 4C6.88037 4 4 6.86377 4 10.3833C4 13.8945 6.87207 16.7666 10.3833 16.7666ZM10.3833 15.3887C7.64404 15.3887 5.37793 13.1226 5.37793 10.3833C5.37793 7.64404 7.64404 5.37793 10.3833 5.37793C13.1226 5.37793 15.3887 7.64404 15.3887 10.3833C15.3887 13.1226 13.1226 15.3887 10.3833 15.3887Z"
         fill={color}
@@ -167,9 +171,9 @@ export const MagnifierIcon = ({ color = '#3C3C43', ...rest }: any) => {
   );
 };
 
-export const CloseIcon = ({ color = '#38383A', ...rest }: any) => {
+export const CloseIcon = ({ color = '#38383A' }: IconProps) => {
   return (
-    <Svg width="11" height="12" viewBox="0 0 11 12" fill="none" {...rest}>
+    <Svg width="11" height="12" viewBox="0 0 11 12" fill="none">
       <Rect
         y="2.06079"
         width="2"
@@ -191,9 +195,8 @@ export const CloseIcon = ({ color = '#38383A', ...rest }: any) => {
 
 export const QuestionMarkRounded = ({
   color = '#38383A',
-}: {
-  color?: string;
-}) => {
+  ...rest
+}: IconProps) => {
   return (
     <Svg width="24" height="24" viewBox="0 0 24 24" fill="none">
       <Path
@@ -221,7 +224,7 @@ export const QuestionMarkRounded = ({
   );
 };
 
-export const PlusRoundedIcon = ({ color = '#38383A' }: { color?: string }) => {
+export const PlusRoundedIcon = ({ color = '#38383A' }: IconProps) => {
   return (
     <Svg width="30" height="30" viewBox="0 0 30 30" fill="none">
       <G clip-path="url(#clip0_543_2682)">
@@ -250,6 +253,62 @@ export const PlusRoundedIcon = ({ color = '#38383A' }: { color?: string }) => {
           <Rect width="30" height="30" fill="white" />
         </ClipPath>
       </Defs>
+    </Svg>
+  );
+};
+
+export const LinkIcon = ({ color = '#38383A' }: IconProps) => {
+  return (
+    <Svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+      <Path
+        d="M10 13C10.4295 13.5741 10.9774 14.0491 11.6066 14.3929C12.2357 14.7367 12.9315 14.9411 13.6467 14.9923C14.3618 15.0435 15.0796 14.9403 15.7513 14.6897C16.4231 14.4392 17.0331 14.047 17.54 13.54L20.54 10.54C21.4508 9.59695 21.9548 8.33394 21.9434 7.02296C21.932 5.71198 21.4061 4.45791 20.4791 3.53087C19.5521 2.60383 18.298 2.07799 16.987 2.0666C15.676 2.0552 14.413 2.55918 13.47 3.46997L11.75 5.17997"
+        stroke={color}
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      />
+      <Path
+        d="M14 11.0002C13.5705 10.4261 13.0226 9.95104 12.3934 9.60729C11.7642 9.26353 11.0684 9.05911 10.3533 9.00789C9.63816 8.95667 8.92037 9.05986 8.24861 9.31044C7.57685 9.56103 6.96684 9.95316 6.45996 10.4602L3.45996 13.4602C2.54917 14.4032 2.04519 15.6662 2.05659 16.9772C2.06798 18.2882 2.59382 19.5423 3.52086 20.4693C4.4479 21.3964 5.70197 21.9222 7.01295 21.9336C8.32393 21.945 9.58694 21.441 10.53 20.5302L12.24 18.8202"
+        stroke={color}
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      />
+    </Svg>
+  );
+};
+
+export const LockIcon = ({ color = '#38383A' }: IconProps) => {
+  return (
+    <Svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+      <Path
+        d="M19 11H5C3.89543 11 3 11.8954 3 13V20C3 21.1046 3.89543 22 5 22H19C20.1046 22 21 21.1046 21 20V13C21 11.8954 20.1046 11 19 11Z"
+        stroke={color}
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      />
+      <Path
+        d="M7 11V7C7 5.67392 7.52678 4.40215 8.46447 3.46447C9.40215 2.52678 10.6739 2 12 2C13.3261 2 14.5979 2.52678 15.5355 3.46447C16.4732 4.40215 17 5.67392 17 7V11"
+        stroke={color}
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      />
+    </Svg>
+  );
+};
+
+export const CheckIcon = ({ color = '#38383A' }: IconProps) => {
+  return (
+    <Svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+      <Path
+        d="M20 6L9 17L4 12"
+        stroke={color}
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      />
     </Svg>
   );
 };

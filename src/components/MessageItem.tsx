@@ -22,8 +22,6 @@ const MessageItem = ({ event, userId, isPrevSenderSame }: MessageItemProps) => {
   const isMyMessage = userId === event.sender;
   const renderTimelineSystemMessage = getTimelineJSXMessages();
 
-  console.log(event);
-
   const getMessage = (
     membership: keyof GetTimelineJSXMessagesModel | undefined,
   ): string => {

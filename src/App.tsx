@@ -30,6 +30,8 @@ import PasswordSettings from './screens/ProfileSettings/screens/PasswordSettings
 import DeactivateAccountSettings from './screens/ProfileSettings/screens/DeactivateAccountSettings';
 import PersonalInformationSettings from './screens/ProfileSettings/screens/PersonalInformationSettings';
 import RoomSettings from './screens/RoomSettings';
+import RoomProfileSettings from './screens/RoomProfileSettings';
+import RoomPermissionSettings from './screens/RoomPermissionSettings';
 
 const App = () => {
   const { setColorMode } = useColorMode();
@@ -105,18 +107,22 @@ const App = () => {
         if (rooms.length > 0) {
           dispatch(
             setRooms(
-              rooms.map(item => {
-                return {
-                  myUserId: item.myUserId,
-                  name: item.name,
-                  normalizedName: item.normalizedName,
-                  roomId: item.roomId,
-                  timeline: item.timeline,
-                  membership: item.getMyMembership(),
-                  avatar_url: item.getMxcAvatarUrl(),
-                  unreadCount: item.getUnreadNotificationCount(),
-                };
-              }),
+              rooms
+                .sort((a, b) =>
+                  a.getMyMembership().localeCompare(b.getMyMembership()),
+                )
+                .map(item => {
+                  return {
+                    myUserId: item.myUserId,
+                    name: item.name,
+                    normalizedName: item.normalizedName,
+                    roomId: item.roomId,
+                    timeline: item.timeline,
+                    membership: item.getMyMembership(),
+                    avatar_url: item.getMxcAvatarUrl(),
+                    unreadCount: item.getUnreadNotificationCount(),
+                  };
+                }),
             ),
           );
         }
@@ -208,6 +214,11 @@ const App = () => {
         />
         <Stack.Screen
           options={{ headerShown: false }}
+          name="RoomProfileSettings"
+          component={RoomProfileSettings}
+        />
+        <Stack.Screen
+          options={{ headerShown: false }}
           name="ProfileSettings"
           component={ProfileSettings}
         />
@@ -235,6 +246,11 @@ const App = () => {
           options={{ headerShown: false }}
           name="PrivacyPolicySettings"
           component={PasswordSettings}
+        />
+        <Stack.Screen
+          options={{ headerShown: false }}
+          name="RoomPermissionSettings"
+          component={RoomPermissionSettings}
         />
       </Stack.Navigator>
 

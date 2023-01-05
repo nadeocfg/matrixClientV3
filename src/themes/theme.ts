@@ -12,6 +12,7 @@ const theme = {
   // Light mode colors
   light: {
     bgColor: colors.lightBg,
+    lightBg: colors.white,
     transparentBg: colors.lightTransparentBg,
     button: {
       primary: {
@@ -30,6 +31,7 @@ const theme = {
   // Dark mode colors
   dark: {
     bgColor: colors.coolGray[800],
+    lightBg: colors.black,
     transparentBg: colors.darkTransparentBg,
     button: {
       primary: {

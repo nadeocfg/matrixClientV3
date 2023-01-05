@@ -13,4 +13,6 @@ export type RootStackModel = {
   TermsOfUseSettings: undefined;
   PrivacyPolicySettings: undefined;
   RoomSettings: { roomId: string };
+  RoomProfileSettings: { roomId: string };
+  RoomPermissionSettings: { roomId: string };
 };

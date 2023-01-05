@@ -129,18 +129,22 @@ const Login: React.FC<PropsWithChildren<any>> = () => {
       if (rooms.length > 0) {
         dispatch(
           setRooms(
-            rooms.map(item => {
-              return {
-                myUserId: item.myUserId,
-                name: item.name,
-                normalizedName: item.normalizedName,
-                roomId: item.roomId,
-                timeline: item.timeline,
-                avatar_url: item.getMxcAvatarUrl(),
-                membership: item.getMyMembership(),
-                unreadCount: item.getUnreadNotificationCount(),
-              };
-            }),
+            rooms
+              .sort((a, b) =>
+                a.getMyMembership().localeCompare(b.getMyMembership()),
+              )
+              .map(item => {
+                return {
+                  myUserId: item.myUserId,
+                  name: item.name,
+                  normalizedName: item.normalizedName,
+                  roomId: item.roomId,
+                  timeline: item.timeline,
+                  avatar_url: item.getMxcAvatarUrl(),
+                  membership: item.getMyMembership(),
+                  unreadCount: item.getUnreadNotificationCount(),
+                };
+              }),
           ),
         );
       }

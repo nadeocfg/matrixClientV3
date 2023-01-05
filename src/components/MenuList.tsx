@@ -6,12 +6,15 @@ import { ArrowRightIcon } from './icons';
 
 interface MenuListProps extends InterfaceBoxProps<IFlexProps> {
   withIcons: boolean;
-  items: {
-    title: string;
-    route: string;
-    icon: JSX.Element;
-    link?: boolean;
-  }[];
+  items: ItemModel[];
+}
+
+export interface ItemModel {
+  title: string;
+  route?: string;
+  icon: JSX.Element;
+  link?: boolean;
+  onPress?: Function;
 }
 
 const MenuList = ({ withIcons, items, ...props }: MenuListProps) => {
@@ -19,11 +22,23 @@ const MenuList = ({ withIcons, items, ...props }: MenuListProps) => {
     navigate(route);
   };
 
+  const onPress = (item: ItemModel) => {
+    if (item.route) {
+      goTo(item.route);
+      return;
+    }
+
+    if (item.onPress) {
+      item.onPress();
+      return;
+    }
+  };
+
   return (
     <Flex direction="column" {...props}>
       {items.map((item, index) =>
         item.link ? (
-          <Link href={item.route} key={item.route}>
+          <Link href={item.route} key={index}>
             <Flex
               flexGrow={1}
               mx={4}
@@ -40,7 +55,7 @@ const MenuList = ({ withIcons, items, ...props }: MenuListProps) => {
             </Flex>
           </Link>
         ) : (
-          <Pressable onPress={() => goTo(item.route)} key={item.route}>
+          <Pressable onPress={() => onPress(item)} key={index}>
             <Flex
               flexGrow={1}
               mx={4}

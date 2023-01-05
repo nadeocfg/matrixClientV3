@@ -3,6 +3,10 @@ const getPowerLabel = (powerLevel: number) => {
     return 'admin';
   }
 
+  if (powerLevel > 0) {
+    return 'moderator';
+  }
+
   return null;
 };
 

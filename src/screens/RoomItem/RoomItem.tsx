@@ -101,6 +101,7 @@ const RoomItem = (
 
   const initialRoomSync = async (roomId: string) => {
     const roomInfo = await matrixContext.instance?.getRoom(roomId);
+
     if (roomInfo) {
       const avatarUrl = roomInfo.getAvatarUrl(
         matrixContext.instance?.baseUrl || '',
@@ -244,10 +245,10 @@ const RoomItem = (
     matrixContext.instance
       ?.joinRoom(roomData.roomId)
       .then(() => {
-        navigate('RoomItem', {
-          roomId: roomData.roomId,
-          roomName: roomData.name,
-        });
+        setTimeout(() => {
+          initialRoomSync(props.route.params.roomId);
+          dispatch(setLoader(false));
+        }, 1000);
       })
       .catch(err => {
         console.log({ ...err });
@@ -260,18 +261,32 @@ const RoomItem = (
         );
 
         dispatch(setActionsDrawerVisible(true));
-      })
-      .finally(() => {
+
         dispatch(setLoader(false));
       });
   };
 
-  const onLeave = () => {
+  const onLeave = (forget = false) => {
     dispatch(setLoader(true));
 
     matrixContext.instance
       ?.leave(roomData.roomId)
       .then(() => {
+        if (forget) {
+          matrixContext.instance?.forget(roomData.roomId).catch(err => {
+            console.log({ ...err });
+
+            dispatch(
+              setActionsDrawerContent({
+                title: err.data?.errcode || '',
+                text: err.data?.error || 'Something went wrong',
+              }),
+            );
+
+            dispatch(setActionsDrawerVisible(true));
+          });
+        }
+
         navigate('RoomList');
       })
       .catch(err => {
@@ -333,7 +348,7 @@ const RoomItem = (
               Do you want to join <Text fontWeight={600}>{roomData.name}</Text>?
             </Text>
             <Flex flexDirection="row" align="center">
-              <Button variant="outline" mr={2} onPress={onLeave}>
+              <Button variant="outline" mr={2} onPress={() => onLeave(true)}>
                 Reject
               </Button>
               <Button variant="subtle" colorScheme="primary" onPress={onJoin}>
@@ -354,6 +369,17 @@ const RoomItem = (
           />
         ))}
       </ScrollView>
+
+      {roomData.membership !== 'join' &&
+        roomData.membership !== 'ban' &&
+        roomData.membership !== 'invite' && (
+          <Flex align="center" p={2}>
+            <Button width="100%" onPress={onJoin}>
+              Join
+            </Button>
+          </Flex>
+        )}
+
       {roomData.membership === 'join' && (
         <Flex direction="row" align="center" p={2}>
           <Input

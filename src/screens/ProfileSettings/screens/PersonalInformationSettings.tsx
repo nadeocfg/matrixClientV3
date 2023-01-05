@@ -59,7 +59,7 @@ const PersonalInformationSettings = () => {
     });
   }, [user.avatarUrl, matrixContext.instance, user.displayName]);
 
-  const uploadImage = () => {
+  const onChangePhoto = () => {
     dispatch(
       setActionsDrawerContent({
         title: 'Change profile photo',
@@ -224,7 +224,7 @@ const PersonalInformationSettings = () => {
             mt={4}
             variant="chip"
             colorScheme="primary"
-            onPress={uploadImage}>
+            onPress={onChangePhoto}>
             Change profile photo
           </Button>
         </Center>
