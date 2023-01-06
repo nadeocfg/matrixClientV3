@@ -253,6 +253,9 @@ const components = {
       borderRadius: 10,
       fontSize: 16,
       bg: theme.chip.bg,
+      _input: {
+        bg: theme.light.input.outline.bgColor,
+      },
     },
     variants: {
       outline: {

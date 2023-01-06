@@ -141,6 +141,7 @@ const RoomItem = (
       .then(res => {
         if (res.messages) {
           setTimeline(res.messages);
+          setFullyRead();
         }
       })
       .catch(err => {
@@ -154,6 +155,30 @@ const RoomItem = (
 
         dispatch(setActionsDrawerVisible(true));
       });
+  };
+
+  const setFullyRead = async () => {
+    if (matrixContext.instance) {
+      const room = matrixContext.instance.getRoom(props.route.params.roomId);
+
+      if (!room) {
+        return;
+      }
+
+      const liveTimeline = room.getLiveTimeline().getEvents();
+
+      if (liveTimeline.length === 0) {
+        return;
+      }
+
+      const latestEvent = liveTimeline[liveTimeline.length - 1];
+
+      if (latestEvent === null) {
+        return;
+      }
+
+      await matrixContext.instance.sendReadReceipt(latestEvent);
+    }
   };
 
   const changeMessage = (value: string) => setMessage(value);
