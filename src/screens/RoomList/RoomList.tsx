@@ -158,6 +158,7 @@ const RoomList = () => {
 
       <ScrollView
         px={4}
+        pt={2}
         _light={{
           bg: theme.light.bgColor,
         }}
@@ -237,7 +238,7 @@ const RoomList = () => {
             />
           ))}
 
-        <Box mb={4} />
+        <Box mb={8} />
       </ScrollView>
     </>
   );

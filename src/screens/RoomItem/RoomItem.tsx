@@ -82,14 +82,13 @@ const RoomItem = (
 
   useEffect(() => {
     const addNewMessages = (event: MatrixEvent) => {
-      setTimeline({
-        chunk: [...timeline.chunk, event.event as IEventWithRoomId],
-      });
+      if (event.event.room_id === props.route.params.roomId) {
+        setTimeline({
+          chunk: [...timeline.chunk, event.event as IEventWithRoomId],
+        });
 
-      if (timeline.chunk.length <= 20) {
         scrollViewRef.current?.scrollToEnd();
       }
-      scrollViewRef.current?.scrollToEnd();
     };
 
     matrixContext.instance?.on('Room.timeline', addNewMessages);
@@ -391,7 +390,16 @@ const RoomItem = (
         )}
 
       {roomData.membership === 'join' && (
-        <Flex direction="row" align="center" p={2}>
+        <Flex
+          direction="row"
+          align="center"
+          p={2}
+          _light={{
+            bg: theme.light.bgColor,
+          }}
+          _dark={{
+            bg: theme.dark.bgColor,
+          }}>
           <Input
             p={1}
             mr={2}
