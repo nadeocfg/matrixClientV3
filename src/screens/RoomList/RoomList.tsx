@@ -1,4 +1,5 @@
 import {
+  Box,
   Button,
   Center,
   Flex,
@@ -82,8 +83,16 @@ const RoomList = () => {
     );
   }, []);
 
-  const onSelectRoom = (roomId: string, roomName: string) => {
-    navigate('RoomItem', { roomId: roomId, roomName: roomName });
+  const onSelectRoom = (
+    roomId: string,
+    roomName: string,
+    avatarUrl: string,
+  ) => {
+    navigate('RoomItem', {
+      roomId: roomId,
+      roomName: roomName,
+      avatarUrl: avatarUrl,
+    });
   };
 
   const onChange = (value: string) => {
@@ -148,8 +157,7 @@ const RoomList = () => {
       />
 
       <ScrollView
-        contentContainerStyle={styles.container}
-        p={4}
+        px={4}
         _light={{
           bg: theme.light.bgColor,
         }}
@@ -203,28 +211,33 @@ const RoomList = () => {
           </Center>
         )}
 
-        {roomList.map(item => (
-          <RoomListItem
-            key={item.roomId}
-            avatarUrl={item.avatar_url}
-            roomId={item.roomId}
-            message={
-              item.membership === 'invite'
-                ? "You're were invited"
-                : item.timeline[item.timeline.length - 1]?.event?.type ===
-                  'm.room.message'
-                ? item.timeline[item.timeline.length - 1]?.event?.content?.body
-                : '...'
-            }
-            name={item.name}
-            onSelectRoom={onSelectRoom}
-            eventTime={formatTime(
-              item.timeline[item.timeline.length - 1]?.event?.origin_server_ts,
-            )}
-            unreadCount={item.unreadCount}
-            membership={item.membership}
-          />
-        ))}
+        {foundedRooms.length === 0 &&
+          roomList.map(item => (
+            <RoomListItem
+              key={item.roomId}
+              avatarUrl={item.avatar_url}
+              roomId={item.roomId}
+              message={
+                item.membership === 'invite'
+                  ? "You're were invited"
+                  : item.timeline[item.timeline.length - 1]?.event?.type ===
+                    'm.room.message'
+                  ? item.timeline[item.timeline.length - 1]?.event?.content
+                      ?.body
+                  : '...'
+              }
+              name={item.name}
+              onSelectRoom={onSelectRoom}
+              eventTime={formatTime(
+                item.timeline[item.timeline.length - 1]?.event
+                  ?.origin_server_ts,
+              )}
+              unreadCount={item.unreadCount}
+              membership={item.membership}
+            />
+          ))}
+
+        <Box mb={4} />
       </ScrollView>
     </>
   );

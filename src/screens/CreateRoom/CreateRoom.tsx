@@ -182,7 +182,7 @@ const CreateRoom = () => {
           users: { [matrixContext.instance?.getUserId() || '']: 101 },
         },
       })
-      .then(res => {
+      .then(() => {
         navigationRef.reset({
           index: 0,
           routes: [{ name: 'RoomList' }],

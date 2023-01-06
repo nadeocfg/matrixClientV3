@@ -102,6 +102,8 @@ const RoomItem = (
   const initialRoomSync = async (roomId: string) => {
     const roomInfo = await matrixContext.instance?.getRoom(roomId);
 
+    console.log(roomInfo);
+
     if (roomInfo) {
       const avatarUrl = roomInfo.getAvatarUrl(
         matrixContext.instance?.baseUrl || '',
@@ -121,9 +123,17 @@ const RoomItem = (
         name: props.route.params.roomName,
         membership: roomInfo?.getMyMembership(),
       });
+    } else {
+      setRoomData({
+        avatar: props.route.params.avatarUrl,
+        fullAvatar: props.route.params.avatarUrl,
+        roomId: roomId,
+        name: props.route.params.roomName,
+        membership: '',
+      });
     }
 
-    if (roomInfo?.getMyMembership() === 'invite') {
+    if (roomInfo?.getMyMembership() !== 'join') {
       return;
     }
 

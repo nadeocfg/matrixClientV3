@@ -82,8 +82,8 @@ const RoomListHeader = ({ userAvatar }: RoomListHeaderProps) => {
             />
           );
         }}>
-        <Menu.Item onPress={() => goTo('ProfileSettings')}>Settings</Menu.Item>
         <Menu.Item onPress={() => goTo('CreateRoom')}>New group</Menu.Item>
+        <Menu.Item onPress={() => goTo('ProfileSettings')}>Settings</Menu.Item>
       </Menu>
     </Box>
   );

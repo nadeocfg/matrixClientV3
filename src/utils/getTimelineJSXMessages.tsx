@@ -18,10 +18,10 @@ export interface GetTimelineJSXMessagesModel {
 const getTimelineJSXMessages = (): GetTimelineJSXMessagesModel => {
   return {
     join(user: string) {
-      return `${user} joined the room`;
+      return `${user} joined the chat`;
     },
     leave(user: string) {
-      return `${user} left the room`;
+      return `${user} left the chat`;
     },
     invite(inviter: string, user: string) {
       return `${inviter} invited ${user}`;

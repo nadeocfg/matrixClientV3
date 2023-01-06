@@ -74,6 +74,3 @@ react-native-url-polyfill
   <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
   <uses-permission android:name="android.permission.INTERNET" />
 ```
-
-Profile settings split Terms and Privacy
-Create room design

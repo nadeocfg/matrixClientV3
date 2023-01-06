@@ -69,12 +69,13 @@ const RoomHeader: React.FC<PropsWithChildren<RoomHeaderProps>> = ({
         <DefaultAvatar name={name[0]} width={12} />
       )}
 
-      <Heading size="md" flexGrow={1} ml={2}>
-        {name}
+      <Heading size="md" flexBasis="50%" flexGrow={1} ml={2}>
+        {name.length > 40 ? name.substring(0, 39) + '...' : name}
       </Heading>
 
       {membership === 'join' && (
         <Menu
+          flexBasis="10%"
           offset={16}
           trigger={triggerProps => {
             return (

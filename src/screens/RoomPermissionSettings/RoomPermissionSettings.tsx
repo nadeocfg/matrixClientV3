@@ -106,6 +106,10 @@ const RoomPermissionSettings = ({ route }: RoomPermissionSettingsProps) => {
   };
 
   const SaveButton = () => {
+    if (!canEdit) {
+      return <></>;
+    }
+
     return (
       <Button onPress={save} variant="ghost">
         Save
