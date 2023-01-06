@@ -185,9 +185,15 @@ const UserProfile = ({ route }: UserProfileProps) => {
           <Text fontSize={16} mt={2}>
             {userData.userId}
           </Text>
+
+          {permissions.users[userData.userId] === 101 && (
+            <Text fontSize={16} mt={2}>
+              Founder
+            </Text>
+          )}
         </Center>
 
-        {canEdit && (
+        {canEdit && permissions.users[userData.userId] !== 101 && (
           <CustomRadio
             canEdit={canEdit}
             mt={8}

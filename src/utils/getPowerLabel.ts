@@ -1,5 +1,9 @@
 const getPowerLabel = (powerLevel: number) => {
-  if (powerLevel >= 100) {
+  if (powerLevel > 100) {
+    return 'founder';
+  }
+
+  if (powerLevel === 100) {
     return 'admin';
   }
 

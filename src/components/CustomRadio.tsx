@@ -27,7 +27,7 @@ const CustomRadio = ({
   return (
     <Box {...rest}>
       {label && (
-        <Text fontWeight={600} fontSize={16} mb={2} px={4}>
+        <Text variant="lighter" fontWeight={600} fontSize={16} mb={2} px={4}>
           {label}
         </Text>
       )}
@@ -43,7 +43,11 @@ const CustomRadio = ({
         {items.map((item, index) => (
           <Pressable
             key={index}
-            onPress={canEdit ? () => onChange(+item.value) : () => {}}
+            onPress={
+              canEdit && +item.value !== 101
+                ? () => onChange(+item.value)
+                : () => {}
+            }
             px={4}
             py={4}
             borderBottomWidth={index === items.length - 1 ? 0 : 0.5}>

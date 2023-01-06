@@ -16,6 +16,28 @@ const components = {
     },
   },
 
+  // Text
+  Text: {
+    baseStyle: {
+      _dark: {
+        color: theme.dark.text,
+      },
+      _light: {
+        color: theme.light.text,
+      },
+    },
+    variants: {
+      lighter: {
+        _dark: {
+          color: theme.dark.lighterText,
+        },
+        _light: {
+          color: theme.light.lighterText,
+        },
+      },
+    },
+  },
+
   // Link
   Link: {
     baseStyle: {

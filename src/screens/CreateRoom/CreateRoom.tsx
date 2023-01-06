@@ -178,6 +178,9 @@ const CreateRoom = () => {
         name: roomData.name,
         topic: roomData.topic,
         visibility: roomData.visibility,
+        power_level_content_override: {
+          users: { [matrixContext.instance?.getUserId() || '']: 101 },
+        },
       })
       .then(res => {
         navigationRef.reset({

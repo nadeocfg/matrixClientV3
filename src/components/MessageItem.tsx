@@ -95,6 +95,169 @@ const MessageItem = ({ event, userId, isPrevSenderSame }: MessageItemProps) => {
     }
   };
 
+  const renderAvatar = () => {
+    return event.content?.avatar_url ||
+      matrixContext.instance?.getUser(event.sender)?.avatarUrl ? (
+      <Image
+        src={
+          matrixContext.instance?.mxcUrlToHttp(
+            event.content?.avatar_url ||
+              matrixContext.instance?.getUser(event.sender)?.avatarUrl ||
+              '',
+          ) || ''
+        }
+        alt="Member avatar"
+        borderRadius="full"
+        width={8}
+        height={8}
+      />
+    ) : (
+      <DefaultAvatar
+        name={
+          (event.content?.displayname && event.content?.displayname[0]) ||
+          (matrixContext.instance?.getUser(event.sender)?.displayName &&
+            matrixContext.instance?.getUser(event.sender)?.displayName[0]) ||
+          ''
+        }
+        width={8}
+      />
+    );
+  };
+
+  if (event.type === 'm.room.create') {
+    return (
+      <Flex
+        mb={4}
+        mt={6}
+        direction="row"
+        align="center"
+        style={styles.systemMessage}>
+        <Box>{renderAvatar()}</Box>
+
+        <Box ml={2}>
+          <Text>
+            {`${
+              matrixContext.instance?.getUser(event.sender)?.displayName
+            } create group`}
+          </Text>
+          <Text fontSize="2xs">{formatDate(event.origin_server_ts)}</Text>
+        </Box>
+      </Flex>
+    );
+  }
+
+  if (event.type === 'm.room.join_rules') {
+    return (
+      <Flex
+        mb={4}
+        mt={6}
+        direction="row"
+        align="center"
+        style={styles.systemMessage}>
+        <Box>{renderAvatar()}</Box>
+
+        <Box ml={2}>
+          <Text>
+            {`${
+              matrixContext.instance?.getUser(event.sender)?.displayName
+            } change join rule on "${event.content.join_rule}"`}
+          </Text>
+          <Text fontSize="2xs">{formatDate(event.origin_server_ts)}</Text>
+        </Box>
+      </Flex>
+    );
+  }
+
+  if (event.type === 'm.room.history_visibility') {
+    return (
+      <Flex
+        mb={4}
+        mt={6}
+        direction="row"
+        align="center"
+        style={styles.systemMessage}>
+        <Box>{renderAvatar()}</Box>
+
+        <Box ml={2}>
+          <Text>
+            {`${
+              matrixContext.instance?.getUser(event.sender)?.displayName
+            } change history visibility on "${
+              event.content.history_visibility
+            }"`}
+          </Text>
+          <Text fontSize="2xs">{formatDate(event.origin_server_ts)}</Text>
+        </Box>
+      </Flex>
+    );
+  }
+
+  if (event.type === 'm.room.name') {
+    return (
+      <Flex
+        mb={4}
+        mt={6}
+        direction="row"
+        align="center"
+        style={styles.systemMessage}>
+        <Box>{renderAvatar()}</Box>
+
+        <Box ml={2}>
+          <Text>
+            {`${
+              matrixContext.instance?.getUser(event.sender)?.displayName
+            } change group name on "${event.content.name}"`}
+          </Text>
+          <Text fontSize="2xs">{formatDate(event.origin_server_ts)}</Text>
+        </Box>
+      </Flex>
+    );
+  }
+
+  if (event.type === 'm.room.topic') {
+    return (
+      <Flex
+        mb={4}
+        mt={6}
+        direction="row"
+        align="center"
+        style={styles.systemMessage}>
+        <Box>{renderAvatar()}</Box>
+
+        <Box ml={2}>
+          <Text>
+            {`${
+              matrixContext.instance?.getUser(event.sender)?.displayName
+            } change group topic on "${event.content.topic}"`}
+          </Text>
+          <Text fontSize="2xs">{formatDate(event.origin_server_ts)}</Text>
+        </Box>
+      </Flex>
+    );
+  }
+
+  if (event.type === 'm.room.power_levels') {
+    return (
+      <Flex
+        mb={4}
+        mt={6}
+        direction="row"
+        align="center"
+        style={styles.systemMessage}>
+        <Box>{renderAvatar()}</Box>
+
+        <Box ml={2}>
+          <Text>
+            {`${
+              matrixContext.instance?.getUser(event.sender)?.displayName
+            } change group permissions`}
+          </Text>
+          <Text fontSize="2xs">{formatDate(event.origin_server_ts)}</Text>
+        </Box>
+      </Flex>
+    );
+  }
+
   if (event.type === 'm.room.member') {
     return (
       <Flex
@@ -103,29 +266,7 @@ const MessageItem = ({ event, userId, isPrevSenderSame }: MessageItemProps) => {
         direction="row"
         align="center"
         style={styles.systemMessage}>
-        <Box>
-          {event.content?.avatar_url ? (
-            <Image
-              src={
-                matrixContext.instance?.mxcUrlToHttp(
-                  event.content?.avatar_url || '',
-                ) || ''
-              }
-              alt="Member avatar"
-              borderRadius="full"
-              width={8}
-              height={8}
-            />
-          ) : (
-            <DefaultAvatar
-              name={
-                (event.content?.displayname && event.content?.displayname[0]) ||
-                ''
-              }
-              width={8}
-            />
-          )}
-        </Box>
+        <Box>{renderAvatar()}</Box>
 
         <Box ml={2}>
           <Text>
@@ -149,24 +290,7 @@ const MessageItem = ({ event, userId, isPrevSenderSame }: MessageItemProps) => {
         ]}>
         <Flex direction="row" align="center">
           <Box mr={1} mb={1}>
-            {userData?.avatarUrl ? (
-              <Image
-                src={
-                  matrixContext.instance?.mxcUrlToHttp(
-                    userData?.avatarUrl || '',
-                  ) || ''
-                }
-                alt="Member avatar"
-                borderRadius="full"
-                width={8}
-                height={8}
-              />
-            ) : (
-              <DefaultAvatar
-                name={userData?.displayName[0] || userData?.userId[0] || ''}
-                width={8}
-              />
-            )}
+            {renderAvatar()}
           </Box>
 
           <Text
@@ -190,13 +314,7 @@ const MessageItem = ({ event, userId, isPrevSenderSame }: MessageItemProps) => {
     );
   }
 
-  return (
-    <Box style={styles.messageWrapper}>
-      <Text>{userData?.displayName || userData?.userId || ''}</Text>
-      <Text>{event.content?.body}</Text>
-      <Text>{formatDate(event.origin_server_ts)}</Text>
-    </Box>
-  );
+  return <></>;
 };
 
 const styles = StyleSheet.create({

@@ -62,25 +62,24 @@ const RoomSettings = ({ route }: RoomSettingsProps) => {
   const [selectedUsers, setSelectedUsers] = useState<UserDirectoryItemModel[]>(
     [],
   );
-  const leaveMenu: ItemModel[] = [
-    {
-      title: 'Leave Group',
-      icon: <QuestionMarkRounded />,
-      onPress: () => onLeavePress(),
-    },
-  ];
+  const leaveMenu: ItemModel[] = [];
 
   const settingsMenu: ItemModel[] = [
-    {
-      title: 'Group Link',
-      icon: <LinkIcon />,
-      onPress: () => {},
-    },
+    // {
+    //   title: 'Group Link',
+    //   icon: <LinkIcon />,
+    //   onPress: () => {},
+    // },
     {
       title: 'Permissions',
       icon: <LockIcon />,
       onPress: () =>
         navigate('RoomPermissionSettings', { roomId: route.params.roomId }),
+    },
+    {
+      title: 'Leave Group',
+      icon: <QuestionMarkRounded />,
+      onPress: () => onLeavePress(),
     },
   ];
 

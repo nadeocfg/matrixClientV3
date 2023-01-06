@@ -26,6 +26,7 @@ const theme = {
       },
     },
     text: colors.text[900],
+    lighterText: colors.text[500],
   },
 
   // Dark mode colors
@@ -45,6 +46,7 @@ const theme = {
       },
     },
     text: colors.text[50],
+    lighterText: colors.text[200],
   },
 };
 
