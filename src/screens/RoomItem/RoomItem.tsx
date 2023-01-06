@@ -5,6 +5,7 @@ import {
   Flex,
   IconButton,
   Input,
+  Pressable,
   ScrollView,
   Spinner,
   Text,
@@ -25,17 +26,29 @@ import RoomHeader from './components/RoomHeader';
 import { Direction, IEventWithRoomId, MatrixEvent } from 'matrix-js-sdk';
 import {
   Keyboard,
+  StyleSheet,
   NativeScrollEvent,
   NativeSyntheticEvent,
 } from 'react-native';
 import MessageItem from '../../components/MessageItem';
-import { ArrowUpIcon, MicIcon } from '../../components/icons';
+import {
+  ArrowUpIcon,
+  CameraIcon,
+  CloseSquareIcon,
+  FileIcon,
+  GalleryIcon,
+  LocationIcon,
+  MicIcon,
+  PlusIcon,
+} from '../../components/icons';
+import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 
 const RoomItem = (
   props: NativeStackScreenProps<RootStackModel, 'RoomItem'>,
 ) => {
   const dispatch = useAppDispatch();
   const matrixContext = useContext(MatrixContext);
+  const [isAttachmentsVisible, setIsAttachmentsVisible] = useState(false);
   const [message, setMessage] = useState('');
   const [roomData, setRoomData] = useState({
     fullAvatar: '',
@@ -340,6 +353,40 @@ const RoomItem = (
       });
   };
 
+  const openAttachments = () => {
+    setIsAttachmentsVisible(!isAttachmentsVisible);
+  };
+
+  const openCamera = () => {
+    launchCamera({
+      mediaType: 'photo',
+      includeExtra: true,
+      saveToPhotos: true,
+    })
+      .then(res => {
+        if (res.assets && res.assets.length > 0) {
+          console.log(res.assets[0]);
+          openAttachments();
+        }
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  };
+
+  const openGallery = () => {
+    launchImageLibrary({ mediaType: 'photo', includeExtra: true })
+      .then(res => {
+        if (res.assets && res.assets.length > 0) {
+          console.log(res.assets[0]);
+          openAttachments();
+        }
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  };
+
   return (
     <>
       <RoomHeader
@@ -415,44 +462,107 @@ const RoomItem = (
         )}
 
       {roomData.membership === 'join' && (
-        <Flex
-          direction="row"
-          align="center"
-          p={2}
-          _light={{
-            bg: theme.light.bgColor,
-          }}
-          _dark={{
-            bg: theme.dark.bgColor,
-          }}>
-          <Input
-            p={1}
-            mr={2}
-            flexBasis="80%"
-            flexGrow={1}
-            fontSize="sm"
-            placeholder="Message"
-            value={message}
-            onChangeText={changeMessage}
-          />
-          {message ? (
+        <>
+          <Flex
+            direction="row"
+            align="center"
+            p={2}
+            _light={{
+              bg: theme.light.bgColor,
+            }}
+            _dark={{
+              bg: theme.dark.bgColor,
+            }}>
             <IconButton
-              onPress={sendMessage}
+              onPress={openAttachments}
               w={8}
               h={8}
-              icon={<ArrowUpIcon color={theme.light.button.primary.bgColor} />}
+              icon={
+                isAttachmentsVisible ? (
+                  <CloseSquareIcon color={theme.light.button.primary.bgColor} />
+                ) : (
+                  <PlusIcon color={theme.light.button.primary.bgColor} />
+                )
+              }
             />
-          ) : (
-            <IconButton
-              w={8}
-              h={8}
-              icon={<MicIcon color={theme.light.button.primary.bgColor} />}
+
+            <Input
+              p={1}
+              mx={1}
+              flexBasis="80%"
+              flexGrow={1}
+              fontSize="sm"
+              placeholder="Message"
+              value={message}
+              onChangeText={changeMessage}
             />
+            {message ? (
+              <IconButton
+                onPress={sendMessage}
+                w={8}
+                h={8}
+                icon={
+                  <ArrowUpIcon color={theme.light.button.primary.bgColor} />
+                }
+              />
+            ) : (
+              <IconButton
+                w={8}
+                h={8}
+                icon={<MicIcon color={theme.light.button.primary.bgColor} />}
+              />
+            )}
+          </Flex>
+          {isAttachmentsVisible && (
+            <Box
+              style={buttonStyles.wrapper}
+              _light={{
+                bg: theme.light.bgColor,
+              }}
+              _dark={{
+                bg: theme.dark.bgColor,
+              }}>
+              <Pressable style={buttonStyles.button} onPress={openCamera}>
+                <CameraIcon />
+                <Text>Camera</Text>
+              </Pressable>
+              <Pressable style={buttonStyles.button} onPress={openGallery}>
+                <GalleryIcon />
+                <Text>Gallery</Text>
+              </Pressable>
+              <Pressable style={buttonStyles.button} onPress={() => {}}>
+                <FileIcon />
+                <Text>File</Text>
+              </Pressable>
+              <Pressable style={buttonStyles.button} onPress={() => {}}>
+                <LocationIcon />
+                <Text>Location</Text>
+              </Pressable>
+            </Box>
           )}
-        </Flex>
+        </>
       )}
     </>
   );
 };
+
+const buttonStyles = StyleSheet.create({
+  wrapper: {
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-evenly',
+    paddingBottom: 12,
+  },
+  button: {
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    flexBasis: '21%',
+    paddingVertical: 12,
+    backgroundColor: theme.light.input.outline.bgColor,
+    borderRadius: 8,
+  },
+});
 
 export default RoomItem;

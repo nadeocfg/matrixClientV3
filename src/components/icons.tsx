@@ -312,3 +312,133 @@ export const CheckIcon = ({ color = '#38383A' }: IconProps) => {
     </Svg>
   );
 };
+
+export const PlusIcon = ({ color = '#38383A' }: IconProps) => {
+  return (
+    <Svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+      <Path
+        d="M12 4V20"
+        stroke={color}
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      />
+      <Path
+        d="M4 12H20"
+        stroke={color}
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      />
+    </Svg>
+  );
+};
+
+export const CloseSquareIcon = ({ color = '#38383A' }: IconProps) => {
+  return (
+    <Svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+      <Rect width="24" height="24" rx="5" fill={color} />
+      <Path
+        d="M6.34314 6.34326L17.6568 17.657"
+        stroke="white"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      />
+      <Path
+        d="M6.34314 17.6567L17.6568 6.34303"
+        stroke="white"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      />
+    </Svg>
+  );
+};
+
+export const CameraIcon = ({ color = '#38383A' }: IconProps) => {
+  return (
+    <Svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+      <Path
+        d="M23 19C23 19.5304 22.7893 20.0391 22.4142 20.4142C22.0391 20.7893 21.5304 21 21 21H3C2.46957 21 1.96086 20.7893 1.58579 20.4142C1.21071 20.0391 1 19.5304 1 19V8C1 7.46957 1.21071 6.96086 1.58579 6.58579C1.96086 6.21071 2.46957 6 3 6H7L9 3H15L17 6H21C21.5304 6 22.0391 6.21071 22.4142 6.58579C22.7893 6.96086 23 7.46957 23 8V19Z"
+        fill={color}
+        stroke={color}
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      />
+      <Path
+        d="M12 17C14.2091 17 16 15.2091 16 13C16 10.7909 14.2091 9 12 9C9.79086 9 8 10.7909 8 13C8 15.2091 9.79086 17 12 17Z"
+        stroke="white"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      />
+    </Svg>
+  );
+};
+
+export const GalleryIcon = ({ color = '#38383A' }: IconProps) => {
+  return (
+    <Svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+      <G clip-path="url(#clip0_649_2336)">
+        <G clip-path="url(#clip1_649_2336)">
+          <G clip-path="url(#clip2_649_2336)">
+            <Path
+              d="M5 11.1L7 9.1L12.5 14.6L16 11.1L19 14.1V5H5V11.1ZM4 3H20C20.2652 3 20.5196 3.10536 20.7071 3.29289C20.8946 3.48043 21 3.73478 21 4V20C21 20.2652 20.8946 20.5196 20.7071 20.7071C20.5196 20.8946 20.2652 21 20 21H4C3.73478 21 3.48043 20.8946 3.29289 20.7071C3.10536 20.5196 3 20.2652 3 20V4C3 3.73478 3.10536 3.48043 3.29289 3.29289C3.48043 3.10536 3.73478 3 4 3ZM15.5 10C15.1022 10 14.7206 9.84196 14.4393 9.56066C14.158 9.27936 14 8.89782 14 8.5C14 8.10218 14.158 7.72064 14.4393 7.43934C14.7206 7.15804 15.1022 7 15.5 7C15.8978 7 16.2794 7.15804 16.5607 7.43934C16.842 7.72064 17 8.10218 17 8.5C17 8.89782 16.842 9.27936 16.5607 9.56066C16.2794 9.84196 15.8978 10 15.5 10Z"
+              fill={color}
+            />
+          </G>
+        </G>
+      </G>
+      <Defs>
+        <ClipPath id="clip0_649_2336">
+          <Rect width="24" height="24" fill="white" />
+        </ClipPath>
+        <ClipPath id="clip1_649_2336">
+          <Rect width="24" height="24" fill="white" />
+        </ClipPath>
+        <ClipPath id="clip2_649_2336">
+          <Rect width="24" height="24" fill="white" />
+        </ClipPath>
+      </Defs>
+    </Svg>
+  );
+};
+
+export const FileIcon = ({ color = '#38383A' }: IconProps) => {
+  return (
+    <Svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+      <Path
+        d="M13 2H6C5.46957 2 4.96086 2.21071 4.58579 2.58579C4.21071 2.96086 4 3.46957 4 4V20C4 20.5304 4.21071 21.0391 4.58579 21.4142C4.96086 21.7893 5.46957 22 6 22H18C18.5304 22 19.0391 21.7893 19.4142 21.4142C19.7893 21.0391 20 20.5304 20 20V9L13 2Z"
+        fill={color}
+        stroke={color}
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      />
+      <Path
+        d="M13 2V9H20"
+        stroke="white"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      />
+    </Svg>
+  );
+};
+
+export const LocationIcon = ({ color = '#38383A' }: IconProps) => {
+  return (
+    <Svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+      <Path
+        d="M3 11L22 2L13 21L11 13L3 11Z"
+        fill={color}
+        stroke={color}
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      />
+    </Svg>
+  );
+};
