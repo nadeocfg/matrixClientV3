@@ -1,0 +1,2 @@
+export const SET_VIDEO_URL = 'SET_VIDEO_URL';
+export const SET_VIDEO_FULLSCREEN = 'SET_VIDEO_FULLSCREEN';

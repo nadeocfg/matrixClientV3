@@ -4,6 +4,7 @@ export interface StoreModel {
   mainStore: MainStoreModel;
   userStore: UserStoreModel;
   roomsStore: RoomsModel;
+  videoStore: VideoPlayerStoreModel;
 }
 
 export interface MainStoreModel {
@@ -101,4 +102,9 @@ export interface TimelineItemModel {
   unsigned: {};
   event_id: string;
   room_id: string;
+}
+
+export interface VideoPlayerStoreModel {
+  url: string;
+  isFullScreen: boolean;
 }

@@ -5,7 +5,6 @@ import {
   Flex,
   IconButton,
   Input,
-  PresenceTransition,
   Pressable,
   ScrollView,
   Spinner,
@@ -49,6 +48,7 @@ import {
 } from '../../components/icons';
 import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 import DocumentPicker, { types } from 'react-native-document-picker';
+import VideoPlayer from '../../components/VideoPlayer';
 
 const RoomItem = (
   props: NativeStackScreenProps<RootStackModel, 'RoomItem'>,
@@ -634,6 +634,8 @@ const RoomItem = (
               </Pressable>
             </Box>
           )}
+
+          <VideoPlayer />
         </>
       )}
     </>
