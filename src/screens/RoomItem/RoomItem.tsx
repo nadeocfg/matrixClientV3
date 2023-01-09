@@ -5,6 +5,7 @@ import {
   Flex,
   IconButton,
   Input,
+  PresenceTransition,
   Pressable,
   ScrollView,
   Spinner,
@@ -23,7 +24,12 @@ import {
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackModel } from '../../types/rootStackType';
 import RoomHeader from './components/RoomHeader';
-import { Direction, IEventWithRoomId, MatrixEvent } from 'matrix-js-sdk';
+import {
+  Direction,
+  IContent,
+  IEventWithRoomId,
+  MatrixEvent,
+} from 'matrix-js-sdk';
 import {
   Keyboard,
   StyleSheet,
@@ -42,6 +48,7 @@ import {
   PlusIcon,
 } from '../../components/icons';
 import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
+import DocumentPicker, { types } from 'react-native-document-picker';
 
 const RoomItem = (
   props: NativeStackScreenProps<RootStackModel, 'RoomItem'>,
@@ -355,17 +362,19 @@ const RoomItem = (
 
   const openAttachments = () => {
     setIsAttachmentsVisible(!isAttachmentsVisible);
+    scrollToTop();
   };
 
-  const openCamera = () => {
+  const openCamera = (type: 'video' | 'photo' = 'photo') => {
     launchCamera({
-      mediaType: 'photo',
+      mediaType: type,
       includeExtra: true,
       saveToPhotos: true,
     })
       .then(res => {
         if (res.assets && res.assets.length > 0) {
           console.log(res.assets[0]);
+          uploadContent(res.assets[0]);
           openAttachments();
         }
       })
@@ -375,16 +384,97 @@ const RoomItem = (
   };
 
   const openGallery = () => {
-    launchImageLibrary({ mediaType: 'photo', includeExtra: true })
+    launchImageLibrary({ mediaType: 'mixed', includeExtra: true })
       .then(res => {
         if (res.assets && res.assets.length > 0) {
           console.log(res.assets[0]);
+          uploadContent(res.assets[0]);
           openAttachments();
         }
       })
       .catch(err => {
         console.log(err);
       });
+  };
+
+  const openFilesystem = () => {
+    DocumentPicker.pick({
+      allowMultiSelection: false,
+      type: types.allFiles,
+    })
+      .then(res => {
+        if (res.length > 0) {
+          uploadContent(res[0]);
+        }
+      })
+      .catch(err => {
+        console.log({ ...err });
+
+        if (err.code === 'DOCUMENT_PICKER_CANCELED') {
+          return;
+        }
+
+        dispatch(
+          setActionsDrawerContent({
+            title: err.code || '',
+            text: err.message || 'Something went wrong',
+          }),
+        );
+
+        dispatch(setActionsDrawerVisible(true));
+      });
+  };
+
+  const uploadContent = async (file: any) => {
+    if (!file) {
+      return;
+    }
+
+    const [type] = file.type?.split('/') || [];
+
+    const info = {
+      mimetype: file.type,
+      size: file.size || file.fileSize || 0,
+    };
+
+    const content: IContent = { info };
+
+    if (type === 'image') {
+      content.msgtype = 'm.image';
+      content.body = file.name || file.fileName || 'Image';
+    } else if (type === 'video') {
+      content.msgtype = 'm.video';
+      content.body = file.name || file.fileName || 'Video';
+    } else {
+      content.msgtype = 'm.file';
+      content.body = file.name || file.fileName || 'Video';
+    }
+
+    const uploadData = await matrixContext.instance?.uploadContent(file, {
+      onlyContentUri: false,
+    });
+
+    if (uploadData) {
+      content.url = uploadData?.content_uri || '';
+
+      matrixContext.instance
+        ?.sendMessage(props.route.params.roomId, content)
+        .then(() => {
+          openAttachments();
+        })
+        .catch(err => {
+          console.log({ ...err });
+
+          dispatch(
+            setActionsDrawerContent({
+              title: err.data?.errcode || '',
+              text: err.data?.error || 'Something went wrong',
+            }),
+          );
+
+          dispatch(setActionsDrawerVisible(true));
+        });
+    }
   };
 
   return (
@@ -522,7 +612,9 @@ const RoomItem = (
               _dark={{
                 bg: theme.dark.bgColor,
               }}>
-              <Pressable style={buttonStyles.button} onPress={openCamera}>
+              <Pressable
+                style={buttonStyles.button}
+                onPress={() => openCamera('photo')}>
                 <CameraIcon />
                 <Text>Camera</Text>
               </Pressable>
@@ -530,11 +622,13 @@ const RoomItem = (
                 <GalleryIcon />
                 <Text>Gallery</Text>
               </Pressable>
-              <Pressable style={buttonStyles.button} onPress={() => {}}>
+              <Pressable style={buttonStyles.button} onPress={openFilesystem}>
                 <FileIcon />
                 <Text>File</Text>
               </Pressable>
-              <Pressable style={buttonStyles.button} onPress={() => {}}>
+              <Pressable
+                style={[buttonStyles.button, buttonStyles.lastButton]}
+                onPress={() => {}}>
                 <LocationIcon />
                 <Text>Location</Text>
               </Pressable>
@@ -551,17 +645,23 @@ const buttonStyles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-evenly',
+    justifyContent: 'space-between',
     paddingBottom: 12,
+    paddingHorizontal: 12,
   },
   button: {
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
-    flexBasis: '21%',
+    flexBasis: '20%',
+    flexGrow: 1,
+    marginRight: 8,
     paddingVertical: 12,
     backgroundColor: theme.light.input.outline.bgColor,
     borderRadius: 8,
+  },
+  lastButton: {
+    marginRight: 0,
   },
 });
 
