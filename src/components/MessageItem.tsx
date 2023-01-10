@@ -196,7 +196,7 @@ const styles = StyleSheet.create({
   },
   notMyMessage: {
     borderBottomLeftRadius: 0,
-    backgroundColor: theme.defaultGrey,
+    backgroundColor: theme.light.secondary,
   },
   myPrev: {
     marginTop: 4,

@@ -160,7 +160,7 @@ const listStyles = StyleSheet.create({
     alignItems: 'center',
     paddingVertical: 12,
     borderBottomWidth: 0.5,
-    borderColor: theme.defaultGrey,
+    borderColor: theme.border,
   },
   listText: {
     flexGrow: 1,

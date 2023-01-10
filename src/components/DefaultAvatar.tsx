@@ -13,7 +13,7 @@ const DefaultAvatar = ({ name, width, fontSize = 20 }: DefaultAvatarProps) => {
     <Flex
       align="center"
       justify="center"
-      backgroundColor={theme.defaultGrey}
+      backgroundColor={theme.light.secondary}
       borderRadius="full"
       width={width}
       height={width}>
@@ -22,7 +22,7 @@ const DefaultAvatar = ({ name, width, fontSize = 20 }: DefaultAvatarProps) => {
           fontSize,
           textTransform: 'uppercase',
           fontWeight: '900',
-          color: theme.light.bgColor,
+          color: theme.light.primary,
         }}
         align="center"
         justify="center"

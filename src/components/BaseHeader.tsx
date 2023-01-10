@@ -1,7 +1,8 @@
-import { Box, ChevronLeftIcon, Heading, IconButton } from 'native-base';
+import { Box, Heading, IconButton } from 'native-base';
 import React from 'react';
 import theme from '../themes/theme';
 import { navigationRef } from '../utils/navigation';
+import { ArrowLeftIcon } from './icons';
 
 interface BaseHeaderProps {
   title: string;
@@ -20,10 +21,10 @@ const BaseHeader = ({ title, action = <></>, backAction }: BaseHeaderProps) => {
       alignItems="center"
       height={16}
       _light={{
-        bg: theme.light.button.primary.bgColor,
+        bg: theme.light.bgColor,
       }}
       _dark={{
-        bg: theme.dark.button.primary.bgColor,
+        bg: theme.dark.bgColor,
       }}>
       <Box flexBasis={'20%'} justifyContent="flex-start">
         <IconButton
@@ -31,7 +32,7 @@ const BaseHeader = ({ title, action = <></>, backAction }: BaseHeaderProps) => {
           height={12}
           variant="ghost"
           onPress={backAction ? backAction : goBack}
-          icon={<ChevronLeftIcon />}
+          icon={<ArrowLeftIcon />}
         />
       </Box>
 

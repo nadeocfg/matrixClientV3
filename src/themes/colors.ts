@@ -24,16 +24,24 @@ export type Leaves<T> = T extends object
 const colors = {
   contrastThreshold: 7,
   // Singleton colors
+  primary: '#2C91A7',
+  darkPrimary: '#065060',
+  secondary: '#E7F3F5',
+  text: '#1C1C1E',
+  lightText: '#3C3C43',
+  danger: 'rgba(195, 0, 0, 0.36)',
+  border: 'rgba(120, 120, 128, 0.36)',
+  greyLight: '#EBEBF5',
+
   white: '#FFFFFF',
-  black: '#000000',
-  lightText: '#FFFFFF',
+  black: '#1C1C1E',
   darkText: '#000000',
   transparent: 'rgba(255, 255, 255, 0)',
   lightTransparentBg: 'rgba(249, 250, 251, 0.9)',
   darkTransparentBg: 'rgba(31, 41, 55, 0.9)',
   lightGreyTransparent: 'rgba(118, 118, 128, 0.12)',
   lightBg: '#fafaff',
-  defaultGrey: '#38383A',
+  defaultGrey: 'rgba(60, 60, 67, 0.6)',
   chipBg: 'rgba(235, 235, 245, 0.6)',
   // Primary colors
   rose: {
@@ -324,38 +332,20 @@ const colors = {
     800: '#f4f4f5',
     900: '#fafafa',
   },
-  text: {
-    50: '#fafafa',
-    100: '#f5f5f5',
-    200: '#e5e5e5',
-    300: '#d4d4d4',
-    400: '#a3a3a3',
-    500: '#737373',
-    600: '#525252',
-    700: '#404040',
-    800: '#262626',
-    900: '#171717',
-  },
   // Derived colors
-  danger: {} as IColorHues,
   error: {} as IColorHues,
   success: {} as IColorHues,
   warning: {} as IColorHues,
   muted: {} as IColorHues,
-  primary: {} as IColorHues,
   info: {} as IColorHues,
-  secondary: {} as IColorHues,
   light: {} as IColorHues,
   tertiary: {} as IColorHues,
 };
 
-colors.danger = colors.rose;
 colors.error = colors.red;
 colors.success = colors.green;
 colors.warning = colors.orange;
 colors.muted = colors.trueGray;
-colors.primary = colors.cyan;
-colors.secondary = colors.pink;
 colors.tertiary = colors.emerald;
 colors.info = colors.lightBlue;
 colors.light = colors.warmGray;

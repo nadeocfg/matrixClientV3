@@ -1,6 +1,5 @@
 import {
   Box,
-  ChevronLeftIcon,
   Heading,
   IconButton,
   Image,
@@ -9,7 +8,7 @@ import {
 } from 'native-base';
 import React, { PropsWithChildren } from 'react';
 import DefaultAvatar from '../../../components/DefaultAvatar';
-import { DotsIcon } from '../../../components/icons';
+import { ArrowLeftIcon, DotsIcon } from '../../../components/icons';
 import theme from '../../../themes/theme';
 import { RootStackModel } from '../../../types/rootStackType';
 import { navigate, navigationRef } from '../../../utils/navigation';
@@ -55,7 +54,7 @@ const RoomHeader: React.FC<PropsWithChildren<RoomHeaderProps>> = ({
         height={12}
         variant="ghost"
         onPress={goBack}
-        icon={<ChevronLeftIcon />}
+        icon={<ArrowLeftIcon color={theme.light.primary} />}
       />
       {avatar ? (
         <Image

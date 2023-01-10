@@ -174,6 +174,7 @@ const Login: React.FC<PropsWithChildren<any>> = () => {
             <Stack
               mb={8}
               borderBottomWidth={0.5}
+              borderBottomColor={theme.border}
               paddingBottom={2}
               borderColor={theme[colorMode || 'light'].button.primary.bgColor}>
               <Input

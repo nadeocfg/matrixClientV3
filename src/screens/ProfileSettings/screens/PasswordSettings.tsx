@@ -53,7 +53,7 @@ const PasswordSettings = () => {
       dispatch(
         setActionsDrawerContent({
           title: 'Error',
-          text: 'New passwords are not equal',
+          text: 'Please, make sure your passwords match',
         }),
       );
 
@@ -107,75 +107,69 @@ const PasswordSettings = () => {
           bg: theme.dark.bgColor,
         }}
         p={4}>
-        <FormControl>
-          <Stack mt={4} mb={8}>
-            <Input
-              type={isPassword ? 'password' : 'text'}
-              fontSize="md"
-              w="100%"
-              variant="unstyled"
-              placeholder="Current password"
-              value={passwordData.currentPassword}
-              onChangeText={onChange('currentPassword')}
-              InputRightElement={
-                <Pressable mr={2} onPress={() => setIsPassword(!isPassword)}>
-                  {isPassword ? (
-                    <CloseEyeIcon color="#000" />
-                  ) : (
-                    <EyeIcon color="#000" />
-                  )}
-                </Pressable>
-              }
-            />
-          </Stack>
+        <FormControl mb={4}>
+          <FormControl.Label>Current password</FormControl.Label>
+          <Input
+            type={isPassword ? 'password' : 'text'}
+            fontSize="md"
+            w="100%"
+            variant="unstyled"
+            value={passwordData.currentPassword}
+            onChangeText={onChange('currentPassword')}
+            InputRightElement={
+              <Pressable mr={2} onPress={() => setIsPassword(!isPassword)}>
+                {isPassword ? (
+                  <CloseEyeIcon color={theme.light.lightText} />
+                ) : (
+                  <EyeIcon color={theme.light.lightText} />
+                )}
+              </Pressable>
+            }
+          />
+        </FormControl>
+        <FormControl mb={4}>
+          <FormControl.Label>New password</FormControl.Label>
+          <Input
+            type={isNewPassword ? 'password' : 'text'}
+            fontSize="md"
+            w="100%"
+            variant="unstyled"
+            value={passwordData.newPassword}
+            onChangeText={onChange('newPassword')}
+            InputRightElement={
+              <Pressable
+                mr={2}
+                onPress={() => setIsNewPassword(!isNewPassword)}>
+                {isNewPassword ? (
+                  <CloseEyeIcon color={theme.light.lightText} />
+                ) : (
+                  <EyeIcon color={theme.light.lightText} />
+                )}
+              </Pressable>
+            }
+          />
         </FormControl>
         <FormControl>
-          <Stack mt={4} mb={8}>
-            <Input
-              type={isNewPassword ? 'password' : 'text'}
-              fontSize="md"
-              w="100%"
-              variant="unstyled"
-              placeholder="New password"
-              value={passwordData.newPassword}
-              onChangeText={onChange('newPassword')}
-              InputRightElement={
-                <Pressable
-                  mr={2}
-                  onPress={() => setIsNewPassword(!isNewPassword)}>
-                  {isNewPassword ? (
-                    <CloseEyeIcon color="#000" />
-                  ) : (
-                    <EyeIcon color="#000" />
-                  )}
-                </Pressable>
-              }
-            />
-          </Stack>
-        </FormControl>
-        <FormControl>
-          <Stack mt={4} mb={8}>
-            <Input
-              type={isNewPassword ? 'password' : 'text'}
-              fontSize="md"
-              w="100%"
-              variant="unstyled"
-              placeholder="Repeat new password"
-              value={passwordData.repeatNewPassword}
-              onChangeText={onChange('repeatNewPassword')}
-              InputRightElement={
-                <Pressable
-                  mr={2}
-                  onPress={() => setIsNewPassword(!isNewPassword)}>
-                  {isNewPassword ? (
-                    <CloseEyeIcon color="#000" />
-                  ) : (
-                    <EyeIcon color="#000" />
-                  )}
-                </Pressable>
-              }
-            />
-          </Stack>
+          <FormControl.Label>Repeat new password</FormControl.Label>
+          <Input
+            type={isNewPassword ? 'password' : 'text'}
+            fontSize="md"
+            w="100%"
+            variant="unstyled"
+            value={passwordData.repeatNewPassword}
+            onChangeText={onChange('repeatNewPassword')}
+            InputRightElement={
+              <Pressable
+                mr={2}
+                onPress={() => setIsNewPassword(!isNewPassword)}>
+                {isNewPassword ? (
+                  <CloseEyeIcon color={theme.light.lightText} />
+                ) : (
+                  <EyeIcon color={theme.light.lightText} />
+                )}
+              </Pressable>
+            }
+          />
         </FormControl>
       </ScrollView>
     </>

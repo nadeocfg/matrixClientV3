@@ -230,44 +230,38 @@ const PersonalInformationSettings = () => {
         </Center>
 
         <Box>
-          <FormControl>
-            <Stack mt={12} mb={2}>
-              <Input
-                type={'text'}
-                fontSize="md"
-                w="100%"
-                variant="unstyled"
-                placeholder="Display name"
-                value={displayName}
-                onChangeText={onChange}
-              />
-            </Stack>
+          <FormControl mt={12} mb={4}>
+            <FormControl.Label>Display name</FormControl.Label>
+            <Input
+              type={'text'}
+              fontSize="md"
+              w="100%"
+              variant="unstyled"
+              value={displayName}
+              onChangeText={onChange}
+            />
+          </FormControl>
+          <FormControl mb={4}>
+            <FormControl.Label>Username</FormControl.Label>
+            <Input
+              isDisabled
+              type={'text'}
+              fontSize="md"
+              w="100%"
+              variant="unstyled"
+              value={user.userId}
+            />
           </FormControl>
           <FormControl>
-            <Stack my={2}>
-              <Input
-                isDisabled
-                type={'text'}
-                fontSize="md"
-                w="100%"
-                variant="unstyled"
-                placeholder="Username"
-                value={user.userId}
-              />
-            </Stack>
-          </FormControl>
-          <FormControl>
-            <Stack my={2}>
-              <Input
-                isDisabled
-                type={'text'}
-                fontSize="md"
-                w="100%"
-                variant="unstyled"
-                placeholder="Email"
-                value={email}
-              />
-            </Stack>
+            <FormControl.Label>E-mail</FormControl.Label>
+            <Input
+              isDisabled
+              type={'text'}
+              fontSize="md"
+              w="100%"
+              variant="unstyled"
+              value={email}
+            />
           </FormControl>
         </Box>
       </ScrollView>

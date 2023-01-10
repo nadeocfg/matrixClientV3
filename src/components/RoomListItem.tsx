@@ -55,6 +55,7 @@ const RoomListItem = ({
         flexDirection="row"
         alignItems="center"
         borderBottomWidth={0.5}
+        borderColor={theme.border}
         minH="20"
         p={2}>
         <Box style={avatarBadgeStyles.wrapper}>

@@ -623,6 +623,7 @@ const listStyle = StyleSheet.create({
     alignItems: 'center',
     padding: 8,
     borderBottomWidth: 0.5,
+    borderColor: theme.border,
   },
 });
 

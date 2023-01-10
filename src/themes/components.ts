@@ -11,7 +11,7 @@ const components = {
         },
       },
       _light: {
-        _text: { color: theme.light.button.primary.textColor },
+        color: theme.black,
       },
     },
   },
@@ -21,18 +21,20 @@ const components = {
     baseStyle: {
       _dark: {
         color: theme.dark.text,
+        fontWeight: 400,
       },
       _light: {
         color: theme.light.text,
+        fontWeight: 400,
       },
     },
     variants: {
       lighter: {
         _dark: {
-          color: theme.dark.lighterText,
+          color: theme.dark.lightText,
         },
         _light: {
-          color: theme.light.lighterText,
+          color: theme.light.lightText,
         },
       },
     },
@@ -97,20 +99,38 @@ const components = {
         fontWeight: 600,
         fontSize: 24,
       },
+      _light: {
+        bg: theme.light.primary,
+        _text: {
+          color: theme.white,
+        },
+        _pressed: {
+          bg: theme.light.darkPrimary,
+        },
+      },
+      _dark: {
+        bg: theme.light.primary,
+        _text: {
+          color: theme.white,
+        },
+        _pressed: {
+          bg: theme.light.darkPrimary,
+        },
+      },
       borderRadius: 10,
     },
     variants: {
       // Default button styles
       solid: {
         _dark: {
-          bg: theme.dark.button.primary.bgColor,
-          _text: { color: theme.dark.button.primary.textColor },
-          _pressed: { bg: theme.light.button.primary.bgColor },
+          bg: theme.light.primary,
+          _text: { color: theme.white },
+          _pressed: { backgroundColor: theme.light.darkPrimary },
         },
         _light: {
-          bg: theme.light.button.primary.bgColor,
-          _text: { color: theme.light.button.primary.textColor },
-          _pressed: { bg: theme.dark.button.primary.bgColor },
+          bg: theme.light.primary,
+          _text: { color: theme.white },
+          _pressed: { backgroundColor: theme.light.darkPrimary },
         },
       },
 
@@ -207,38 +227,72 @@ const components = {
         };
       },
 
+      // Ghost
+      ghost: {
+        _dark: {
+          bg: theme.transparent,
+          _text: {
+            color: theme.light.primary,
+            fontWeight: 400,
+          },
+          _pressed: {
+            backgroundColor: theme.transparent,
+            _text: {
+              color: theme.light.darkPrimary,
+            },
+          },
+        },
+        _light: {
+          bg: theme.transparent,
+          _text: {
+            color: theme.light.primary,
+            fontWeight: 400,
+          },
+          _pressed: {
+            backgroundColor: theme.transparent,
+            _text: {
+              color: theme.light.darkPrimary,
+            },
+          },
+        },
+      },
+
       // Custom button style, used in PersonalInformationSettings
-      chip: ({ colorScheme }: InterfaceButtonProps) => {
+      chip: ({}: InterfaceButtonProps) => {
         return {
-          bg: `${colorScheme}.700`,
+          backgroundColor: theme.greyLight,
           borderRadius: 100,
           paddingTop: 2,
           paddingBottom: 2,
           paddingLeft: 4,
           paddingRight: 4,
           _text: {
-            color: 'text.50',
+            color: theme.light.primary,
+            fontWeight: 400,
           },
           _icon: {
-            color: 'text.50',
+            color: theme.white,
           },
           _spinner: {
-            color: 'text.50',
+            color: theme.white,
           },
           _hover: {
-            bg: `${colorScheme}.400`,
+            backgroundColor: theme.light.darkPrimary,
           },
           _pressed: {
-            bg: `${colorScheme}.300`,
+            backgroundColor: theme.light.darkPrimary,
+            _text: {
+              color: theme.white,
+            },
           },
 
           _dark: {
-            bg: `${colorScheme}.700`,
+            bg: theme.light.darkPrimary,
             _hover: {
-              bg: `${colorScheme}.200`,
+              bg: theme.light.darkPrimary,
             },
             _pressed: {
-              bg: `${colorScheme}.100`,
+              bg: theme.light.darkPrimary,
             },
           },
         };
@@ -249,12 +303,16 @@ const components = {
   // Input styles
   Input: {
     baseStyle: {
-      padding: 3,
+      py: '3',
+      px: '3',
       borderRadius: 10,
       fontSize: 16,
-      bg: theme.chip.bg,
+      bg: theme.white,
       _input: {
-        bg: theme.light.input.outline.bgColor,
+        bg: theme.white,
+      },
+      _disabled: {
+        color: theme.black,
       },
     },
     variants: {
@@ -304,11 +362,18 @@ const components = {
       paddingTop: 4,
       paddingBottom: 4,
       borderTopWidth: 0.5,
+      borderTopColor: theme.border,
       _light: {
         borderColor: theme.light.text,
+        _text: {
+          color: theme.light.text,
+        },
       },
       _dark: {
         borderColor: theme.dark.text,
+        _text: {
+          color: theme.light.text,
+        },
       },
     },
   },
@@ -316,22 +381,23 @@ const components = {
   // Checkbox
   Checkbox: {
     baseStyle: {
+      borderRadius: 'full',
       _light: {
         bg: theme.transparent,
-        borderColor: theme.defaultGrey,
+        borderColor: theme.light.text,
         borderWidth: 1,
         _icon: {
-          color: theme.defaultGrey,
+          color: theme.light.text,
         },
         _checked: {
-          borderColor: theme.defaultGrey,
+          borderColor: theme.light.text,
           bg: theme.transparent,
           _hover: {
-            borderColor: theme.defaultGrey,
+            borderColor: theme.light.text,
             bg: theme.transparent,
           },
           _pressed: {
-            borderColor: theme.defaultGrey,
+            borderColor: theme.light.text,
             bg: theme.transparent,
           },
         },
@@ -343,25 +409,25 @@ const components = {
           bg: theme.transparent,
         },
         _focus: {
-          borderColor: theme.defaultGrey,
+          borderColor: theme.light.text,
         },
       },
       _dark: {
         bg: theme.transparent,
-        borderColor: theme.defaultGrey,
+        borderColor: theme.light.secondary,
         borderWidth: 1,
         _icon: {
-          color: theme.defaultGrey,
+          color: theme.light.secondary,
         },
         _checked: {
-          borderColor: theme.defaultGrey,
+          borderColor: theme.light.secondary,
           bg: theme.transparent,
           _hover: {
-            borderColor: theme.defaultGrey,
+            borderColor: theme.light.secondary,
             bg: theme.transparent,
           },
           _pressed: {
-            borderColor: theme.defaultGrey,
+            borderColor: theme.light.secondary,
             bg: theme.transparent,
           },
         },
@@ -370,7 +436,7 @@ const components = {
         },
         _pressed: {
           bg: theme.transparent,
-          borderColor: theme.defaultGrey,
+          borderColor: theme.light.secondary,
         },
         _focus: {
           bg: theme.transparent,
@@ -383,9 +449,12 @@ const components = {
   IconButton: {
     baseStyle: {
       _icon: {
-        color: theme.light.button.primary.textColor,
+        color: theme.light.primary,
       },
       borderRadius: 'full',
+      _hover: {
+        bg: theme.transparent,
+      },
       _pressed: {
         _light: {
           _icon: {
@@ -411,25 +480,29 @@ const components = {
     },
     variants: {
       ghost: {
+        _icon: {
+          color: theme.light.primary,
+        },
         _light: {
           _icon: {
-            color: theme.dark.button.primary.bgColor,
+            color: theme.light.primary,
           },
         },
         _dark: {
           _icon: {
-            color: theme.light.button.primary.bgColor,
+            color: theme.light.primary,
           },
         },
         _pressed: {
+          backgroundColor: theme.transparent,
           _light: {
             _icon: {
-              color: theme.light.button.primary.bgColor,
+              color: theme.light.darkPrimary,
             },
           },
           _dark: {
             _icon: {
-              color: theme.dark.button.primary.bgColor,
+              color: theme.light.darkPrimary,
             },
           },
           _ios: {
@@ -452,6 +525,23 @@ const components = {
     baseStyle: {
       _pressed: {
         bg: theme.light.input.outline.bgColor,
+      },
+    },
+  },
+
+  // Switch
+  Switch: {
+    baseStyle: {
+      onTrackColor: theme.light.primary,
+    },
+  },
+
+  // FormControlLabel
+  FormControlLabel: {
+    baseStyle: {
+      _text: {
+        color: theme.defaultGrey,
+        fontWeight: 500,
       },
     },
   },

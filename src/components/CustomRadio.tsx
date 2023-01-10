@@ -50,6 +50,7 @@ const CustomRadio = ({
             }
             px={4}
             py={4}
+            borderColor={theme.border}
             borderBottomWidth={index === items.length - 1 ? 0 : 0.5}>
             <Flex align="center" direction="row" key={item.value}>
               <Text fontSize="lg">{item.title}</Text>

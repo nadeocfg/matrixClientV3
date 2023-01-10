@@ -1,6 +1,7 @@
 import { Box, Flex, IFlexProps, Link, Pressable, Text } from 'native-base';
 import { InterfaceBoxProps } from 'native-base/lib/typescript/components/primitives/Box';
 import React from 'react';
+import theme from '../themes/theme';
 import { navigate } from '../utils/navigation';
 import { ArrowRightIcon } from './icons';
 
@@ -46,6 +47,7 @@ const MenuList = ({ withIcons, items, ...props }: MenuListProps) => {
               direction="row"
               align="center"
               justify="flex-start"
+              borderColor={theme.border}
               borderBottomWidth={index === items.length - 1 ? 0 : 0.5}>
               {withIcons && item.icon ? <Box mr={2}>{item.icon}</Box> : <></>}
               <Box flexGrow={1}>
@@ -63,6 +65,7 @@ const MenuList = ({ withIcons, items, ...props }: MenuListProps) => {
               direction="row"
               align="center"
               justify="flex-start"
+              borderColor={theme.border}
               borderBottomWidth={index === items.length - 1 ? 0 : 0.5}>
               {withIcons && item.icon ? <Box mr={2}>{item.icon}</Box> : <></>}
               <Box flexGrow={1}>
