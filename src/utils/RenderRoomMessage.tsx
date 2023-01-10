@@ -1,7 +1,7 @@
 import { IEventWithRoomId, MatrixClient, User } from 'matrix-js-sdk';
 import { Box, Button, Flex, Text } from 'native-base';
 import React from 'react';
-import { ViewStyle } from 'react-native';
+import { Dimensions, ViewStyle } from 'react-native';
 import ImageModal from 'react-native-image-modal';
 import { useAppDispatch } from '../hooks/useDispatch';
 import {
@@ -35,10 +35,9 @@ const RenderRoomMessage = ({
   matrixClient,
 }: RenderRoomMessageProps) => {
   const dispatch = useAppDispatch();
+  const width = Dimensions.get('window').width;
 
-  // const openFile = () => {
-  //   Linking.openURL(matrixClient?.mxcUrlToHttp(event.content.url) || '');
-  // };
+  console.log(width / 1.5);
 
   const setVideo = (url: string) => {
     dispatch(setVideoUrl(url));
@@ -73,7 +72,7 @@ const RenderRoomMessage = ({
             resizeMode="contain"
             imageBackgroundColor={theme.light.button.primary.bgColor}
             style={{
-              width: 250,
+              width: width / 1.5,
               height: 250,
             }}
             source={{
