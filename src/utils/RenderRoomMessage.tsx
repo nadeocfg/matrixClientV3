@@ -1,7 +1,8 @@
 import { IEventWithRoomId, MatrixClient, User } from 'matrix-js-sdk';
-import { Box, Button, Flex, Image, Pressable, Text } from 'native-base';
+import { Box, Button, Flex, Text } from 'native-base';
 import React from 'react';
-import { ViewStyle, Linking } from 'react-native';
+import { ViewStyle } from 'react-native';
+import ImageModal from 'react-native-image-modal';
 import { useAppDispatch } from '../hooks/useDispatch';
 import {
   setVideoFullscreen,
@@ -35,9 +36,9 @@ const RenderRoomMessage = ({
 }: RenderRoomMessageProps) => {
   const dispatch = useAppDispatch();
 
-  const openFile = () => {
-    Linking.openURL(matrixClient?.mxcUrlToHttp(event.content.url) || '');
-  };
+  // const openFile = () => {
+  //   Linking.openURL(matrixClient?.mxcUrlToHttp(event.content.url) || '');
+  // };
 
   const setVideo = (url: string) => {
     dispatch(setVideoUrl(url));
@@ -66,17 +67,21 @@ const RenderRoomMessage = ({
             {userData?.displayName || userData?.userId || ''}
           </Text>
         </Flex>
-        <Pressable onPress={openFile}>
-          <Image
-            src={matrixClient?.mxcUrlToHttp(event.content.url) || ''}
-            size="xl"
-            borderRadius="md"
-            alt="User avatar"
-            height={64}
-            width="full"
-            resizeMode="cover"
+
+        <Flex direction="row" justify="center">
+          <ImageModal
+            resizeMode="contain"
+            imageBackgroundColor={theme.light.button.primary.bgColor}
+            style={{
+              width: 250,
+              height: 250,
+            }}
+            source={{
+              uri: matrixClient?.mxcUrlToHttp(event.content.url) || '',
+            }}
           />
-        </Pressable>
+        </Flex>
+
         <Text
           color={theme.light.button.primary.textColor}
           textAlign="right"
