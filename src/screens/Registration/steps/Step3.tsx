@@ -6,11 +6,12 @@ import theme from '../../../themes/theme';
 
 interface Step3Props {
   resendEmail: () => void;
+  email: string;
   onNext: () => void;
   styles?: StyleProp<any>;
 }
 
-const Step3 = ({ resendEmail, onNext, styles }: Step3Props) => {
+const Step3 = ({ resendEmail, onNext, email, styles }: Step3Props) => {
   return (
     <ScrollView
       contentContainerStyle={styles.container}
@@ -24,7 +25,7 @@ const Step3 = ({ resendEmail, onNext, styles }: Step3Props) => {
       <Center mb={12}>
         <MockedLogo />
         <Heading mt={4}>Verify your email</Heading>
-        <Text mt={4}>Follow the instructions sent to email.org</Text>
+        <Text mt={4}>Follow the instructions sent to {email}</Text>
       </Center>
 
       <Box style={styles.inner}>

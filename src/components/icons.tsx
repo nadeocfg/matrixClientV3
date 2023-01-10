@@ -1,7 +1,8 @@
 import React from 'react';
+import { ViewProps } from 'react-native';
 import { Path, G, Svg, Defs, ClipPath, Rect, Circle } from 'react-native-svg';
 
-interface IconProps {
+interface IconProps extends ViewProps {
   color?: string;
 }
 
@@ -193,10 +194,7 @@ export const CloseIcon = ({ color = '#38383A' }: IconProps) => {
   );
 };
 
-export const QuestionMarkRounded = ({
-  color = '#38383A',
-  ...rest
-}: IconProps) => {
+export const QuestionMarkRounded = ({ color = '#38383A' }: IconProps) => {
   return (
     <Svg width="24" height="24" viewBox="0 0 24 24" fill="none">
       <Path

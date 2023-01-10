@@ -132,7 +132,7 @@ const App = () => {
   };
 
   // Check if route need authorization
-  const onChangeRoute = ({ route, navigation }: any) => {
+  const onChangeRoute = ({ route }: any) => {
     const protectedRoutes = [
       'RoomItem',
       'RoomList',
@@ -160,11 +160,11 @@ const App = () => {
 
           dispatch(setActionsDrawerVisible(true));
 
-          if (!navigation.canGoBack()) {
-            return navigation.push('Login');
-          }
-
-          return navigation.goBack();
+          navigationRef.reset({
+            index: 0,
+            routes: [{ name: 'Login' }],
+          });
+          return;
         }
       },
     };

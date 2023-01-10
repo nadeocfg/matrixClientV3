@@ -14,7 +14,6 @@ import {
 import React from 'react';
 import { StyleProp } from 'react-native';
 import { CloseEyeIcon, EyeIcon, MockedLogo } from '../../../components/icons';
-import PPModal from '../../../components/PPModal';
 import TUModal from '../../../components/TUModal';
 import theme from '../../../themes/theme';
 import { navigate } from '../../../utils/navigation';
@@ -31,7 +30,6 @@ interface Step1Props {
   onChange: Function;
   setIsDisabled: Function;
   setIsPassword: Function;
-  checkUsername: (e: any) => void;
   onNext: () => void;
   isDisabled: boolean;
   isPassword: boolean;
@@ -53,7 +51,6 @@ const Step1 = ({
   isUsernameExist,
   onNext,
   colorMode,
-  checkUsername,
   styles,
 }: Step1Props) => {
   return (
@@ -112,7 +109,6 @@ const Step1 = ({
               placeholder="Username"
               value={username}
               onChangeText={onChange('username')}
-              onBlur={checkUsername}
             />
             <FormControl.ErrorMessage
               leftIcon={<WarningOutlineIcon size="xs" />}>

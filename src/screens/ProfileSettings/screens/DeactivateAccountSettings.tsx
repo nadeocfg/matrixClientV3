@@ -24,7 +24,7 @@ import {
 import { CloseEyeIcon, EyeIcon } from '../../../components/icons';
 import { StoreModel } from '../../../types/storeTypes';
 import { useAppSelector } from '../../../hooks/useSelector';
-import { navigate } from '../../../utils/navigation';
+import { navigate, navigationRef } from '../../../utils/navigation';
 
 const DeactivateAccountSettings = () => {
   const [isChecked, setIsChecked] = useState(false);
@@ -76,7 +76,10 @@ const DeactivateAccountSettings = () => {
 
         dispatch(clearStore());
 
-        navigate('Login');
+        navigationRef.reset({
+          index: 0,
+          routes: [{ name: 'Login' }],
+        });
       })
       .catch(err => {
         console.log({ ...err });

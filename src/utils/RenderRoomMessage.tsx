@@ -37,8 +37,6 @@ const RenderRoomMessage = ({
   const dispatch = useAppDispatch();
   const width = Dimensions.get('window').width;
 
-  console.log(width / 1.5);
-
   const setVideo = (url: string) => {
     dispatch(setVideoUrl(url));
 

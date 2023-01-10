@@ -9,7 +9,11 @@ import React, {
 import { StyleSheet } from 'react-native';
 import { MatrixContext } from '../../context/matrixContext';
 import { useAppDispatch } from '../../hooks/useDispatch';
-import { setAuthResponse } from '../../store/actions/userActions';
+import {
+  setAuthResponse,
+  setUserAvatarAndName,
+  setUserData,
+} from '../../store/actions/userActions';
 import {
   setActionsDrawerContent,
   setActionsDrawerVisible,
@@ -25,6 +29,7 @@ import Step1 from './steps/Step1';
 import Step2 from './steps/Step2';
 import Step3 from './steps/Step3';
 import Step4 from './steps/Step4';
+import { setRooms } from '../../store/actions/roomsActions';
 
 const Registration: React.FC<PropsWithChildren<any>> = () => {
   const dispatch = useAppDispatch();
@@ -78,6 +83,45 @@ const Registration: React.FC<PropsWithChildren<any>> = () => {
 
     getFlow();
   }, []);
+
+  useEffect(() => {
+    let timer: NodeJS.Timeout;
+
+    const checkUsername = async () => {
+      const { server, username } = signUpData;
+
+      const instance = await matrixSdk.createClient({
+        baseUrl: validateUrl(server),
+      });
+
+      instance
+        .isUsernameAvailable(username)
+        .then(res => {
+          setIsUsernameExist(!res);
+        })
+        .catch(err => {
+          console.log({ ...err });
+          dispatch(
+            setActionsDrawerContent({
+              title: err.data?.errcode || '',
+              text: err.data?.error || 'Something went wrong',
+            }),
+          );
+
+          dispatch(setActionsDrawerVisible(true));
+        });
+    };
+
+    if (signUpData.username.trim().length > 0) {
+      timer = setTimeout(() => {
+        checkUsername();
+      }, 500);
+    }
+
+    return () => {
+      clearTimeout(timer);
+    };
+  }, [signUpData.username]);
 
   const onChange = (name: string) => (value: string) => {
     setSignUpData({
@@ -197,6 +241,46 @@ const Registration: React.FC<PropsWithChildren<any>> = () => {
           lazyLoadMembers: true,
         });
 
+        const userData = await instance.getUser(res.user_id || '');
+
+        if (userData) {
+          dispatch(setUserData(userData));
+        }
+
+        // Initial sync of matrix client
+        instance.on('sync' as any, (state: string) => {
+          if (state === 'ERROR') {
+            return;
+          }
+
+          // Get rooms(Chats)
+          const rooms = instance.getVisibleRooms();
+          console.log(rooms);
+
+          if (rooms.length > 0) {
+            dispatch(
+              setRooms(
+                rooms
+                  .sort((a, b) =>
+                    a.getMyMembership().localeCompare(b.getMyMembership()),
+                  )
+                  .map(item => {
+                    return {
+                      myUserId: item.myUserId,
+                      name: item.name,
+                      normalizedName: item.normalizedName,
+                      roomId: item.roomId,
+                      timeline: item.timeline,
+                      membership: item.getMyMembership(),
+                      avatar_url: item.getMxcAvatarUrl(),
+                      unreadCount: item.getUnreadNotificationCount(),
+                    };
+                  }),
+              ),
+            );
+          }
+        });
+
         navigationRef.reset({
           index: 0,
           routes: [{ name: 'RoomList' }],
@@ -237,31 +321,6 @@ const Registration: React.FC<PropsWithChildren<any>> = () => {
       })
       .finally(() => {
         dispatch(setLoader(false));
-      });
-  };
-
-  const checkUsername = async () => {
-    const { server, username } = signUpData;
-
-    const instance = await matrixSdk.createClient({
-      baseUrl: validateUrl(server),
-    });
-
-    instance
-      .isUsernameAvailable(username)
-      .then(res => {
-        setIsUsernameExist(!res);
-      })
-      .catch(err => {
-        console.log({ ...err });
-        dispatch(
-          setActionsDrawerContent({
-            title: err.data?.errcode || '',
-            text: err.data?.error || 'Something went wrong',
-          }),
-        );
-
-        dispatch(setActionsDrawerVisible(true));
       });
   };
 
@@ -349,7 +408,6 @@ const Registration: React.FC<PropsWithChildren<any>> = () => {
             isAgree={isAgree}
             setIsAgree={setIsAgree}
             onChange={onChange}
-            checkUsername={checkUsername}
             isUsernameExist={isUsernameExist}
             onNext={onNext}
             styles={styles}
@@ -398,7 +456,12 @@ const Registration: React.FC<PropsWithChildren<any>> = () => {
             },
           }}
           style={styles.inner}>
-          <Step3 styles={styles} resendEmail={sendEmail} onNext={onNext} />
+          <Step3
+            styles={styles}
+            email={signUpData.email}
+            resendEmail={sendEmail}
+            onNext={onNext}
+          />
         </PresenceTransition>
       )}
 

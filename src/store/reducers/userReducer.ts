@@ -20,7 +20,6 @@ const initialState: UserStoreModel = {
   },
   user: {
     userId: '',
-    modified: 1672053586910,
     displayName: '',
     rawDisplayName: '',
     avatarUrl: '',
