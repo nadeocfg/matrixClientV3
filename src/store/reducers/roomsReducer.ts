@@ -1,9 +1,13 @@
 import { RoomsModel } from '../../types/storeTypes';
 import { CLEAR_STORE } from '../constants/mainConstants';
-import { SET_ROOMS } from '../constants/roomsConstants';
+import {
+  SET_NEED_UPDATE_CURRENT_ROOM,
+  SET_ROOMS,
+} from '../constants/roomsConstants';
 
 const initialState: RoomsModel = {
   rooms: [],
+  needUpdateCurrentRoom: false,
 };
 
 const roomsReducer = (state = initialState, action: any) => {
@@ -12,6 +16,12 @@ const roomsReducer = (state = initialState, action: any) => {
       return {
         ...state,
         rooms: action.payload,
+      };
+
+    case SET_NEED_UPDATE_CURRENT_ROOM:
+      return {
+        ...state,
+        needUpdateCurrentRoom: action.payload,
       };
 
     case CLEAR_STORE:

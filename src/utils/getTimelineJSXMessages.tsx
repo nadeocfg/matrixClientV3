@@ -1,6 +1,6 @@
 export interface GetTimelineJSXMessagesModel {
   join: (user: string) => string;
-  leave: (user: string) => string;
+  leave: (user: string, reason?: string, displayName?: string) => string;
   invite: (inviter: string, user: string) => string;
   cancelInvite: (inviter: string, user: string) => string;
   rejectInvite: (user: string) => string;
@@ -20,7 +20,11 @@ const getTimelineJSXMessages = (): GetTimelineJSXMessagesModel => {
     join(user: string) {
       return `${user} joined the chat`;
     },
-    leave(user: string) {
+    leave(user: string, reason?: string, displayName?: string) {
+      if (reason) {
+        return `${user} kicked ${displayName || 'user'}`;
+      }
+
       return `${user} left the chat`;
     },
     invite(inviter: string, user: string) {

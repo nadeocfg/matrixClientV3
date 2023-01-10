@@ -20,7 +20,6 @@ import { RootStackModel } from '../../types/rootStackType';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import getPowerLabel from '../../utils/getPowerLabel';
 import {
-  LinkIcon,
   LockIcon,
   PlusRoundedIcon,
   QuestionMarkRounded,
@@ -97,11 +96,37 @@ const RoomSettings = ({ route }: RoomSettingsProps) => {
     };
   }, [searchData.searchValue]);
 
+  const initialSync = () => {
+    const room = matrixContext.instance?.getRoom(route.params.roomId);
+
+    room?.loadMembersIfNeeded().then(() => {
+      console.log(room?.getMembersWithMembership('invite'));
+      setJoinedMembers(room?.getMembersWithMembership('join') || []);
+      setInvitedMembers(room?.getMembersWithMembership('invite') || []);
+    });
+    setRoomData(room);
+    setAvatar({
+      avatar:
+        room?.getAvatarUrl(
+          matrixContext.instance?.baseUrl || '',
+          64,
+          64,
+          'crop',
+        ) || '',
+      fullAvatar:
+        matrixContext.instance?.mxcUrlToHttp(room?.getMxcAvatarUrl() || '') ||
+        '',
+    });
+
+    dispatch(setLoader(false));
+  };
+
   useFocusEffect(
     React.useCallback(() => {
       const room = matrixContext.instance?.getRoom(route.params.roomId);
 
       room?.loadMembersIfNeeded().then(() => {
+        console.log(room?.getMembersWithMembership('invite'));
         setJoinedMembers(room?.getMembersWithMembership('join') || []);
         setInvitedMembers(room?.getMembersWithMembership('invite') || []);
       });
@@ -133,7 +158,7 @@ const RoomSettings = ({ route }: RoomSettingsProps) => {
         limit: 10,
       })
       .then(res => {
-        setFoundedUsers(res.results);
+        setFoundedUsers(res.results.filter(item => item.display_name));
       })
       .catch(err => {
         console.log({ ...err });
@@ -211,15 +236,15 @@ const RoomSettings = ({ route }: RoomSettingsProps) => {
 
     setIsAddNewMembers(false);
 
-    dispatch(setLoader(false));
+    setTimeout(initialSync, 1000);
   };
 
   const addMembers = () => {
     setIsAddNewMembers(true);
   };
 
-  const isUserInclude = (userId: string) => {
-    return selectedUsers.filter(item => item.user_id === userId).length > 0;
+  const isUserInclude = (user: UserDirectoryItemModel) => {
+    return selectedUsers.includes(user);
   };
 
   const onSearchValueChange = (value: string) => {
@@ -230,7 +255,7 @@ const RoomSettings = ({ route }: RoomSettingsProps) => {
   };
 
   const onSelectUser = (user: UserDirectoryItemModel) => {
-    const isSelected = isUserInclude(user.user_id);
+    const isSelected = selectedUsers.includes(user);
 
     if (isSelected) {
       setSelectedUsers(
@@ -290,6 +315,67 @@ const RoomSettings = ({ route }: RoomSettingsProps) => {
       });
   };
 
+  // When pressing on invited users
+  const onInvitedPress = (userId: string, username: string) => {
+    const room = matrixContext.instance?.getRoom(route.params.roomId);
+    const roomPowerLevel = room?.currentState.getStateEvents(
+      'm.room.power_levels',
+    )[0]?.event?.content;
+
+    const currentUserPowerLevel =
+      roomPowerLevel?.users[matrixContext.instance?.getUserId() || ''];
+
+    if (currentUserPowerLevel < roomPowerLevel?.kick) {
+      return;
+    }
+
+    dispatch(
+      setActionsDrawerContent({
+        title: 'Confirm action',
+        text: `Cancel invite for ${username}`,
+        actions: [
+          {
+            title: 'Cancel invite',
+            onPress: () => kickUser(userId, 'Cancel invite'),
+          },
+          {
+            title: 'Cancel',
+            onPress: () => dispatch(setActionsDrawerVisible(false)),
+          },
+        ],
+      }),
+    );
+
+    dispatch(setActionsDrawerVisible(true));
+  };
+
+  const kickUser = (userId: string, reason?: string) => {
+    if (route.params.roomId && userId) {
+      dispatch(setLoader(true));
+
+      dispatch(setActionsDrawerVisible(false));
+
+      matrixContext.instance
+        ?.kick(route.params.roomId, userId, reason)
+        .then(() => {
+          setTimeout(initialSync, 1000);
+        })
+        .catch(err => {
+          console.log({ ...err });
+
+          dispatch(
+            setActionsDrawerContent({
+              title: err.data?.errcode || '',
+              text: err.data?.error || 'Something went wrong',
+            }),
+          );
+
+          dispatch(setLoader(false));
+          dispatch(setActionsDrawerVisible(true));
+        });
+    }
+  };
+
   // Show another screen, when add new members button press
   if (isAddNewMembers) {
     return (
@@ -323,8 +409,47 @@ const RoomSettings = ({ route }: RoomSettingsProps) => {
     );
   }
 
-  const openUser = (userId: string) => {
-    navigate('UserProfile', { userId, roomId: route.params.roomId });
+  const onMemberPress = (userId: string, username: string) => {
+    const room = matrixContext.instance?.getRoom(route.params.roomId);
+    const roomPowerLevel = room?.currentState.getStateEvents(
+      'm.room.power_levels',
+    )[0]?.event?.content;
+
+    const currentUserPowerLevel =
+      roomPowerLevel?.users[matrixContext.instance?.getUserId() || ''];
+
+    if (currentUserPowerLevel >= roomPowerLevel?.kick) {
+      dispatch(
+        setActionsDrawerContent({
+          title: 'Select actions',
+          text: `Available actions for ${username}`,
+          actions: [
+            {
+              title: 'Member profile',
+              onPress: () => {
+                navigate('UserProfile', {
+                  userId,
+                  roomId: route.params.roomId,
+                });
+                dispatch(setActionsDrawerVisible(false));
+              },
+            },
+            {
+              title: 'Kick member',
+              onPress: () => kickUser(userId, 'Kick member'),
+            },
+            {
+              title: 'Cancel',
+              onPress: () => dispatch(setActionsDrawerVisible(false)),
+            },
+          ],
+        }),
+      );
+
+      dispatch(setActionsDrawerVisible(true));
+    } else {
+      navigate('UserProfile', { userId, roomId: route.params.roomId });
+    }
   };
 
   return (
@@ -389,7 +514,7 @@ const RoomSettings = ({ route }: RoomSettingsProps) => {
 
           {joinedMembers.map(member => (
             <Pressable
-              onPress={() => openUser(member.userId)}
+              onPress={() => onMemberPress(member.userId, member.name)}
               key={member.userId}>
               <Box style={listStyle.listItem}>
                 {member.getAvatarUrl(
@@ -438,41 +563,45 @@ const RoomSettings = ({ route }: RoomSettingsProps) => {
 
             <Box style={listStyle.container}>
               {invitedMembers.map(member => (
-                <Box style={listStyle.listItem} key={member.userId}>
-                  {member.getAvatarUrl(
-                    matrixContext.instance?.baseUrl || '',
-                    48,
-                    48,
-                    'crop',
-                    false,
-                    false,
-                  ) ? (
-                    <Image
-                      src={
-                        member.getAvatarUrl(
-                          matrixContext.instance?.baseUrl || '',
-                          48,
-                          48,
-                          'crop',
-                          false,
-                          false,
-                        ) || ''
-                      }
-                      alt="User avatar"
-                      borderRadius="full"
-                      width={8}
-                      height={8}
-                    />
-                  ) : (
-                    <DefaultAvatar
-                      name={member.name ? member.name[0] : ''}
-                      width={8}
-                      fontSize={16}
-                    />
-                  )}
-                  <Text ml={4}>{member.name}</Text>
-                  <Text ml="auto">{getPowerLabel(member.powerLevel)}</Text>
-                </Box>
+                <Pressable
+                  onPress={() => onInvitedPress(member.userId, member.name)}
+                  key={member.userId}>
+                  <Box style={listStyle.listItem}>
+                    {member.getAvatarUrl(
+                      matrixContext.instance?.baseUrl || '',
+                      48,
+                      48,
+                      'crop',
+                      false,
+                      false,
+                    ) ? (
+                      <Image
+                        src={
+                          member.getAvatarUrl(
+                            matrixContext.instance?.baseUrl || '',
+                            48,
+                            48,
+                            'crop',
+                            false,
+                            false,
+                          ) || ''
+                        }
+                        alt="User avatar"
+                        borderRadius="full"
+                        width={8}
+                        height={8}
+                      />
+                    ) : (
+                      <DefaultAvatar
+                        name={member.name ? member.name[0] : ''}
+                        width={8}
+                        fontSize={16}
+                      />
+                    )}
+                    <Text ml={4}>{member.name}</Text>
+                    <Text ml="auto">{getPowerLabel(member.powerLevel)}</Text>
+                  </Box>
+                </Pressable>
               ))}
             </Box>
           </>

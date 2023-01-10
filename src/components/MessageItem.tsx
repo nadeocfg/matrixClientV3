@@ -155,6 +155,7 @@ const MessageItem = ({ event, userId, isPrevSenderSame }: MessageItemProps) => {
   }
 
   if (event.type === 'm.room.member') {
+    console.log(event);
     return renderRoomMemberMessage(
       event,
       matrixContext.instance,

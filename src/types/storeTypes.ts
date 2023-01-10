@@ -68,6 +68,7 @@ export interface UserDataModel {
 
 export interface RoomsModel {
   rooms: RoomItemModel[];
+  needUpdateCurrentRoom: boolean;
 }
 
 export interface RoomItemModel {

@@ -48,6 +48,9 @@ import {
 } from '../../components/icons';
 import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 import DocumentPicker, { types } from 'react-native-document-picker';
+import { useAppSelector } from '../../hooks/useSelector';
+import { StoreModel } from '../../types/storeTypes';
+import { setNeedUpdateCurrentRoom } from '../../store/actions/roomsActions';
 
 const RoomItem = (
   props: NativeStackScreenProps<RootStackModel, 'RoomItem'>,
@@ -72,12 +75,25 @@ const RoomItem = (
   });
   const [isLoadingMessages, setIsLoadingMessages] = useState(false);
   const scrollViewRef = useRef<any>(null);
+  const needUpdateCurrentRoom = useAppSelector(
+    (state: StoreModel) => state.roomsStore.needUpdateCurrentRoom,
+  );
 
   useEffect(() => {
+    console.log('mounted');
+
     if (props.route.params.roomId) {
       initialRoomSync(props.route.params.roomId);
     }
   }, []);
+
+  useEffect(() => {
+    console.log('need update');
+
+    if (props.route.params.roomId && needUpdateCurrentRoom) {
+      initialRoomSync(props.route.params.roomId);
+    }
+  }, [needUpdateCurrentRoom]);
 
   useEffect(() => {
     const showSubscription = Keyboard.addListener('keyboardDidShow', () => {
@@ -138,7 +154,7 @@ const RoomItem = (
         avatar: avatarUrl || '',
         fullAvatar: fullAvatarUrl || '',
         roomId: roomId,
-        name: props.route.params.roomName,
+        name: roomInfo.name || props.route.params.roomName,
         membership: roomInfo?.getMyMembership(),
       });
     } else {
@@ -154,6 +170,8 @@ const RoomItem = (
     if (roomInfo?.getMyMembership() !== 'join') {
       return;
     }
+
+    dispatch(setNeedUpdateCurrentRoom(false));
 
     matrixContext.instance
       ?.roomInitialSync(roomId, 20)

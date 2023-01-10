@@ -24,7 +24,7 @@ interface SearchUsersProps {
   selectedUsers: UserDirectoryItemModel[];
   onSelectUser: (user: UserDirectoryItemModel) => void;
   foundedUsers: UserDirectoryItemModel[];
-  isUserInclude: (userId: string) => boolean;
+  isUserInclude: (user: UserDirectoryItemModel) => boolean;
   matrixContext: MatrixContextModel;
 }
 
@@ -96,7 +96,7 @@ const SearchUsers = ({
                 onPress={() => onSelectUser(item)}
                 style={[
                   listStyles.listItem,
-                  isUserInclude(item.user_id) && listStyles.selected,
+                  isUserInclude(item) && listStyles.selected,
                 ]}
                 key={item.user_id}>
                 <Box>
@@ -122,7 +122,7 @@ const SearchUsers = ({
                 <Checkbox
                   onChange={() => onSelectUser(item)}
                   value={'selected'}
-                  isChecked={isUserInclude(item.user_id)}
+                  isChecked={isUserInclude(item)}
                   accessibilityLabel="Select user"
                 />
               </Pressable>

@@ -84,7 +84,7 @@ const CreateRoom = () => {
         limit: 10,
       })
       .then(res => {
-        setFoundedUsers(res.results);
+        setFoundedUsers(res.results.filter(item => item.display_name));
       })
       .catch(err => {
         console.log({ ...err });
@@ -106,12 +106,12 @@ const CreateRoom = () => {
       });
   };
 
-  const isUserInclude = (userId: string) => {
-    return selectedUsers.filter(item => item.user_id === userId).length > 0;
+  const isUserInclude = (user: UserDirectoryItemModel) => {
+    return selectedUsers.includes(user);
   };
 
   const onSelectUser = (user: UserDirectoryItemModel) => {
-    const isSelected = isUserInclude(user.user_id);
+    const isSelected = isUserInclude(user);
 
     if (isSelected) {
       setSelectedUsers(

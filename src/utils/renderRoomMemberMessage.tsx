@@ -28,7 +28,11 @@ const renderRoomMemberMessage = (
       }
 
       case 'leave': {
-        return renderTimelineSystemMessage.leave(sender || '');
+        return renderTimelineSystemMessage.leave(
+          sender || '',
+          reason,
+          username,
+        );
       }
 
       case 'invite': {

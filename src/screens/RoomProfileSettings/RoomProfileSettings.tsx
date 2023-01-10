@@ -29,6 +29,7 @@ import {
   launchCamera,
   launchImageLibrary,
 } from 'react-native-image-picker';
+import { setNeedUpdateCurrentRoom } from '../../store/actions/roomsActions';
 
 interface RoomProfileSettingsProps
   extends NativeStackScreenProps<RootStackModel, 'RoomProfileSettings'> {}
@@ -91,7 +92,7 @@ const RoomProfileSettings = ({ route }: RoomProfileSettingsProps) => {
   const onChangePhoto = () => {
     dispatch(
       setActionsDrawerContent({
-        title: 'Change profile photo',
+        title: 'Change group photo',
         text: 'Choose image source',
         actions: [
           {
@@ -143,6 +144,7 @@ const RoomProfileSettings = ({ route }: RoomProfileSettingsProps) => {
     return matrixContext.instance
       ?.sendStateEvent(route.params.roomId, type, opt)
       .then(() => {
+        dispatch(setNeedUpdateCurrentRoom(true));
         return true;
       })
       .catch(err => {
