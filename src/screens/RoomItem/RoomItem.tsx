@@ -586,16 +586,18 @@ const RoomItem = (
               h={8}
               icon={
                 isAttachmentsVisible ? (
-                  <CloseSquareIcon color={theme.light.button.primary.bgColor} />
+                  <CloseSquareIcon color={theme.primary} />
                 ) : (
-                  <PlusIcon color={theme.light.button.primary.bgColor} />
+                  <PlusIcon color={theme.greyIcon} />
                 )
               }
             />
 
             <Input
-              p={1}
+              py={1}
+              px={3}
               mx={1}
+              borderRadius="full"
               flexBasis="80%"
               flexGrow={1}
               fontSize="sm"
@@ -608,15 +610,13 @@ const RoomItem = (
                 onPress={sendMessage}
                 w={8}
                 h={8}
-                icon={
-                  <ArrowUpIcon color={theme.light.button.primary.bgColor} />
-                }
+                icon={<ArrowUpIcon color={theme.primary} />}
               />
             ) : (
               <IconButton
                 w={8}
                 h={8}
-                icon={<MicIcon color={theme.light.button.primary.bgColor} />}
+                icon={<MicIcon color={theme.greyIcon} />}
               />
             )}
           </Flex>

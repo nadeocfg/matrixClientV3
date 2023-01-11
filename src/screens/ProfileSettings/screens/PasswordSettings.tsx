@@ -3,9 +3,8 @@ import {
   FormControl,
   IconButton,
   Input,
-  Pressable,
   ScrollView,
-  Stack,
+  useColorMode,
 } from 'native-base';
 import React, { useState, useContext } from 'react';
 import BaseHeader from '../../../components/BaseHeader';
@@ -23,6 +22,7 @@ import { StoreModel } from '../../../types/storeTypes';
 import { navigationRef } from '../../../utils/navigation';
 
 const PasswordSettings = () => {
+  const { colorMode } = useColorMode();
   const dispatch = useAppDispatch();
   const [passwordData, setPasswordData] = useState({
     currentPassword: '',
@@ -127,9 +127,21 @@ const PasswordSettings = () => {
                 mr={2}
                 icon={
                   isPassword ? (
-                    <CloseEyeIcon color={theme.light.lightText} />
+                    <CloseEyeIcon
+                      color={
+                        colorMode === 'light'
+                          ? theme.light.lightText
+                          : theme.dark.text
+                      }
+                    />
                   ) : (
-                    <EyeIcon color={theme.light.lightText} />
+                    <EyeIcon
+                      color={
+                        colorMode === 'light'
+                          ? theme.light.lightText
+                          : theme.dark.text
+                      }
+                    />
                   )
                 }
               />
@@ -155,9 +167,21 @@ const PasswordSettings = () => {
                 mr={2}
                 icon={
                   isNewPassword ? (
-                    <CloseEyeIcon color={theme.light.lightText} />
+                    <CloseEyeIcon
+                      color={
+                        colorMode === 'light'
+                          ? theme.light.lightText
+                          : theme.dark.text
+                      }
+                    />
                   ) : (
-                    <EyeIcon color={theme.light.lightText} />
+                    <EyeIcon
+                      color={
+                        colorMode === 'light'
+                          ? theme.light.lightText
+                          : theme.dark.text
+                      }
+                    />
                   )
                 }
               />
@@ -183,9 +207,21 @@ const PasswordSettings = () => {
                 mr={2}
                 icon={
                   isNewPassword ? (
-                    <CloseEyeIcon color={theme.light.lightText} />
+                    <CloseEyeIcon
+                      color={
+                        colorMode === 'light'
+                          ? theme.light.lightText
+                          : theme.dark.text
+                      }
+                    />
                   ) : (
-                    <EyeIcon color={theme.light.lightText} />
+                    <EyeIcon
+                      color={
+                        colorMode === 'light'
+                          ? theme.light.lightText
+                          : theme.dark.text
+                      }
+                    />
                   )
                 }
               />

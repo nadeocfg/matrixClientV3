@@ -35,23 +35,47 @@ const ProfileSettings = () => {
     {
       title: 'Personal information',
       route: 'PersonalInformationSettings',
-      icon: <QuestionMarkRounded />,
+      icon: (
+        <QuestionMarkRounded
+          color={
+            currentColorMode === 'dark' ? theme.dark.text : theme.light.text
+          }
+        />
+      ),
     },
     {
       title: 'Password',
       route: 'PasswordSettings',
-      icon: <QuestionMarkRounded />,
+      icon: (
+        <QuestionMarkRounded
+          color={
+            currentColorMode === 'dark' ? theme.dark.text : theme.light.text
+          }
+        />
+      ),
     },
     {
       title: 'Deactivate account permamently',
       route: 'DeactivateAccountSettings',
-      icon: <QuestionMarkRounded />,
+      icon: (
+        <QuestionMarkRounded
+          color={
+            currentColorMode === 'dark' ? theme.dark.text : theme.light.text
+          }
+        />
+      ),
     },
     {
       title: 'Terms of Use & Privacy Policy',
       route: 'https://dev.techwings.com:8448/_matrix/consent?v=1.0',
       link: true,
-      icon: <QuestionMarkRounded />,
+      icon: (
+        <QuestionMarkRounded
+          color={
+            currentColorMode === 'dark' ? theme.dark.text : theme.light.text
+          }
+        />
+      ),
     },
   ];
 

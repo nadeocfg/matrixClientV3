@@ -1,4 +1,12 @@
-import { Box, Heading, IconButton, Image, Menu, Pressable } from 'native-base';
+import {
+  Box,
+  Heading,
+  IconButton,
+  Image,
+  Menu,
+  Pressable,
+  useColorMode,
+} from 'native-base';
 import React from 'react';
 import DefaultAvatar from '../../../components/DefaultAvatar';
 import { DotsIcon } from '../../../components/icons';
@@ -14,6 +22,7 @@ interface RoomListHeaderProps {
 
 const RoomListHeader = ({ userAvatar }: RoomListHeaderProps) => {
   const userData = useAppSelector((state: StoreModel) => state.userStore.user);
+  const { colorMode } = useColorMode();
 
   const goTo = (screen: keyof RootStackModel) => {
     navigate(screen);
@@ -59,7 +68,13 @@ const RoomListHeader = ({ userAvatar }: RoomListHeaderProps) => {
             <IconButton
               variant="ghost"
               {...triggerProps}
-              icon={<DotsIcon color={theme.light.text} />}
+              icon={
+                <DotsIcon
+                  color={
+                    colorMode === 'light' ? theme.light.text : theme.chipBg
+                  }
+                />
+              }
             />
           );
         }}>

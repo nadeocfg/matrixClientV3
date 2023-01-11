@@ -8,6 +8,7 @@ import {
   ScrollView,
   Spinner,
   Text,
+  useColorMode,
 } from 'native-base';
 import React from 'react';
 import { UserDirectoryItemModel } from '../types/userDirectoryItemModel';
@@ -38,6 +39,8 @@ const SearchUsers = ({
   foundedUsers,
   isUserInclude,
 }: SearchUsersProps) => {
+  const { colorMode } = useColorMode();
+
   return (
     <Box
       _light={{
@@ -50,7 +53,10 @@ const SearchUsers = ({
         m={4}
         variant="search"
         InputLeftElement={
-          <MagnifierIcon color={theme.defaultGrey} style={{ marginLeft: 4 }} />
+          <MagnifierIcon
+            color={colorMode === 'light' ? theme.defaultGrey : theme.chipBg}
+            style={{ marginLeft: 4 }}
+          />
         }
         placeholder="Search by username"
         value={searchValue}

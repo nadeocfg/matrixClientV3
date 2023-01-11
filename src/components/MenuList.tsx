@@ -1,4 +1,12 @@
-import { Box, Flex, IFlexProps, Link, Pressable, Text } from 'native-base';
+import {
+  Box,
+  Flex,
+  IFlexProps,
+  Link,
+  Pressable,
+  Text,
+  useColorMode,
+} from 'native-base';
 import { InterfaceBoxProps } from 'native-base/lib/typescript/components/primitives/Box';
 import React from 'react';
 import theme from '../themes/theme';
@@ -19,6 +27,8 @@ export interface ItemModel {
 }
 
 const MenuList = ({ withIcons, items, ...props }: MenuListProps) => {
+  const { colorMode } = useColorMode();
+
   const goTo = (route: string) => {
     navigate(route);
   };
@@ -53,7 +63,11 @@ const MenuList = ({ withIcons, items, ...props }: MenuListProps) => {
               <Box flexGrow={1}>
                 <Text fontSize={16}>{item.title}</Text>
               </Box>
-              <ArrowRightIcon />
+              <ArrowRightIcon
+                color={
+                  colorMode === 'light' ? theme.light.text : theme.dark.text
+                }
+              />
             </Flex>
           </Link>
         ) : (
@@ -71,7 +85,11 @@ const MenuList = ({ withIcons, items, ...props }: MenuListProps) => {
               <Box flexGrow={1}>
                 <Text fontSize={16}>{item.title}</Text>
               </Box>
-              <ArrowRightIcon />
+              <ArrowRightIcon
+                color={
+                  colorMode === 'light' ? theme.light.text : theme.dark.text
+                }
+              />
             </Flex>
           </Pressable>
         ),

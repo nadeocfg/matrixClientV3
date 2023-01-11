@@ -185,7 +185,7 @@ const styles = StyleSheet.create({
   },
   messageWrapper: {
     width: '80%',
-    backgroundColor: theme.light.button.primary.bgColor,
+    backgroundColor: theme.primary,
     borderRadius: 12,
     marginTop: 16,
     padding: 12,
@@ -196,7 +196,7 @@ const styles = StyleSheet.create({
   },
   notMyMessage: {
     borderBottomLeftRadius: 0,
-    backgroundColor: theme.light.secondary,
+    backgroundColor: theme.messageBg,
   },
   myPrev: {
     marginTop: 4,

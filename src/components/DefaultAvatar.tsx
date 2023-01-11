@@ -19,9 +19,7 @@ const DefaultAvatar = ({
     <Flex
       align="center"
       justify="center"
-      backgroundColor={
-        inversed ? theme.light.darkPrimary : theme.light.secondary
-      }
+      backgroundColor={inversed ? theme.darkPrimary : theme.secondary}
       borderRadius="full"
       width={width}
       height={width}>
@@ -30,7 +28,7 @@ const DefaultAvatar = ({
           fontSize,
           textTransform: 'uppercase',
           fontWeight: '900',
-          color: inversed ? theme.light.secondary : theme.light.primary,
+          color: inversed ? theme.secondary : theme.primary,
         }}
         align="center"
         justify="center"

@@ -58,7 +58,7 @@ const RenderRoomMessage = ({
 
           <Text
             mb={2}
-            color={theme.light.button.primary.textColor}
+            color={isMyMessage ? theme.white : theme.greyIcon}
             fontSize="sm"
             fontWeight={600}>
             {userData?.displayName || userData?.userId || ''}
@@ -68,7 +68,7 @@ const RenderRoomMessage = ({
         <Flex direction="row" justify="center">
           <ImageModal
             resizeMode="contain"
-            imageBackgroundColor={theme.light.button.primary.bgColor}
+            imageBackgroundColor={theme.primary}
             style={{
               width: width / 1.5,
               height: 250,
@@ -80,7 +80,8 @@ const RenderRoomMessage = ({
         </Flex>
 
         <Text
-          color={theme.light.button.primary.textColor}
+          mt={2}
+          color={isMyMessage ? theme.white : theme.greyIcon}
           textAlign="right"
           fontSize="2xs">
           {formatDate(event.origin_server_ts)}
@@ -103,17 +104,17 @@ const RenderRoomMessage = ({
           </Box>
           <Text
             mb={2}
-            color={theme.light.button.primary.textColor}
+            color={isMyMessage ? theme.white : theme.greyIcon}
             fontSize="sm"
             fontWeight={600}>
             {userData?.displayName || userData?.userId || ''}
           </Text>
         </Flex>
 
-        <Text color={theme.light.button.primary.textColor} fontSize="md">
+        <Text color={isMyMessage ? theme.white : theme.greyIcon} fontSize="md">
           Video message
         </Text>
-        <Text color={theme.light.button.primary.textColor} fontSize="md">
+        <Text color={isMyMessage ? theme.white : theme.greyIcon} fontSize="md">
           Filename: {event.content?.body}
         </Text>
 
@@ -128,10 +129,7 @@ const RenderRoomMessage = ({
           Show video
         </Button>
 
-        <Text
-          color={theme.light.button.primary.textColor}
-          textAlign="right"
-          fontSize="2xs">
+        <Text color={theme.white} textAlign="right" fontSize="2xs">
           {formatDate(event.origin_server_ts)}
         </Text>
       </Box>
@@ -139,6 +137,7 @@ const RenderRoomMessage = ({
   }
 
   if (event.content.msgtype === 'm.text') {
+    console.log(event);
     return (
       <Box
         style={[
@@ -153,17 +152,18 @@ const RenderRoomMessage = ({
 
           <Text
             mb={2}
-            color={theme.light.button.primary.textColor}
+            color={isMyMessage ? theme.white : theme.greyIcon}
             fontSize="sm"
             fontWeight={600}>
             {userData?.displayName || userData?.userId || ''}
           </Text>
         </Flex>
-        <Text color={theme.light.button.primary.textColor} fontSize="md">
+        <Text color={isMyMessage ? theme.white : theme.greyIcon} fontSize="md">
           {event.content?.body}
         </Text>
         <Text
-          color={theme.light.button.primary.textColor}
+          mt={2}
+          color={isMyMessage ? theme.white : theme.greyIcon}
           textAlign="right"
           fontSize="2xs">
           {formatDate(event.origin_server_ts)}

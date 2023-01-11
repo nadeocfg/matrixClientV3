@@ -8,6 +8,7 @@ import {
   ScrollView,
   Spinner,
   Text,
+  useColorMode,
 } from 'native-base';
 import React from 'react';
 import { StyleSheet } from 'react-native';
@@ -38,13 +39,18 @@ const Step1 = ({
   foundedUsers,
   isUserInclude,
 }: Step1Props) => {
+  const { colorMode } = useColorMode();
+
   return (
     <>
       <Input
         m={4}
         variant="outline"
         InputLeftElement={
-          <MagnifierIcon color={theme.defaultGrey} style={{ marginLeft: 4 }} />
+          <MagnifierIcon
+            color={colorMode === 'light' ? theme.defaultGrey : theme.chipBg}
+            style={{ marginLeft: 4 }}
+          />
         }
         placeholder="Search by username"
         value={searchValue}

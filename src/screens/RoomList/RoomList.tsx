@@ -7,6 +7,7 @@ import {
   Input,
   ScrollView,
   Spinner,
+  useColorMode,
 } from 'native-base';
 import React, { useEffect, useContext, useState } from 'react';
 import { useAppSelector } from '../../hooks/useSelector';
@@ -28,6 +29,7 @@ import { IPublicRoomsChunkRoom } from 'matrix-js-sdk';
 import formatTime from '../../utils/formatTime';
 
 const RoomList = () => {
+  const { colorMode } = useColorMode();
   const dispatch = useAppDispatch();
   const roomList = useAppSelector(
     (state: StoreModel) => state.roomsStore.rooms,
@@ -174,7 +176,7 @@ const RoomList = () => {
             variant="search"
             InputLeftElement={
               <MagnifierIcon
-                color={theme.defaultGrey}
+                color={colorMode === 'light' ? theme.defaultGrey : theme.chipBg}
                 style={{ marginLeft: 4 }}
               />
             }

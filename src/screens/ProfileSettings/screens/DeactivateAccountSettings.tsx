@@ -174,7 +174,6 @@ const DeactivateAccountSettings = () => {
                 fontSize="md"
                 w="100%"
                 variant="unstyled"
-                placeholder="Password"
                 value={passwordData.password}
                 onChangeText={changePasswordData('password')}
                 InputRightElement={

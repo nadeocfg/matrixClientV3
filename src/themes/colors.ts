@@ -33,6 +33,7 @@ const colors = {
   darkDanger: 'rgba(195, 0, 0, 0.8)',
   border: 'rgba(120, 120, 128, 0.36)',
   greyLight: '#EBEBF5',
+  messageBg: 'rgba(240, 242, 242, 0.6)',
 
   white: '#FFFFFF',
   black: '#1C1C1E',

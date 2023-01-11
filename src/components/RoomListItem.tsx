@@ -84,13 +84,13 @@ const RoomListItem = ({
             <></>
           )}
         </Box>
-        <Box>
+        <Box flexBasis={'80%'}>
           <Text ml={2} fontSize={16}>
             {name}
           </Text>
           {message && (
             <Text ml={2} fontSize={12}>
-              {message.length > 70 ? message.substring(0, 69) + '...' : message}
+              {message.length > 50 ? message.substring(0, 49) + '...' : message}
             </Text>
           )}
         </Box>
@@ -119,7 +119,7 @@ const avatarBadgeStyles = StyleSheet.create({
     height: 14,
     borderRadius: 50,
     borderWidth: 3,
-    backgroundColor: theme.light.primary,
+    backgroundColor: theme.primary,
   },
 });
 

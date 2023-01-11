@@ -54,7 +54,7 @@ const RoomHeader: React.FC<PropsWithChildren<RoomHeaderProps>> = ({
         height={12}
         variant="ghost"
         onPress={goBack}
-        icon={<ArrowLeftIcon color={theme.light.primary} />}
+        icon={<ArrowLeftIcon color={theme.primary} />}
       />
       {avatar ? (
         <Image
@@ -86,9 +86,7 @@ const RoomHeader: React.FC<PropsWithChildren<RoomHeaderProps>> = ({
                 icon={
                   <DotsIcon
                     color={
-                      colorMode === 'dark'
-                        ? theme.dark.button.primary.textColor
-                        : theme.light.button.primary.textColor
+                      colorMode === 'dark' ? theme.greyIcon : theme.primary
                     }
                   />
                 }
