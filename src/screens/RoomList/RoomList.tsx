@@ -171,7 +171,7 @@ const RoomList = () => {
             flexBasis="80%"
             mt={2}
             mb={2}
-            variant="outline"
+            variant="search"
             InputLeftElement={
               <MagnifierIcon
                 color={theme.defaultGrey}

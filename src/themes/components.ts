@@ -406,6 +406,35 @@ const components = {
           bg: theme.chipBg,
         },
       },
+      search: {
+        py: '1',
+        px: '1',
+        _dark: {
+          backgroundColor: theme.chipBg,
+          _input: {
+            backgroundColor: theme.chipBg,
+          },
+          borderColor: theme.chipBg,
+          fontSize: 16,
+          _focus: {
+            borderColor: theme.chipBg,
+          },
+        },
+        _light: {
+          backgroundColor: theme.chipBg,
+          _input: {
+            backgroundColor: theme.chipBg,
+          },
+          borderColor: theme.chipBg,
+          fontSize: 16,
+          _focus: {
+            borderColor: theme.chipBg,
+          },
+        },
+        _focus: {
+          backgroundColor: theme.chipBg,
+        },
+      },
       withButton: {
         bg: theme.transparent,
 

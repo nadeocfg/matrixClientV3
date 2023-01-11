@@ -84,7 +84,7 @@ const RoomListItem = ({
             <></>
           )}
         </Box>
-        <Box flex={1} height={message && '100%'}>
+        <Box>
           <Text ml={2} fontSize={16}>
             {name}
           </Text>
@@ -94,7 +94,11 @@ const RoomListItem = ({
             </Text>
           )}
         </Box>
-        <Flex flexDirection="column" justify="flex-start" align="flex-end">
+        <Flex
+          ml="auto"
+          flexDirection="column"
+          justify="flex-start"
+          align="flex-end">
           <Text flex={1}>{eventTime}</Text>
           <BaseBadge value={unreadCount} />
         </Flex>

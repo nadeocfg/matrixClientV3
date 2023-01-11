@@ -44,10 +44,10 @@ const RoomHeader: React.FC<PropsWithChildren<RoomHeaderProps>> = ({
       alignItems="center"
       height={16}
       _light={{
-        bg: theme.light.button.primary.bgColor,
+        bg: theme.light.bgColor,
       }}
       _dark={{
-        bg: theme.dark.button.primary.bgColor,
+        bg: theme.dark.bgColor,
       }}>
       <IconButton
         width={12}

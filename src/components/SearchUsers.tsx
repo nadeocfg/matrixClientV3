@@ -39,10 +39,16 @@ const SearchUsers = ({
   isUserInclude,
 }: SearchUsersProps) => {
   return (
-    <>
+    <Box
+      _light={{
+        bg: theme.light.bgColor,
+      }}
+      _dark={{
+        bg: theme.dark.bgColor,
+      }}>
       <Input
         m={4}
-        variant="outline"
+        variant="search"
         InputLeftElement={
           <MagnifierIcon color={theme.defaultGrey} style={{ marginLeft: 4 }} />
         }
@@ -135,7 +141,7 @@ const SearchUsers = ({
           </Box>
         </Box>
       </ScrollView>
-    </>
+    </Box>
   );
 };
 

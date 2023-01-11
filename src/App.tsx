@@ -33,6 +33,7 @@ import RoomSettings from './screens/RoomSettings';
 import RoomProfileSettings from './screens/RoomProfileSettings';
 import RoomPermissionSettings from './screens/RoomPermissionSettings';
 import UserProfile from './screens/UserProfile';
+import theme from './themes/theme';
 
 const App = () => {
   const { setColorMode } = useColorMode();
