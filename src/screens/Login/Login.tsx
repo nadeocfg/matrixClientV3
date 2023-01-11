@@ -5,11 +5,9 @@ import {
   Flex,
   FormControl,
   Heading,
+  IconButton,
   Input,
-  Pressable,
   ScrollView,
-  Stack,
-  useColorMode,
 } from 'native-base';
 import React, { PropsWithChildren, useState, useContext } from 'react';
 import { StyleSheet } from 'react-native';
@@ -36,7 +34,6 @@ const Login: React.FC<PropsWithChildren<any>> = () => {
   });
   const [isDisabled, setIsDisabled] = useState(true);
   const [isPassword, setIsPassword] = useState(true);
-  const { colorMode } = useColorMode();
   const dispatch = useAppDispatch();
   const matrixContext = useContext(MatrixContext);
 
@@ -167,82 +164,83 @@ const Login: React.FC<PropsWithChildren<any>> = () => {
         </Center>
 
         <Box style={styles.inner}>
-          <FormControl>
-            <FormControl.Label _text={{ fontWeight: 'normal' }} pl={2}>
+          <FormControl
+            mb={4}
+            borderBottomWidth={0.5}
+            borderBottomColor={theme.border}
+            paddingBottom={0}>
+            <FormControl.Label px={2} _text={{ fontWeight: 'normal' }}>
               Where your conversations will live
             </FormControl.Label>
-            <Stack
-              mb={8}
-              borderBottomWidth={0.5}
-              borderBottomColor={theme.border}
-              paddingBottom={2}
-              borderColor={theme[colorMode || 'light'].button.primary.bgColor}>
-              <Input
-                fontSize="sm"
-                w="100%"
-                variant="unstyled"
-                value={formData.server}
-                onChangeText={onChange('server')}
-                isDisabled={isDisabled}
-                InputRightElement={
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    px={2.5}
-                    py={1.5}
-                    onPress={() => setIsDisabled(!isDisabled)}>
-                    {isDisabled ? 'Edit' : 'Save'}
-                  </Button>
-                }
-                placeholder="Home server"
-              />
-            </Stack>
-          </FormControl>
-
-          <FormControl>
-            <Stack mb={8}>
-              <Input
-                fontSize="md"
-                w="100%"
-                variant="unstyled"
-                placeholder="Username"
-                value={formData.username}
-                onChangeText={onChange('username')}
-              />
-            </Stack>
-          </FormControl>
-
-          <FormControl>
-            <Stack mb={8}>
-              <Input
-                type={isPassword ? 'password' : 'text'}
-                fontSize="md"
-                w="100%"
-                variant="unstyled"
-                placeholder="Password"
-                value={formData.password}
-                onChangeText={onChange('password')}
-                InputRightElement={
-                  <Pressable mr={2} onPress={() => setIsPassword(!isPassword)}>
-                    {isPassword ? (
-                      <CloseEyeIcon color="#000" />
-                    ) : (
-                      <EyeIcon color="#000" />
-                    )}
-                  </Pressable>
-                }
-              />
-              <Flex direction="row-reverse">
+            <Input
+              pl={2}
+              fontSize="sm"
+              w="100%"
+              variant="withButton"
+              value={formData.server}
+              onChangeText={onChange('server')}
+              isDisabled={isDisabled}
+              InputRightElement={
                 <Button
-                  variant="link"
-                  size="sm"
-                  onPress={() =>
-                    navigate('ForgotPassword', { server: formData.server })
-                  }>
-                  Forgot password
+                  variant="outline"
+                  px={2.5}
+                  py={1.5}
+                  onPress={() => setIsDisabled(!isDisabled)}>
+                  {isDisabled ? 'Edit' : 'Save'}
                 </Button>
-              </Flex>
-            </Stack>
+              }
+              placeholder="Home server"
+            />
+          </FormControl>
+
+          <FormControl mb={2}>
+            <FormControl.Label>Username</FormControl.Label>
+            <Input
+              fontSize="md"
+              w="100%"
+              variant="unstyled"
+              value={formData.username}
+              onChangeText={onChange('username')}
+            />
+          </FormControl>
+
+          <FormControl mb={8}>
+            <FormControl.Label>Password</FormControl.Label>
+            <Input
+              type={isPassword ? 'password' : 'text'}
+              fontSize="md"
+              w="100%"
+              variant="unstyled"
+              value={formData.password}
+              onChangeText={onChange('password')}
+              InputRightElement={
+                <IconButton
+                  onPress={() => setIsPassword(!isPassword)}
+                  variant="ghost"
+                  size="sm"
+                  width={8}
+                  height={8}
+                  mr={2}
+                  icon={
+                    isPassword ? (
+                      <CloseEyeIcon color={theme.light.lightText} />
+                    ) : (
+                      <EyeIcon color={theme.light.lightText} />
+                    )
+                  }
+                />
+              }
+            />
+            <Flex direction="row-reverse">
+              <Button
+                variant="link"
+                size="sm"
+                onPress={() =>
+                  navigate('ForgotPassword', { server: formData.server })
+                }>
+                Forgot password
+              </Button>
+            </Flex>
           </FormControl>
 
           <Button onPress={login}>Log in</Button>

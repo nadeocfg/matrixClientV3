@@ -56,7 +56,7 @@ const ForgotPassword = (
 
   const onNext = () => {
     if (currentStep === 0) {
-      if (!email || isEmailValid(email)) {
+      if (!isEmailValid(email)) {
         dispatch(
           setActionsDrawerContent({
             title: 'Error',

@@ -30,6 +30,7 @@ const colors = {
   text: '#1C1C1E',
   lightText: '#3C3C43',
   danger: 'rgba(195, 0, 0, 0.36)',
+  darkDanger: 'rgba(195, 0, 0, 0.8)',
   border: 'rgba(120, 120, 128, 0.36)',
   greyLight: '#EBEBF5',
 

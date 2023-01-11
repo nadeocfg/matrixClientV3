@@ -4,15 +4,15 @@ import {
   Center,
   FormControl,
   Heading,
+  IconButton,
   Input,
-  Pressable,
   ScrollView,
-  Stack,
   Text,
 } from 'native-base';
 import React from 'react';
 import { StyleProp } from 'react-native';
-import { CloseEyeIcon, EyeIcon, MockedLogo } from '../../../components/icons';
+import DefaultAvatar from '../../../components/DefaultAvatar';
+import { CloseEyeIcon, EyeIcon } from '../../../components/icons';
 import theme from '../../../themes/theme';
 
 interface Step3Props {
@@ -41,33 +41,39 @@ const Step3 = ({
         bg: theme.dark.bgColor,
       }}>
       <Center mb={12}>
-        <MockedLogo />
+        <DefaultAvatar name="A" width={32} fontSize={48} />
         <Heading mt={4}>Choose a new password</Heading>
         <Text mt={4}>Make sure it’s 8 characters or more</Text>
       </Center>
 
       <Box style={styles.inner}>
-        <FormControl>
-          <Stack mb={8}>
-            <Input
-              type={isPassword ? 'password' : 'text'}
-              fontSize="md"
-              w="100%"
-              variant="unstyled"
-              placeholder="New Password"
-              value={password}
-              onChangeText={onChange('password')}
-              InputRightElement={
-                <Pressable onPress={onChange('isPassword')}>
-                  {isPassword ? (
-                    <CloseEyeIcon color="#000" />
+        <FormControl mb={8}>
+          <FormControl.Label>New Password</FormControl.Label>
+          <Input
+            type={isPassword ? 'password' : 'text'}
+            fontSize="md"
+            w="100%"
+            variant="unstyled"
+            value={password}
+            onChangeText={onChange('password')}
+            InputRightElement={
+              <IconButton
+                onPress={onChange('isPassword')}
+                variant="ghost"
+                size="sm"
+                width={8}
+                height={8}
+                mr={2}
+                icon={
+                  isPassword ? (
+                    <CloseEyeIcon color={theme.light.lightText} />
                   ) : (
-                    <EyeIcon color="#000" />
-                  )}
-                </Pressable>
-              }
-            />
-          </Stack>
+                    <EyeIcon color={theme.light.lightText} />
+                  )
+                }
+              />
+            }
+          />
         </FormControl>
 
         <Button onPress={onNext}>Reset Password</Button>

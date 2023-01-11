@@ -7,9 +7,7 @@ import {
   Heading,
   IconButton,
   Input,
-  Pressable,
   ScrollView,
-  Stack,
   WarningOutlineIcon,
 } from 'native-base';
 import React from 'react';
@@ -85,6 +83,7 @@ const Step1 = ({
             variant="withButton"
             value={server}
             onChangeText={onChange('server')}
+            isDisabled={isDisabled}
             InputRightElement={
               <Button
                 variant="outline"
@@ -131,9 +130,9 @@ const Step1 = ({
                 mr={2}
                 icon={
                   isPassword ? (
-                    <CloseEyeIcon color={theme.greyIcon} />
+                    <CloseEyeIcon color={theme.light.lightText} />
                   ) : (
-                    <EyeIcon color={theme.greyIcon} />
+                    <EyeIcon color={theme.light.lightText} />
                   )
                 }
               />

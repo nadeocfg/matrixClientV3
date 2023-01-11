@@ -1,7 +1,7 @@
 import { Box, Button, Center, Heading, ScrollView, Text } from 'native-base';
 import React from 'react';
 import { StyleProp } from 'react-native';
-import { MockedLogo } from '../../../components/icons';
+import DefaultAvatar from '../../../components/DefaultAvatar';
 import theme from '../../../themes/theme';
 
 interface Step4Props {
@@ -21,7 +21,7 @@ const Step4 = ({ styles, onFinishResetPassword }: Step4Props) => {
         bg: theme.dark.bgColor,
       }}>
       <Center mb={12}>
-        <MockedLogo />
+        <DefaultAvatar name="A" width={32} fontSize={48} />
         <Heading mt={4}>Congratulations!</Heading>
         <Text mt={4}>Your password has been changed</Text>
       </Center>

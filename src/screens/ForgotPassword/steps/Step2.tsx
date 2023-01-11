@@ -1,7 +1,7 @@
 import { Box, Button, Center, Heading, ScrollView, Text } from 'native-base';
 import React from 'react';
 import { StyleProp } from 'react-native';
-import { MockedLogo } from '../../../components/icons';
+import DefaultAvatar from '../../../components/DefaultAvatar';
 import theme from '../../../themes/theme';
 
 interface Step2Props {
@@ -23,7 +23,7 @@ const Step2 = ({ resendEmail, onNext, email, styles }: Step2Props) => {
         bg: theme.dark.bgColor,
       }}>
       <Center mb={12}>
-        <MockedLogo />
+        <DefaultAvatar name="A" width={32} fontSize={48} />
         <Heading mt={4}>Check your email</Heading>
         <Text mt={4}>Follow the instructions sent to {email}</Text>
       </Center>

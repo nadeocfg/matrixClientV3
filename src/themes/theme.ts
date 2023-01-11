@@ -13,6 +13,9 @@ const theme = {
   black: colors.black,
   border: colors.border,
 
+  danger: colors.danger,
+  darkDanger: colors.darkDanger,
+
   // Light mode colors
   light: {
     bgColor: colors.lightBg,
@@ -21,7 +24,6 @@ const theme = {
     secondary: colors.secondary,
     text: colors.text,
     lightText: colors.lightText,
-    danger: colors.danger,
 
     lightBg: colors.white,
     transparentBg: colors.lightTransparentBg,

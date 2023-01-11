@@ -1,4 +1,5 @@
 import { InterfaceButtonProps } from 'native-base/lib/typescript/components/primitives/Button/types';
+import colors from 'native-base/lib/typescript/theme/base/colors';
 import theme from './theme';
 
 const components = {
@@ -35,6 +36,15 @@ const components = {
         },
         _light: {
           color: theme.light.lightText,
+        },
+      },
+
+      grey: {
+        _dark: {
+          color: theme.defaultGrey,
+        },
+        _light: {
+          color: theme.defaultGrey,
         },
       },
     },
@@ -240,6 +250,35 @@ const components = {
         };
       },
 
+      danger: {
+        backgroundColor: theme.danger,
+        _text: {
+          color: theme.white,
+        },
+        _icon: {
+          color: theme.white,
+        },
+        _spinner: {
+          color: theme.white,
+        },
+        _hover: {
+          backgroundColor: theme.darkDanger,
+        },
+        _pressed: {
+          backgroundColor: theme.darkDanger,
+        },
+
+        _dark: {
+          backgroundColor: theme.danger,
+          _hover: {
+            backgroundColor: theme.darkDanger,
+          },
+          _pressed: {
+            backgroundColor: theme.darkDanger,
+          },
+        },
+      },
+
       // Ghost
       ghost: {
         _dark: {
@@ -332,6 +371,9 @@ const components = {
       },
       _light: {
         color: theme.light.text,
+      },
+      _focus: {
+        backgroundColor: theme.white,
       },
     },
     variants: {

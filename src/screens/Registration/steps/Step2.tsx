@@ -6,13 +6,12 @@ import {
   Heading,
   Input,
   ScrollView,
-  Stack,
   Text,
 } from 'native-base';
 import React, { useCallback, useRef } from 'react';
 import { StyleProp } from 'react-native';
 import Recaptcha, { RecaptchaHandles } from 'react-native-recaptcha-that-works';
-import { MockedLogo } from '../../../components/icons';
+import DefaultAvatar from '../../../components/DefaultAvatar';
 import { useAppDispatch } from '../../../hooks/useDispatch';
 import {
   setActionsDrawerContent,
@@ -78,37 +77,35 @@ const Step2 = ({
   return (
     <ScrollView
       contentContainerStyle={styles.container}
-      p={4}
+      px={4}
       _light={{
         bg: theme.light.bgColor,
       }}
       _dark={{
-        bg: theme.dark.bgColor,
+        bg: theme.light.bgColor,
       }}>
-      <Center mb={12}>
-        <MockedLogo />
-        <Heading mt={4}>Enter your email</Heading>
-        <Text mt={4}>matrix.org needs to verify your account</Text>
+      <Center mt={4} mb={12}>
+        <DefaultAvatar name="A" width={32} fontSize={48} />
+        <Heading my={2}>Enter your email</Heading>
+        <Text variant="grey">matrix.org needs to verify your account</Text>
       </Center>
 
       <Box style={styles.inner}>
-        <FormControl>
-          <Stack mb={8}>
-            <Input
-              fontSize="md"
-              w="100%"
-              variant="unstyled"
-              placeholder="Email"
-              value={email}
-              onChangeText={onChange('email')}
-            />
-          </Stack>
+        <FormControl mb={8}>
+          <FormControl.Label>Email</FormControl.Label>
+          <Input
+            fontSize="md"
+            w="100%"
+            variant="unstyled"
+            value={email}
+            onChangeText={onChange('email')}
+          />
         </FormControl>
 
         <Button onPress={openRecaptcha}>Next</Button>
       </Box>
 
-      <Center flexDirection="column">
+      <Center flexDirection="column" my={4}>
         Did not receive an email?
         <Button variant="link" size="sm" onPress={resendEmail}>
           Resend email

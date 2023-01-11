@@ -11,7 +11,7 @@ import {
 } from 'native-base';
 import React from 'react';
 import { StyleProp } from 'react-native';
-import { MockedLogo } from '../../../components/icons';
+import DefaultAvatar from '../../../components/DefaultAvatar';
 import theme from '../../../themes/theme';
 
 interface Step1Props {
@@ -33,23 +33,23 @@ const Step1 = ({ email, onChangeEmail, onNext, styles }: Step1Props) => {
         bg: theme.dark.bgColor,
       }}>
       <Center mb={12}>
-        <MockedLogo />
+        <DefaultAvatar name="A" width={32} fontSize={48} />
         <Heading mt={4}>Enter your email</Heading>
-        <Text mt={4}>matrix.org will send you a verification link</Text>
+        <Text variant="grey" mt={4}>
+          matrix.org will send you a verification link
+        </Text>
       </Center>
 
       <Box style={styles.inner}>
-        <FormControl>
-          <Stack mb={8}>
-            <Input
-              fontSize="md"
-              w="100%"
-              variant="unstyled"
-              placeholder="Email"
-              value={email}
-              onChangeText={onChangeEmail}
-            />
-          </Stack>
+        <FormControl mb={8}>
+          <FormControl.Label>Email</FormControl.Label>
+          <Input
+            fontSize="md"
+            w="100%"
+            variant="unstyled"
+            value={email}
+            onChangeText={onChangeEmail}
+          />
         </FormControl>
 
         <Button onPress={onNext}>Next</Button>

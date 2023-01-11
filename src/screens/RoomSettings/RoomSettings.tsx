@@ -255,12 +255,12 @@ const RoomSettings = ({ route }: RoomSettingsProps) => {
   };
 
   const onSelectUser = (user: UserDirectoryItemModel) => {
-    const isSelected = selectedUsers.includes(user);
+    const isSelected = isUserInclude(user);
 
     if (isSelected) {
-      setSelectedUsers(
-        selectedUsers.filter(item => item.user_id !== user.user_id),
-      );
+      const arr = selectedUsers.filter(item => item.user_id !== user.user_id);
+
+      setSelectedUsers(arr);
     } else {
       setSelectedUsers([...selectedUsers, user]);
     }

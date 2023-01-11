@@ -1,6 +1,7 @@
 import {
   Button,
   FormControl,
+  IconButton,
   Input,
   Pressable,
   ScrollView,
@@ -117,13 +118,21 @@ const PasswordSettings = () => {
             value={passwordData.currentPassword}
             onChangeText={onChange('currentPassword')}
             InputRightElement={
-              <Pressable mr={2} onPress={() => setIsPassword(!isPassword)}>
-                {isPassword ? (
-                  <CloseEyeIcon color={theme.light.lightText} />
-                ) : (
-                  <EyeIcon color={theme.light.lightText} />
-                )}
-              </Pressable>
+              <IconButton
+                onPress={() => setIsPassword(!isPassword)}
+                variant="ghost"
+                size="sm"
+                width={8}
+                height={8}
+                mr={2}
+                icon={
+                  isPassword ? (
+                    <CloseEyeIcon color={theme.light.lightText} />
+                  ) : (
+                    <EyeIcon color={theme.light.lightText} />
+                  )
+                }
+              />
             }
           />
         </FormControl>
@@ -137,15 +146,21 @@ const PasswordSettings = () => {
             value={passwordData.newPassword}
             onChangeText={onChange('newPassword')}
             InputRightElement={
-              <Pressable
+              <IconButton
+                onPress={() => setIsNewPassword(!isNewPassword)}
+                variant="ghost"
+                size="sm"
+                width={8}
+                height={8}
                 mr={2}
-                onPress={() => setIsNewPassword(!isNewPassword)}>
-                {isNewPassword ? (
-                  <CloseEyeIcon color={theme.light.lightText} />
-                ) : (
-                  <EyeIcon color={theme.light.lightText} />
-                )}
-              </Pressable>
+                icon={
+                  isNewPassword ? (
+                    <CloseEyeIcon color={theme.light.lightText} />
+                  ) : (
+                    <EyeIcon color={theme.light.lightText} />
+                  )
+                }
+              />
             }
           />
         </FormControl>
@@ -159,15 +174,21 @@ const PasswordSettings = () => {
             value={passwordData.repeatNewPassword}
             onChangeText={onChange('repeatNewPassword')}
             InputRightElement={
-              <Pressable
+              <IconButton
+                onPress={() => setIsNewPassword(!isNewPassword)}
+                variant="ghost"
+                size="sm"
+                width={8}
+                height={8}
                 mr={2}
-                onPress={() => setIsNewPassword(!isNewPassword)}>
-                {isNewPassword ? (
-                  <CloseEyeIcon color={theme.light.lightText} />
-                ) : (
-                  <EyeIcon color={theme.light.lightText} />
-                )}
-              </Pressable>
+                icon={
+                  isNewPassword ? (
+                    <CloseEyeIcon color={theme.light.lightText} />
+                  ) : (
+                    <EyeIcon color={theme.light.lightText} />
+                  )
+                }
+              />
             }
           />
         </FormControl>

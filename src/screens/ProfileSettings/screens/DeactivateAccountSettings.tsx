@@ -3,9 +3,9 @@ import {
   Button,
   Checkbox,
   FormControl,
+  IconButton,
   Input,
   Modal,
-  Pressable,
   ScrollView,
   Text,
 } from 'native-base';
@@ -24,7 +24,7 @@ import {
 import { CloseEyeIcon, EyeIcon } from '../../../components/icons';
 import { StoreModel } from '../../../types/storeTypes';
 import { useAppSelector } from '../../../hooks/useSelector';
-import { navigate, navigationRef } from '../../../utils/navigation';
+import { navigationRef } from '../../../utils/navigation';
 
 const DeactivateAccountSettings = () => {
   const [isChecked, setIsChecked] = useState(false);
@@ -178,23 +178,28 @@ const DeactivateAccountSettings = () => {
                 value={passwordData.password}
                 onChangeText={changePasswordData('password')}
                 InputRightElement={
-                  <Pressable mr={2} onPress={changePasswordData('isPassword')}>
-                    {passwordData.isPassword ? (
-                      <CloseEyeIcon color="#000" />
-                    ) : (
-                      <EyeIcon color="#000" />
-                    )}
-                  </Pressable>
+                  <IconButton
+                    onPress={changePasswordData('isPassword')}
+                    variant="ghost"
+                    size="sm"
+                    width={8}
+                    height={8}
+                    mr={2}
+                    icon={
+                      passwordData.isPassword ? (
+                        <CloseEyeIcon color={theme.light.lightText} />
+                      ) : (
+                        <EyeIcon color={theme.light.lightText} />
+                      )
+                    }
+                  />
                 }
               />
             </FormControl>
           </Modal.Body>
           <Modal.Footer>
             <Button.Group space={2}>
-              <Button
-                variant="subtle"
-                onPress={initDeactivateFlow}
-                colorScheme="error">
+              <Button variant="danger" onPress={initDeactivateFlow}>
                 Deactivate
               </Button>
             </Button.Group>

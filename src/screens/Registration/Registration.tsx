@@ -19,7 +19,6 @@ import theme from '../../themes/theme';
 import { AuthResponseModel } from '../../types/storeTypes';
 import isEmailValid from '../../utils/isEmailValid';
 import matrixSdk from '../../utils/matrix';
-import { navigationRef } from '../../utils/navigation';
 import validateUrl from '../../utils/validateUrl';
 import Step1 from './steps/Step1';
 import Step2 from './steps/Step2';
@@ -276,11 +275,6 @@ const Registration: React.FC<PropsWithChildren<any>> = () => {
             );
           }
         });
-
-        navigationRef.reset({
-          index: 0,
-          routes: [{ name: 'RoomList' }],
-        });
       })
       .catch(err => {
         console.log({ ...err });
@@ -343,7 +337,7 @@ const Registration: React.FC<PropsWithChildren<any>> = () => {
     }
 
     if (currentStep === 1) {
-      if (!signUpData.email || isEmailValid(signUpData.email)) {
+      if (!isEmailValid(signUpData.email)) {
         dispatch(
           setActionsDrawerContent({
             title: 'Error',
