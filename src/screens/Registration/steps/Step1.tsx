@@ -5,6 +5,7 @@ import {
   Checkbox,
   FormControl,
   Heading,
+  IconButton,
   Input,
   Pressable,
   ScrollView,
@@ -13,7 +14,8 @@ import {
 } from 'native-base';
 import React from 'react';
 import { StyleProp } from 'react-native';
-import { CloseEyeIcon, EyeIcon, MockedLogo } from '../../../components/icons';
+import DefaultAvatar from '../../../components/DefaultAvatar';
+import { CloseEyeIcon, EyeIcon } from '../../../components/icons';
 import TUModal from '../../../components/TUModal';
 import theme from '../../../themes/theme';
 import { navigate } from '../../../utils/navigation';
@@ -50,101 +52,100 @@ const Step1 = ({
   setIsAgree,
   isUsernameExist,
   onNext,
-  colorMode,
   styles,
 }: Step1Props) => {
   return (
     <ScrollView
       contentContainerStyle={styles.container}
-      p={4}
+      px={4}
       _light={{
         bg: theme.light.bgColor,
       }}
       _dark={{
-        bg: theme.dark.bgColor,
+        bg: theme.light.bgColor,
       }}>
-      <Center mb={12}>
-        <MockedLogo />
+      <Center mt={4} mb={12}>
+        <DefaultAvatar name="A" width={32} fontSize={48} />
         <Heading mt={4}>Create your account</Heading>
       </Center>
 
       <Box style={styles.inner}>
-        <FormControl>
+        <FormControl
+          mb={4}
+          borderBottomWidth={0.5}
+          borderBottomColor={theme.border}
+          paddingBottom={0}>
           <FormControl.Label px={2} _text={{ fontWeight: 'normal' }}>
             Where your conversations will live
           </FormControl.Label>
-          <Stack
-            mb={8}
-            borderBottomWidth={0.5}
-            borderBottomColor={theme.border}
-            paddingBottom={2}
-            borderColor={theme[colorMode || 'light'].button.primary.bgColor}>
-            <Input
-              pl={2}
-              fontSize="sm"
-              w="100%"
-              variant="unstyled"
-              value={server}
-              onChangeText={onChange('server')}
-              isDisabled={isDisabled}
-              InputRightElement={
-                <Button
-                  variant="outline"
-                  px={2.5}
-                  py={1.5}
-                  onPress={() => setIsDisabled(!isDisabled)}>
-                  {isDisabled ? 'Edit' : 'Save'}
-                </Button>
-              }
-              placeholder="Home server"
-            />
-          </Stack>
+          <Input
+            pl={2}
+            fontSize="sm"
+            w="100%"
+            variant="withButton"
+            value={server}
+            onChangeText={onChange('server')}
+            InputRightElement={
+              <Button
+                variant="outline"
+                px={2.5}
+                py={1.5}
+                onPress={() => setIsDisabled(!isDisabled)}>
+                {isDisabled ? 'Edit' : 'Save'}
+              </Button>
+            }
+            placeholder="Home server"
+          />
         </FormControl>
 
-        <FormControl isInvalid={isUsernameExist}>
-          <Stack mb={8}>
-            <Input
-              fontSize="md"
-              w="100%"
-              variant="unstyled"
-              placeholder="Username"
-              value={username}
-              onChangeText={onChange('username')}
-            />
-            <FormControl.ErrorMessage
-              leftIcon={<WarningOutlineIcon size="xs" />}>
-              Username already taken
-            </FormControl.ErrorMessage>
-          </Stack>
+        <FormControl mb={2} isInvalid={isUsernameExist}>
+          <FormControl.Label>Username</FormControl.Label>
+          <Input
+            fontSize="md"
+            w="100%"
+            variant="unstyled"
+            value={username}
+            onChangeText={onChange('username')}
+          />
+          <FormControl.ErrorMessage leftIcon={<WarningOutlineIcon size="xs" />}>
+            Username already taken
+          </FormControl.ErrorMessage>
         </FormControl>
 
-        <FormControl>
-          <Stack mb={8}>
-            <Input
-              type={isPassword ? 'password' : 'text'}
-              fontSize="md"
-              w="100%"
-              variant="unstyled"
-              placeholder="Password"
-              value={password}
-              onChangeText={onChange('password')}
-              InputRightElement={
-                <Pressable onPress={() => setIsPassword(!isPassword)} mr={2}>
-                  {isPassword ? (
-                    <CloseEyeIcon color="#000" />
+        <FormControl mb={8}>
+          <FormControl.Label>Password</FormControl.Label>
+          <Input
+            type={isPassword ? 'password' : 'text'}
+            fontSize="md"
+            w="100%"
+            variant="unstyled"
+            value={password}
+            onChangeText={onChange('password')}
+            InputRightElement={
+              <IconButton
+                onPress={() => setIsPassword(!isPassword)}
+                variant="ghost"
+                size="sm"
+                width={8}
+                height={8}
+                mr={2}
+                icon={
+                  isPassword ? (
+                    <CloseEyeIcon color={theme.greyIcon} />
                   ) : (
-                    <EyeIcon color="#000" />
-                  )}
-                </Pressable>
-              }
-            />
-          </Stack>
+                    <EyeIcon color={theme.greyIcon} />
+                  )
+                }
+              />
+            }
+          />
         </FormControl>
 
         <Button onPress={onNext} isDisabled={!isAgree || isUsernameExist}>
           Next
         </Button>
         <Checkbox
+          variant="primary"
           mt={4}
           value={'agree'}
           onChange={() => setIsAgree(!isAgree)}
@@ -155,7 +156,7 @@ const Step1 = ({
         </Checkbox>
       </Box>
 
-      <Center flexDirection="row">
+      <Center flexDirection="row" mb={4}>
         Already have an account?{' '}
         <Button variant="link" size="sm" onPress={() => navigate('Login')}>
           Log in

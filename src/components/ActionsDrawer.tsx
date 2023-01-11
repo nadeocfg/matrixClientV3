@@ -22,12 +22,14 @@ const ActionsDrawer = () => {
       hideDragIndicator>
       <Actionsheet.Content p={0}>
         <Box w="100%">
-          <Heading textAlign="center" mt={4} mb={2}>
+          <Heading textAlign="center" mt={4}>
             {actionsDrawerState.content.title}
           </Heading>
-          <Text textAlign="center" mb={4} px={2} fontSize={16}>
-            {actionsDrawerState.content.text}
-          </Text>
+          {actionsDrawerState.content.text && (
+            <Text textAlign="center" mt={2} mb={4} px={2} fontSize={16}>
+              {actionsDrawerState.content.text}
+            </Text>
+          )}
         </Box>
 
         {actionsDrawerState.content.actions &&

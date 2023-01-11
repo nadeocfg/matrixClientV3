@@ -269,6 +269,7 @@ const RoomProfileSettings = ({ route }: RoomProfileSettingsProps) => {
           <FormControl>
             <Stack mb={2}>
               <TextArea
+                style={{ backgroundColor: theme.white }}
                 autoCompleteType="false"
                 placeholder="Group description"
                 w="100%"

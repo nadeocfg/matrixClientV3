@@ -165,14 +165,19 @@ const RoomList = () => {
         _dark={{
           bg: theme.dark.bgColor,
         }}>
-        <Flex direction="row" align="center">
+        <Flex direction="row" align="center" justify="space-between">
           <Input
             flexGrow={1}
             flexBasis="80%"
             mt={2}
             mb={2}
             variant="outline"
-            InputLeftElement={<MagnifierIcon style={{ marginLeft: 4 }} />}
+            InputLeftElement={
+              <MagnifierIcon
+                color={theme.defaultGrey}
+                style={{ marginLeft: 4 }}
+              />
+            }
             placeholder="Search"
             value={searchData.value}
             onChangeText={onChange}
@@ -181,7 +186,7 @@ const RoomList = () => {
             }
           />
           {searchData.value && (
-            <Button onPress={onCancel} ml={4} variant="link">
+            <Button onPress={onCancel} variant="ghost">
               Cancel
             </Button>
           )}
@@ -201,13 +206,13 @@ const RoomList = () => {
 
         {roomList.length === 0 && (
           <Center
-            style={styles.container}
             _light={{
               bg: theme.light.bgColor,
             }}
             _dark={{
               bg: theme.dark.bgColor,
-            }}>
+            }}
+            style={styles.container}>
             <Heading>No active chats</Heading>
           </Center>
         )}

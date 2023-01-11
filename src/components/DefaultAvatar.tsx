@@ -4,16 +4,24 @@ import theme from '../themes/theme';
 
 interface DefaultAvatarProps {
   name: string;
+  inversed?: boolean;
   width: number;
   fontSize?: number;
 }
 
-const DefaultAvatar = ({ name, width, fontSize = 20 }: DefaultAvatarProps) => {
+const DefaultAvatar = ({
+  name,
+  width,
+  fontSize = 20,
+  inversed = false,
+}: DefaultAvatarProps) => {
   return (
     <Flex
       align="center"
       justify="center"
-      backgroundColor={theme.light.secondary}
+      backgroundColor={
+        inversed ? theme.light.darkPrimary : theme.light.secondary
+      }
       borderRadius="full"
       width={width}
       height={width}>
@@ -22,7 +30,7 @@ const DefaultAvatar = ({ name, width, fontSize = 20 }: DefaultAvatarProps) => {
           fontSize,
           textTransform: 'uppercase',
           fontWeight: '900',
-          color: theme.light.primary,
+          color: inversed ? theme.light.secondary : theme.light.primary,
         }}
         align="center"
         justify="center"

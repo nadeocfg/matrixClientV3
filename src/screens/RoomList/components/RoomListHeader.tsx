@@ -1,12 +1,4 @@
-import {
-  Box,
-  Heading,
-  IconButton,
-  Image,
-  Menu,
-  Pressable,
-  useColorMode,
-} from 'native-base';
+import { Box, Heading, IconButton, Image, Menu, Pressable } from 'native-base';
 import React from 'react';
 import DefaultAvatar from '../../../components/DefaultAvatar';
 import { DotsIcon } from '../../../components/icons';
@@ -21,7 +13,6 @@ interface RoomListHeaderProps {
 }
 
 const RoomListHeader = ({ userAvatar }: RoomListHeaderProps) => {
-  const { colorMode } = useColorMode();
   const userData = useAppSelector((state: StoreModel) => state.userStore.user);
 
   const goTo = (screen: keyof RootStackModel) => {
@@ -37,10 +28,10 @@ const RoomListHeader = ({ userAvatar }: RoomListHeaderProps) => {
       height={16}
       px={4}
       _light={{
-        bg: theme.light.button.primary.bgColor,
+        bg: theme.light.bgColor,
       }}
       _dark={{
-        bg: theme.dark.button.primary.bgColor,
+        bg: theme.dark.bgColor,
       }}>
       <Pressable onPress={() => goTo('PersonalInformationSettings')}>
         {userAvatar ? (
@@ -62,27 +53,19 @@ const RoomListHeader = ({ userAvatar }: RoomListHeaderProps) => {
       <Heading size="md">Chats</Heading>
 
       <Menu
-        offset={16}
+        offset={24}
         trigger={triggerProps => {
           return (
             <IconButton
-              width={12}
-              height={12}
               variant="ghost"
               {...triggerProps}
-              icon={
-                <DotsIcon
-                  color={
-                    colorMode === 'dark'
-                      ? theme.dark.button.primary.textColor
-                      : theme.light.button.primary.textColor
-                  }
-                />
-              }
+              icon={<DotsIcon color={theme.light.text} />}
             />
           );
         }}>
-        <Menu.Item onPress={() => goTo('CreateRoom')}>New group</Menu.Item>
+        <Menu.Item variant="withBorder" onPress={() => goTo('CreateRoom')}>
+          New group
+        </Menu.Item>
         <Menu.Item onPress={() => goTo('ProfileSettings')}>Settings</Menu.Item>
       </Menu>
     </Box>

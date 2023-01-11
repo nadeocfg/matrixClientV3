@@ -1,5 +1,5 @@
 import { IRegisterRequestParams } from 'matrix-js-sdk';
-import { PresenceTransition, ScrollView, useColorMode } from 'native-base';
+import { PresenceTransition, useColorMode, View } from 'native-base';
 import React, {
   PropsWithChildren,
   useState,
@@ -9,11 +9,7 @@ import React, {
 import { StyleSheet } from 'react-native';
 import { MatrixContext } from '../../context/matrixContext';
 import { useAppDispatch } from '../../hooks/useDispatch';
-import {
-  setAuthResponse,
-  setUserAvatarAndName,
-  setUserData,
-} from '../../store/actions/userActions';
+import { setAuthResponse, setUserData } from '../../store/actions/userActions';
 import {
   setActionsDrawerContent,
   setActionsDrawerVisible,
@@ -371,8 +367,8 @@ const Registration: React.FC<PropsWithChildren<any>> = () => {
   };
 
   return (
-    <ScrollView
-      contentContainerStyle={styles.container}
+    <View
+      style={styles.container}
       _light={{
         bg: theme.light.bgColor,
       }}
@@ -481,13 +477,13 @@ const Registration: React.FC<PropsWithChildren<any>> = () => {
           <Step4 styles={styles} />
         </PresenceTransition>
       )}
-    </ScrollView>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    flexGrow: 1,
   },
   inner: {
     flex: 1,

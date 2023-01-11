@@ -115,7 +115,7 @@ const avatarBadgeStyles = StyleSheet.create({
     height: 14,
     borderRadius: 50,
     borderWidth: 3,
-    backgroundColor: theme.light.button.primary.bgColor,
+    backgroundColor: theme.light.primary,
   },
 });
 

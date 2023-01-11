@@ -6,9 +6,8 @@ const theme = {
   transparent: colors.transparent,
   defaultGrey: colors.defaultGrey,
   greyLight: colors.greyLight,
-  chip: {
-    bg: colors.chipBg,
-  },
+  greyIcon: colors.greyIcon,
+  chipBg: colors.chipBg,
 
   white: colors.white,
   black: colors.black,

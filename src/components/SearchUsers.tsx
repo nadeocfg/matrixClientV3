@@ -43,7 +43,9 @@ const SearchUsers = ({
       <Input
         m={4}
         variant="outline"
-        InputLeftElement={<MagnifierIcon style={{ marginLeft: 4 }} />}
+        InputLeftElement={
+          <MagnifierIcon color={theme.defaultGrey} style={{ marginLeft: 4 }} />
+        }
         placeholder="Search by username"
         value={searchValue}
         onChangeText={onSearchValueChange}
@@ -60,27 +62,30 @@ const SearchUsers = ({
                 }
                 alt="User avatar"
                 borderRadius="full"
-                width={8}
-                height={8}
+                width={6}
+                height={6}
               />
             ) : (
               <DefaultAvatar
+                inversed={true}
                 name={
                   item.display_name
                     ? `${item.display_name[0]}${item.display_name[1]}`
                     : ''
                 }
-                width={8}
-                fontSize={16}
+                width={6}
+                fontSize={12}
               />
             )}
-            <Text ml={2}>{item.display_name}</Text>
+            <Text ml={2} fontSize="sm">
+              {item.display_name}
+            </Text>
             <IconButton
               onPress={() => onSelectUser(item)}
               variant="ghost"
               size="sm"
-              width={8}
-              height={8}
+              width={6}
+              height={6}
               ml={1}
               icon={<CloseIcon color="#38383A" />}
             />
@@ -147,8 +152,9 @@ const chipStyles = StyleSheet.create({
     flexDirection: 'row',
     marginBottom: 4,
     marginRight: 4,
-    padding: 4,
-    backgroundColor: theme.chip.bg,
+    paddingHorizontal: 4,
+    paddingVertical: 4,
+    backgroundColor: theme.chipBg,
     borderRadius: 16,
   },
 });
@@ -168,9 +174,7 @@ const listStyles = StyleSheet.create({
     fontSize: 16,
   },
   listCheckbox: {},
-  selected: {
-    backgroundColor: theme.light.input.outline.bgColor,
-  },
+  selected: {},
 });
 
 export default SearchUsers;

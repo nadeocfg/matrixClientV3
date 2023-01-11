@@ -128,7 +128,7 @@ const CreateRoom = () => {
         dispatch(
           setActionsDrawerContent({
             title: 'Missing group name',
-            text: 'A group name is required',
+            text: 'Group name is required',
           }),
         );
 

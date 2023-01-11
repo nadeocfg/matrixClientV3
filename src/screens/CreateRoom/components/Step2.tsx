@@ -90,37 +90,33 @@ const Step2 = ({
 
   return (
     <Box m={4}>
-      <FormControl>
-        <Stack mb={4}>
-          <Input
-            fontSize="md"
-            w="100%"
-            variant="unstyled"
-            placeholder="Group name"
-            value={roomName}
-            onChangeText={onChange('name')}
-          />
-        </Stack>
+      <FormControl mb={4}>
+        <Input
+          fontSize="md"
+          w="100%"
+          variant="unstyled"
+          placeholder="Group Name (Required)"
+          value={roomName}
+          onChangeText={onChange('name')}
+        />
       </FormControl>
       <FormControl>
-        <Stack>
-          <TextArea
-            autoCompleteType="false"
-            placeholder="Group description"
-            w="100%"
-            value={roomTopic}
-            onChangeText={onChange('topic')}
-          />
-        </Stack>
+        <FormControl.Label>Description</FormControl.Label>
+        <TextArea
+          style={{ backgroundColor: theme.white }}
+          autoCompleteType="false"
+          w="100%"
+          value={roomTopic}
+          onChangeText={onChange('topic')}
+        />
       </FormControl>
 
-      <Pressable onPress={showVisibilitySwitcher}>
+      <Pressable my={4} onPress={showVisibilitySwitcher}>
         <Flex
-          direction="row"
-          align="center"
           py={4}
           px={4}
-          my={4}
+          direction="row"
+          align="center"
           bg="#fff"
           borderRadius={8}>
           <Text fontSize="md" flexGrow={1}>

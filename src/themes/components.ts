@@ -49,21 +49,23 @@ const components = {
       },
       _dark: {
         _text: {
-          color: theme.dark.button.primary.bgColor,
+          color: theme.light.primary,
         },
         _pressed: {
+          backgroundColor: theme.transparent,
           _text: {
-            color: theme.light.button.primary.bgColor,
+            color: theme.light.darkPrimary,
           },
         },
       },
       _light: {
         _text: {
-          color: theme.light.button.primary.bgColor,
+          color: theme.light.primary,
         },
         _pressed: {
+          backgroundColor: theme.transparent,
           _text: {
-            color: theme.dark.button.primary.bgColor,
+            color: theme.light.darkPrimary,
           },
         },
       },
@@ -118,6 +120,9 @@ const components = {
         },
       },
       borderRadius: 10,
+      _disabled: {
+        bg: theme.light.primary,
+      },
     },
     variants: {
       // Default button styles
@@ -138,22 +143,28 @@ const components = {
       outline: {
         _dark: {
           _text: {
-            color: theme.dark.button.primary.bgColor,
+            color: theme.light.primary,
           },
-          borderColor: theme.dark.button.primary.bgColor,
+          borderColor: theme.light.primary,
           bg: theme.transparent,
           _pressed: {
-            bg: theme.transparent,
+            backgroundColor: theme.light.primary,
+            _text: {
+              color: theme.white,
+            },
           },
         },
         _light: {
           _text: {
-            color: theme.light.button.primary.bgColor,
+            color: theme.light.primary,
           },
-          borderColor: theme.light.button.primary.bgColor,
+          borderColor: theme.light.primary,
           bg: theme.transparent,
           _pressed: {
-            bg: theme.transparent,
+            backgroundColor: theme.light.primary,
+            _text: {
+              color: theme.white,
+            },
           },
         },
       },
@@ -165,31 +176,33 @@ const components = {
         },
         _dark: {
           _text: {
-            color: theme.dark.button.primary.bgColor,
+            color: theme.light.primary,
           },
           padding: 0,
           borderWith: 0,
           bg: theme.transparent,
           _pressed: {
-            bg: theme.transparent,
-            color: theme.light.button.primary.bgColor,
+            backgroundColor: theme.transparent,
+            color: theme.light.darkPrimary,
             _text: {
               textDecorationLine: 'none',
+              color: theme.light.darkPrimary,
             },
           },
         },
         _light: {
           _text: {
-            color: theme.light.button.primary.bgColor,
+            color: theme.light.primary,
           },
           padding: 0,
           borderWith: 0,
           bg: theme.transparent,
           _pressed: {
-            bg: theme.transparent,
-            color: theme.dark.button.primary.bgColor,
+            backgroundColor: theme.transparent,
+            color: theme.light.darkPrimary,
             _text: {
               textDecorationLine: 'none',
+              color: theme.light.darkPrimary,
             },
           },
         },
@@ -312,29 +325,50 @@ const components = {
         bg: theme.white,
       },
       _disabled: {
-        color: theme.black,
+        opacity: '1',
+      },
+      _dark: {
+        color: theme.light.text,
+      },
+      _light: {
+        color: theme.light.text,
       },
     },
     variants: {
       outline: {
+        py: '1',
+        px: '1',
         _dark: {
-          bg: theme.dark.input.outline.bgColor,
-          borderColor: theme.dark.input.outline.bgColor,
+          bg: theme.chipBg,
+          _input: {
+            bg: theme.chipBg,
+          },
+          borderColor: theme.chipBg,
           fontSize: 16,
           _focus: {
-            borderColor: theme.dark.input.outline.bgColor,
+            borderColor: theme.chipBg,
           },
         },
         _light: {
-          bg: theme.dark.input.outline.bgColor,
-          borderColor: theme.dark.input.outline.bgColor,
+          bg: theme.chipBg,
+          _input: {
+            bg: theme.chipBg,
+          },
+          borderColor: theme.chipBg,
           fontSize: 16,
           _focus: {
-            borderColor: theme.dark.input.outline.bgColor,
+            borderColor: theme.chipBg,
           },
         },
         _focus: {
-          bg: theme.dark.input.outline.bgColor,
+          bg: theme.chipBg,
+        },
+      },
+      withButton: {
+        bg: theme.transparent,
+
+        _input: {
+          bg: theme.transparent,
         },
       },
     },
@@ -343,11 +377,12 @@ const components = {
   // TextArea
   TextArea: {
     baseStyle: {
-      backgroundColor: theme.chip.bg,
-      _focus: {
-        backgroundColor: theme.transparent,
-        borderColor: theme.transparent,
-      },
+      backgroundColor: theme.white,
+    },
+    defaultProps: {
+      px: '4',
+      py: '4',
+      h: '40',
     },
   },
 
@@ -401,12 +436,8 @@ const components = {
             bg: theme.transparent,
           },
         },
-
         _hover: {
           borderColor: theme.light.text,
-        },
-        _pressed: {
-          bg: theme.transparent,
         },
         _focus: {
           borderColor: theme.light.text,
@@ -434,12 +465,34 @@ const components = {
         _hover: {
           bg: theme.transparent,
         },
-        _pressed: {
-          bg: theme.transparent,
-          borderColor: theme.light.secondary,
-        },
         _focus: {
           bg: theme.transparent,
+        },
+      },
+    },
+    variants: {
+      primary: {
+        _light: {
+          borderColor: theme.light.primary,
+          borderWidth: 1,
+          _icon: {
+            color: theme.light.primary,
+          },
+          _checked: {
+            borderColor: theme.light.primary,
+            _hover: {
+              borderColor: theme.light.primary,
+            },
+            _pressed: {
+              borderColor: theme.light.primary,
+            },
+          },
+          _hover: {
+            borderColor: theme.light.primary,
+          },
+          _focus: {
+            borderColor: theme.light.primary,
+          },
         },
       },
     },
@@ -542,6 +595,48 @@ const components = {
       _text: {
         color: theme.defaultGrey,
         fontWeight: 500,
+      },
+    },
+  },
+
+  // Badge
+  Badge: {
+    baseStyle: {
+      bg: theme.light.primary,
+    },
+    variants: {
+      solid: {
+        bg: theme.light.primary,
+        _text: {
+          color: theme.white,
+          fontWeight: 500,
+        },
+      },
+    },
+  },
+
+  // Menu
+  Menu: {
+    baseStyle: {
+      py: 2,
+      borderRadius: 'xl',
+    },
+  },
+
+  // MenuItem
+  MenuItem: {
+    baseStyle: {
+      px: 1,
+      py: 1.5,
+      _text: {
+        color: theme.light.text,
+        fontSize: 'sm',
+      },
+    },
+    variants: {
+      withBorder: {
+        borderBottomWidth: 0.5,
+        borderBottomColor: theme.border,
       },
     },
   },

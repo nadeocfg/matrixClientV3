@@ -7,7 +7,6 @@ import {
   Input,
   Pressable,
   ScrollView,
-  Stack,
 } from 'native-base';
 import React, { useContext, useState, useEffect } from 'react';
 import BaseHeader from '../../../components/BaseHeader';
@@ -32,6 +31,7 @@ import { Linking } from 'react-native';
 
 const PersonalInformationSettings = () => {
   const [avatarUrl, setAvatarUrl] = useState('');
+  const [mxcAvatarUrl, setMxcAvatarUrl] = useState('');
   const [displayName, setDisplayName] = useState('');
   const [email, setEmail] = useState('');
   const user = useAppSelector((state: StoreModel) => state.userStore.user);
@@ -117,12 +117,11 @@ const PersonalInformationSettings = () => {
       ?.uploadContent(asset, { onlyContentUri: false })
       .then(async res => {
         if (res) {
-          await matrixContext.instance?.setAvatarUrl(res.content_uri);
           setAvatarUrl(
             matrixContext.instance?.mxcUrlToHttp(res.content_uri) || '',
           );
 
-          updateAccountInfo();
+          setMxcAvatarUrl(res.content_uri);
         }
       })
       .catch(err => {
@@ -148,9 +147,13 @@ const PersonalInformationSettings = () => {
     setDisplayName(name);
   };
 
-  const onDone = () => {
+  const onDone = async () => {
     if (matrixContext.instance) {
       dispatch(setLoader(true));
+
+      if (mxcAvatarUrl) {
+        await matrixContext.instance?.setAvatarUrl(mxcAvatarUrl);
+      }
 
       matrixContext.instance
         ?.setDisplayName(displayName)

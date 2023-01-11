@@ -43,6 +43,8 @@ const colors = {
   lightBg: '#fafaff',
   defaultGrey: 'rgba(60, 60, 67, 0.6)',
   chipBg: 'rgba(235, 235, 245, 0.6)',
+  greyIcon: '#38383A',
+
   // Primary colors
   rose: {
     50: '#fff1f2',

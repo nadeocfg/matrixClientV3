@@ -43,7 +43,9 @@ const Step1 = ({
       <Input
         m={4}
         variant="outline"
-        InputLeftElement={<MagnifierIcon style={{ marginLeft: 4 }} />}
+        InputLeftElement={
+          <MagnifierIcon color={theme.defaultGrey} style={{ marginLeft: 4 }} />
+        }
         placeholder="Search by username"
         value={searchValue}
         onChangeText={onSearchValueChange}
