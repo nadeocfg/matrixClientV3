@@ -28,6 +28,7 @@ import {
 } from '../../../store/actions/mainActions';
 import { setUserAvatarAndName } from '../../../store/actions/userActions';
 import { Linking } from 'react-native';
+import { navigationRef } from '../../../utils/navigation';
 
 const PersonalInformationSettings = () => {
   const [avatarUrl, setAvatarUrl] = useState('');
@@ -159,6 +160,8 @@ const PersonalInformationSettings = () => {
         ?.setDisplayName(displayName)
         .then(async () => {
           updateAccountInfo();
+
+          navigationRef.goBack();
         })
         .catch(err => {
           dispatch(

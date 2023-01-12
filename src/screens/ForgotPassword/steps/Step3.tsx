@@ -8,6 +8,7 @@ import {
   Input,
   ScrollView,
   Text,
+  useColorMode,
 } from 'native-base';
 import React from 'react';
 import { StyleProp } from 'react-native';
@@ -30,6 +31,8 @@ const Step3 = ({
   isPassword,
   styles,
 }: Step3Props) => {
+  const { colorMode } = useColorMode();
+
   return (
     <ScrollView
       contentContainerStyle={styles.container}
@@ -66,9 +69,21 @@ const Step3 = ({
                 mr={2}
                 icon={
                   isPassword ? (
-                    <CloseEyeIcon color={theme.light.lightText} />
+                    <CloseEyeIcon
+                      color={
+                        colorMode === 'light'
+                          ? theme.light.lightText
+                          : theme.dark.text
+                      }
+                    />
                   ) : (
-                    <EyeIcon color={theme.light.lightText} />
+                    <EyeIcon
+                      color={
+                        colorMode === 'light'
+                          ? theme.light.lightText
+                          : theme.dark.text
+                      }
+                    />
                   )
                 }
               />

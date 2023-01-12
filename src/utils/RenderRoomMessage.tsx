@@ -91,7 +91,7 @@ const RenderRoomMessage = ({
 
         <Text
           mt={2}
-          _light={{ color: isMyMessage ? theme.white : theme.greyIcon }}
+          _light={{ color: isMyMessage ? theme.dark.text : theme.greyIcon }}
           textAlign="right"
           fontSize="2xs">
           {formatDate(event.origin_server_ts)}
@@ -149,7 +149,10 @@ const RenderRoomMessage = ({
           Show video
         </Button>
 
-        <Text color={theme.white} textAlign="right" fontSize="2xs">
+        <Text
+          color={isMyMessage ? theme.dark.text : theme.greyIcon}
+          textAlign="right"
+          fontSize="2xs">
           {formatDate(event.origin_server_ts)}
         </Text>
       </Box>
@@ -190,7 +193,7 @@ const RenderRoomMessage = ({
         </Text>
         <Text
           mt={2}
-          _light={{ color: isMyMessage ? theme.white : theme.greyIcon }}
+          _light={{ color: isMyMessage ? theme.dark.text : theme.greyIcon }}
           textAlign="right"
           fontSize="2xs">
           {formatDate(event.origin_server_ts)}

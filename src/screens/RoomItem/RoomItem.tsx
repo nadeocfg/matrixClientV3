@@ -62,6 +62,7 @@ const RoomItem = (
   const { colorMode } = useColorMode();
   const [isAttachmentsVisible, setIsAttachmentsVisible] = useState(false);
   const [message, setMessage] = useState('');
+  const [replyId, setReplyId] = useState('');
   const [roomData, setRoomData] = useState({
     fullAvatar: '',
     avatar: '',

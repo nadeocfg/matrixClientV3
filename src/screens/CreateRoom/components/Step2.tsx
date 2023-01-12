@@ -103,6 +103,7 @@ const Step2 = ({
       <FormControl>
         <FormControl.Label>Description</FormControl.Label>
         <TextArea
+          fontSize="md"
           variant="solid"
           bg={theme.white}
           _light={{

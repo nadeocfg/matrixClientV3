@@ -1,6 +1,5 @@
 import { Box, Flex, Text, useColorMode } from 'native-base';
 import React, { useContext } from 'react';
-import { IEventWithRoomId } from 'matrix-js-sdk';
 import { StyleSheet } from 'react-native';
 import theme from '../themes/theme';
 import { MatrixContext } from '../context/matrixContext';

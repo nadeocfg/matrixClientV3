@@ -9,7 +9,6 @@ import {
 } from 'native-base';
 import React from 'react';
 import BaseHeader from '../../components/BaseHeader';
-import { QuestionMarkRounded } from '../../components/icons';
 import LogOutButton from '../../components/LogOutButton';
 import MenuList from '../../components/MenuList';
 import { useAppDispatch } from '../../hooks/useDispatch';
@@ -35,47 +34,47 @@ const ProfileSettings = () => {
     {
       title: 'Personal information',
       route: 'PersonalInformationSettings',
-      icon: (
-        <QuestionMarkRounded
-          color={
-            currentColorMode === 'dark' ? theme.dark.text : theme.light.text
-          }
-        />
-      ),
+      // icon: (
+      //   <QuestionMarkRounded
+      //     color={
+      //       currentColorMode === 'dark' ? theme.dark.text : theme.light.text
+      //     }
+      //   />
+      // ),
     },
     {
       title: 'Password',
       route: 'PasswordSettings',
-      icon: (
-        <QuestionMarkRounded
-          color={
-            currentColorMode === 'dark' ? theme.dark.text : theme.light.text
-          }
-        />
-      ),
+      // icon: (
+      //   <QuestionMarkRounded
+      //     color={
+      //       currentColorMode === 'dark' ? theme.dark.text : theme.light.text
+      //     }
+      //   />
+      // ),
     },
     {
-      title: 'Deactivate account permamently',
+      title: 'Deactivate account permanently',
       route: 'DeactivateAccountSettings',
-      icon: (
-        <QuestionMarkRounded
-          color={
-            currentColorMode === 'dark' ? theme.dark.text : theme.light.text
-          }
-        />
-      ),
+      // icon: (
+      //   <QuestionMarkRounded
+      //     color={
+      //       currentColorMode === 'dark' ? theme.dark.text : theme.light.text
+      //     }
+      //   />
+      // ),
     },
     {
       title: 'Terms of Use & Privacy Policy',
       route: 'https://dev.techwings.com:8448/_matrix/consent?v=1.0',
       link: true,
-      icon: (
-        <QuestionMarkRounded
-          color={
-            currentColorMode === 'dark' ? theme.dark.text : theme.light.text
-          }
-        />
-      ),
+      // icon: (
+      //   <QuestionMarkRounded
+      //     color={
+      //       currentColorMode === 'dark' ? theme.dark.text : theme.light.text
+      //     }
+      //   />
+      // ),
     },
   ];
 

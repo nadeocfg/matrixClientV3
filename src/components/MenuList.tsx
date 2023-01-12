@@ -21,7 +21,7 @@ interface MenuListProps extends InterfaceBoxProps<IFlexProps> {
 export interface ItemModel {
   title: string;
   route?: string;
-  icon: JSX.Element;
+  icon?: JSX.Element;
   link?: boolean;
   onPress?: Function;
 }

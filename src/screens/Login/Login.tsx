@@ -8,6 +8,7 @@ import {
   IconButton,
   Input,
   ScrollView,
+  useColorMode,
 } from 'native-base';
 import React, { PropsWithChildren, useState, useContext } from 'react';
 import { StyleSheet } from 'react-native';
@@ -27,6 +28,7 @@ import { navigate, navigationRef } from '../../utils/navigation';
 import validateUrl from '../../utils/validateUrl';
 
 const Login: React.FC<PropsWithChildren<any>> = () => {
+  const { colorMode } = useColorMode();
   const [formData, setFormData] = useState({
     server: 'dev.techwings.com:8448',
     username: '',
@@ -223,9 +225,21 @@ const Login: React.FC<PropsWithChildren<any>> = () => {
                   mr={2}
                   icon={
                     isPassword ? (
-                      <CloseEyeIcon color={theme.light.lightText} />
+                      <CloseEyeIcon
+                        color={
+                          colorMode === 'light'
+                            ? theme.light.lightText
+                            : theme.dark.text
+                        }
+                      />
                     ) : (
-                      <EyeIcon color={theme.light.lightText} />
+                      <EyeIcon
+                        color={
+                          colorMode === 'light'
+                            ? theme.light.lightText
+                            : theme.dark.text
+                        }
+                      />
                     )
                   }
                 />

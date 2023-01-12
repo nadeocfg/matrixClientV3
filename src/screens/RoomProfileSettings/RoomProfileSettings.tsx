@@ -8,7 +8,6 @@ import {
   Input,
   Pressable,
   ScrollView,
-  Stack,
   TextArea,
 } from 'native-base';
 import React, { useContext, useState, useEffect } from 'react';
@@ -253,30 +252,33 @@ const RoomProfileSettings = ({ route }: RoomProfileSettingsProps) => {
         </Center>
 
         <Box>
-          <FormControl>
-            <Stack mt={12} mb={2}>
-              <Input
-                type={'text'}
-                fontSize="md"
-                w="100%"
-                variant="unstyled"
-                placeholder="Group name"
-                value={roomData.name}
-                onChangeText={onChange('name')}
-              />
-            </Stack>
+          <FormControl mt={12} mb={4}>
+            <FormControl.Label>Group name</FormControl.Label>
+            <Input
+              type={'text'}
+              fontSize="md"
+              w="100%"
+              variant="unstyled"
+              value={roomData.name}
+              onChangeText={onChange('name')}
+            />
           </FormControl>
-          <FormControl>
-            <Stack mb={2}>
-              <TextArea
-                style={{ backgroundColor: theme.white }}
-                autoCompleteType="false"
-                placeholder="Group description"
-                w="100%"
-                value={roomData.topic}
-                onChangeText={onChange('topic')}
-              />
-            </Stack>
+          <FormControl mb={2}>
+            <FormControl.Label>Description</FormControl.Label>
+            <TextArea
+              fontSize="md"
+              variant="solid"
+              _light={{
+                backgroundColor: theme.white,
+              }}
+              _dark={{
+                backgroundColor: theme.dark.bgColor,
+              }}
+              autoCompleteType="false"
+              w="100%"
+              value={roomData.topic}
+              onChangeText={onChange('topic')}
+            />
           </FormControl>
         </Box>
       </ScrollView>

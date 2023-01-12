@@ -336,12 +336,12 @@ const components = {
           },
 
           _dark: {
-            bg: theme.darkPrimary,
+            backgroundColor: theme.dark.messageBg,
             _hover: {
-              bg: theme.darkPrimary,
+              bg: theme.dark.messageBg,
             },
             _pressed: {
-              bg: theme.darkPrimary,
+              bg: theme.dark.messageBg,
             },
           },
         };
@@ -357,11 +357,9 @@ const components = {
       borderRadius: 10,
       fontSize: 16,
       placeholderTextColor: theme.defaultGrey,
+      bg: theme.white,
       _input: {
         bg: theme.white,
-      },
-      _disabled: {
-        opacity: '1',
       },
       _focus: {
         backgroundColor: theme.white,
@@ -441,8 +439,10 @@ const components = {
         },
       },
       withButton: {
+        _disabled: {
+          opacity: '1',
+        },
         bg: theme.transparent,
-
         _input: {
           bg: theme.transparent,
         },
@@ -738,7 +738,7 @@ const components = {
       py: 1.5,
       _text: {
         color: theme.light.text,
-        fontSize: 'sm',
+        fontSize: 'lg',
       },
 
       _dark: {
@@ -763,6 +763,19 @@ const components = {
           color: theme.dark.text,
         },
       },
+    },
+  },
+
+  // Toast
+  // Doesnt work
+  Toast: {
+    baseStyle: ({ colorMode }: { colorMode: 'light' | 'dark' }) => {
+      return {
+        backgroundColor: theme[colorMode || 'light'].bgColor,
+        _title: {
+          color: theme[colorMode || 'light'].text,
+        },
+      };
     },
   },
 };

@@ -21,6 +21,7 @@ import { RootStackModel } from '../../types/rootStackType';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import getPowerLabel from '../../utils/getPowerLabel';
 import {
+  LeaveIcon,
   LockIcon,
   PlusRoundedIcon,
   QuestionMarkRounded,
@@ -37,6 +38,7 @@ import { useAppDispatch } from '../../hooks/useDispatch';
 import MenuList, { ItemModel } from '../../components/MenuList';
 import { navigate } from '../../utils/navigation';
 import { useFocusEffect } from '@react-navigation/native';
+import { ActionDrawerActionInterface } from '../../types/actionDrawerInterface';
 
 interface RoomSettingsProps
   extends NativeStackScreenProps<RootStackModel, 'RoomSettings'> {}
@@ -85,7 +87,7 @@ const RoomSettings = ({ route }: RoomSettingsProps) => {
     {
       title: 'Leave Group',
       icon: (
-        <QuestionMarkRounded
+        <LeaveIcon
           color={colorMode === 'light' ? theme.greyIcon : theme.white}
         />
       ),
@@ -114,6 +116,7 @@ const RoomSettings = ({ route }: RoomSettingsProps) => {
       console.log(room?.getMembersWithMembership('invite'));
       setJoinedMembers(room?.getMembersWithMembership('join') || []);
       setInvitedMembers(room?.getMembersWithMembership('invite') || []);
+      setBannedMembers(room?.getMembersWithMembership('ban') || []);
     });
     setRoomData(room);
     setAvatar({
@@ -361,7 +364,7 @@ const RoomSettings = ({ route }: RoomSettingsProps) => {
     dispatch(setActionsDrawerVisible(true));
   };
 
-  // When pressing on invited users
+  // When pressing on banned users
   const onBannedPress = (userId: string, username: string) => {
     const room = matrixContext.instance?.getRoom(route.params.roomId);
     const roomPowerLevel = room?.currentState.getStateEvents(
@@ -371,7 +374,7 @@ const RoomSettings = ({ route }: RoomSettingsProps) => {
     const currentUserPowerLevel =
       roomPowerLevel?.users[matrixContext.instance?.getUserId() || ''];
 
-    if (currentUserPowerLevel < roomPowerLevel?.kick) {
+    if (currentUserPowerLevel < roomPowerLevel?.ban) {
       return;
     }
 
@@ -382,7 +385,7 @@ const RoomSettings = ({ route }: RoomSettingsProps) => {
         actions: [
           {
             title: 'Unban',
-            onPress: () => dispatch(setActionsDrawerVisible(false)),
+            onPress: () => unbanUser(userId),
           },
           {
             title: 'Cancel',
@@ -403,6 +406,60 @@ const RoomSettings = ({ route }: RoomSettingsProps) => {
 
       matrixContext.instance
         ?.kick(route.params.roomId, userId, reason)
+        .then(() => {
+          setTimeout(initialSync, 1000);
+        })
+        .catch(err => {
+          console.log({ ...err });
+
+          dispatch(
+            setActionsDrawerContent({
+              title: err.data?.errcode || '',
+              text: err.data?.error || 'Something went wrong',
+            }),
+          );
+
+          dispatch(setLoader(false));
+          dispatch(setActionsDrawerVisible(true));
+        });
+    }
+  };
+
+  const banUser = (userId: string, reason?: string) => {
+    if (route.params.roomId && userId) {
+      dispatch(setLoader(true));
+
+      dispatch(setActionsDrawerVisible(false));
+
+      matrixContext.instance
+        ?.ban(route.params.roomId, userId, reason)
+        .then(() => {
+          setTimeout(initialSync, 1000);
+        })
+        .catch(err => {
+          console.log({ ...err });
+
+          dispatch(
+            setActionsDrawerContent({
+              title: err.data?.errcode || '',
+              text: err.data?.error || 'Something went wrong',
+            }),
+          );
+
+          dispatch(setLoader(false));
+          dispatch(setActionsDrawerVisible(true));
+        });
+    }
+  };
+
+  const unbanUser = (userId: string) => {
+    if (route.params.roomId && userId) {
+      dispatch(setLoader(true));
+
+      dispatch(setActionsDrawerVisible(false));
+
+      matrixContext.instance
+        ?.unban(route.params.roomId, userId)
         .then(() => {
           setTimeout(initialSync, 1000);
         })
@@ -473,38 +530,48 @@ const RoomSettings = ({ route }: RoomSettingsProps) => {
     const currentUserPowerLevel =
       roomPowerLevel?.users[matrixContext.instance?.getUserId() || ''];
 
-    if (currentUserPowerLevel >= roomPowerLevel?.kick) {
-      dispatch(
-        setActionsDrawerContent({
-          title: 'Select actions',
-          text: `Available actions for ${username}`,
-          actions: [
-            {
-              title: 'Member profile',
-              onPress: () => {
-                navigate('UserProfile', {
-                  userId,
-                  roomId: route.params.roomId,
-                });
-                dispatch(setActionsDrawerVisible(false));
-              },
-            },
-            {
-              title: 'Kick member',
-              onPress: () => kickUser(userId),
-            },
-            {
-              title: 'Cancel',
-              onPress: () => dispatch(setActionsDrawerVisible(false)),
-            },
-          ],
-        }),
-      );
+    const actions: ActionDrawerActionInterface[] = [
+      {
+        title: 'Cancel',
+        onPress: () => dispatch(setActionsDrawerVisible(false)),
+      },
+    ];
 
-      dispatch(setActionsDrawerVisible(true));
-    } else {
-      navigate('UserProfile', { userId, roomId: route.params.roomId });
+    if (currentUserPowerLevel >= roomPowerLevel?.kick) {
+      actions.unshift({
+        title: 'Kick member',
+        onPress: () => kickUser(userId),
+      });
     }
+
+    if (currentUserPowerLevel >= roomPowerLevel?.ban) {
+      actions.unshift({
+        title: 'Ban member',
+        onPress: () => banUser(userId),
+      });
+    }
+
+    actions.unshift({
+      title: 'Member profile',
+      onPress: () => {
+        navigate('UserProfile', {
+          userId,
+          roomId: route.params.roomId,
+        });
+
+        dispatch(setActionsDrawerVisible(false));
+      },
+    });
+
+    dispatch(
+      setActionsDrawerContent({
+        title: 'Select actions',
+        text: `Available actions for ${username}`,
+        actions,
+      }),
+    );
+
+    dispatch(setActionsDrawerVisible(true));
   };
 
   return (

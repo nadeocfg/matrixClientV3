@@ -40,9 +40,7 @@ const UserProfile = ({ route }: UserProfileProps) => {
   });
   const [canEdit, setCanEdit] = useState(false);
   const [permissions, setPermissions] = useState<IContent>({
-    users: {
-      '@test1:dev.techwings.com': 100,
-    },
+    users: {},
     users_default: 0,
     events: {
       'm.room.name': 50,

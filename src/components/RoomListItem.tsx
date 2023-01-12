@@ -84,7 +84,7 @@ const RoomListItem = ({
             <></>
           )}
         </Box>
-        <Box flexBasis={'70%'}>
+        <Box flexBasis={'65%'}>
           <Text ml={2} fontSize={16}>
             {name}
           </Text>
@@ -95,7 +95,7 @@ const RoomListItem = ({
           )}
         </Box>
         <Flex
-          flexBasis={'15%'}
+          flexBasis={'20%'}
           ml="auto"
           flexDirection="column"
           justify="flex-start"

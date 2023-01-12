@@ -98,6 +98,11 @@ const RoomList = () => {
   };
 
   const onChange = (value: string) => {
+    if (!value) {
+      onCancel();
+      return;
+    }
+
     setSearchData({
       ...searchData,
       value,

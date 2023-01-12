@@ -8,6 +8,7 @@ import {
   IconButton,
   Input,
   ScrollView,
+  useColorMode,
   WarningOutlineIcon,
 } from 'native-base';
 import React from 'react';
@@ -52,6 +53,8 @@ const Step1 = ({
   onNext,
   styles,
 }: Step1Props) => {
+  const { colorMode } = useColorMode();
+
   return (
     <ScrollView
       contentContainerStyle={styles.container}
@@ -130,9 +133,21 @@ const Step1 = ({
                 mr={2}
                 icon={
                   isPassword ? (
-                    <CloseEyeIcon color={theme.light.lightText} />
+                    <CloseEyeIcon
+                      color={
+                        colorMode === 'light'
+                          ? theme.light.lightText
+                          : theme.dark.text
+                      }
+                    />
                   ) : (
-                    <EyeIcon color={theme.light.lightText} />
+                    <EyeIcon
+                      color={
+                        colorMode === 'light'
+                          ? theme.light.lightText
+                          : theme.dark.text
+                      }
+                    />
                   )
                 }
               />

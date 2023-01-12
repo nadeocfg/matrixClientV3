@@ -9,9 +9,17 @@ import {
 } from '../../store/actions/mainActions';
 import { StoreModel } from '../../types/storeTypes';
 import { navigate } from '../../utils/navigation';
-import { useColorMode, Text, Center, ScrollView, Button } from 'native-base';
+import {
+  useColorMode,
+  Text,
+  Center,
+  ScrollView,
+  Button,
+  useToast,
+} from 'native-base';
 import theme from '../../themes/theme';
 import LogOutButton from '../../components/LogOutButton';
+import toastInit from '../../utils/toast';
 
 const Home: React.FC<PropsWithChildren<any>> = () => {
   const dispatch = useAppDispatch();
@@ -19,6 +27,7 @@ const Home: React.FC<PropsWithChildren<any>> = () => {
     (state: StoreModel) => state.mainStore.colorMode,
   );
   const { setColorMode } = useColorMode();
+  const toast = useToast();
 
   useEffect(() => {
     dispatch(setLoader(false));
@@ -39,6 +48,15 @@ const Home: React.FC<PropsWithChildren<any>> = () => {
         text: 'Email not found',
       }),
     );
+  };
+
+  const showToast = () => {
+    toastInit('success');
+
+    // toast.show({
+    //   description: 'Saved successfully',
+    //   variant: 'success',
+    // });
   };
 
   return (
@@ -70,6 +88,9 @@ const Home: React.FC<PropsWithChildren<any>> = () => {
         </Button>
         <Button onPress={showDrawer} mb="10">
           Show Drawer
+        </Button>
+        <Button onPress={showToast} mb="10">
+          Show Toast
         </Button>
         <LogOutButton />
       </Center>

@@ -8,6 +8,7 @@ import {
   Modal,
   ScrollView,
   Text,
+  useColorMode,
 } from 'native-base';
 import React, { useState, useContext } from 'react';
 import BaseHeader from '../../../components/BaseHeader';
@@ -27,6 +28,7 @@ import { useAppSelector } from '../../../hooks/useSelector';
 import { navigationRef } from '../../../utils/navigation';
 
 const DeactivateAccountSettings = () => {
+  const { colorMode } = useColorMode();
   const [isChecked, setIsChecked] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [passwordData, setPasswordData] = useState({
@@ -186,9 +188,21 @@ const DeactivateAccountSettings = () => {
                     mr={2}
                     icon={
                       passwordData.isPassword ? (
-                        <CloseEyeIcon color={theme.light.lightText} />
+                        <CloseEyeIcon
+                          color={
+                            colorMode === 'light'
+                              ? theme.light.lightText
+                              : theme.dark.text
+                          }
+                        />
                       ) : (
-                        <EyeIcon color={theme.light.lightText} />
+                        <EyeIcon
+                          color={
+                            colorMode === 'light'
+                              ? theme.light.lightText
+                              : theme.dark.text
+                          }
+                        />
                       )
                     }
                   />
