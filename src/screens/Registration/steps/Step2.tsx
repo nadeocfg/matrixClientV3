@@ -82,7 +82,7 @@ const Step2 = ({
         bg: theme.light.bgColor,
       }}
       _dark={{
-        bg: theme.light.bgColor,
+        bg: theme.dark.bgColor,
       }}>
       <Center mt={4} mb={12}>
         <DefaultAvatar name="A" width={32} fontSize={48} />

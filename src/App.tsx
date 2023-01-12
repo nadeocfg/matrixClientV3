@@ -33,6 +33,7 @@ import RoomSettings from './screens/RoomSettings';
 import RoomProfileSettings from './screens/RoomProfileSettings';
 import RoomPermissionSettings from './screens/RoomPermissionSettings';
 import UserProfile from './screens/UserProfile';
+import ColorModeSwitcher from './components/ColorModeSwitcher';
 
 const App = () => {
   const { setColorMode } = useColorMode();
@@ -262,6 +263,7 @@ const App = () => {
 
       <Loader />
       <ActionsDrawer />
+      {/* <ColorModeSwitcher /> */}
     </NavigationContainer>
   );
 };

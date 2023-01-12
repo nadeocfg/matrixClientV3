@@ -1,5 +1,5 @@
 import { IEventWithRoomId, MatrixClient, User } from 'matrix-js-sdk';
-import { Box, Button, Flex, Text } from 'native-base';
+import { Box, Button, ColorMode, Flex, Text } from 'native-base';
 import React from 'react';
 import { Dimensions, ViewStyle } from 'react-native';
 import ImageModal from 'react-native-image-modal';
@@ -20,10 +20,12 @@ interface RenderRoomMessageProps {
     messageWrapper: ViewStyle;
     myMessage: ViewStyle;
     notMyMessage: ViewStyle;
+    notMyMessageDark: ViewStyle;
     myPrev: ViewStyle;
   };
   userData: User | null | undefined;
   matrixClient: MatrixClient | null;
+  colorMode: ColorMode;
 }
 
 const RenderRoomMessage = ({
@@ -33,6 +35,7 @@ const RenderRoomMessage = ({
   styles,
   userData,
   matrixClient,
+  colorMode,
 }: RenderRoomMessageProps) => {
   const dispatch = useAppDispatch();
   const width = Dimensions.get('window').width;
@@ -48,7 +51,11 @@ const RenderRoomMessage = ({
       <Box
         style={[
           styles.messageWrapper,
-          isMyMessage ? styles.myMessage : styles.notMyMessage,
+          isMyMessage
+            ? styles.myMessage
+            : colorMode === 'light'
+            ? styles.notMyMessage
+            : styles.notMyMessageDark,
           isPrevSenderSame ? styles.myPrev : null,
         ]}>
         <Flex direction="row" align="center">
@@ -58,7 +65,8 @@ const RenderRoomMessage = ({
 
           <Text
             mb={2}
-            color={isMyMessage ? theme.white : theme.greyIcon}
+            _light={{ color: isMyMessage ? theme.white : theme.greyIcon }}
+            _dark={{ color: theme.white }}
             fontSize="sm"
             fontWeight={600}>
             {userData?.displayName || userData?.userId || ''}
@@ -81,7 +89,7 @@ const RenderRoomMessage = ({
 
         <Text
           mt={2}
-          color={isMyMessage ? theme.white : theme.greyIcon}
+          _light={{ color: isMyMessage ? theme.white : theme.greyIcon }}
           textAlign="right"
           fontSize="2xs">
           {formatDate(event.origin_server_ts)}
@@ -95,7 +103,11 @@ const RenderRoomMessage = ({
       <Box
         style={[
           styles.messageWrapper,
-          isMyMessage ? styles.myMessage : styles.notMyMessage,
+          isMyMessage
+            ? styles.myMessage
+            : colorMode === 'light'
+            ? styles.notMyMessage
+            : styles.notMyMessageDark,
           isPrevSenderSame ? styles.myPrev : null,
         ]}>
         <Flex direction="row" align="center">
@@ -104,17 +116,21 @@ const RenderRoomMessage = ({
           </Box>
           <Text
             mb={2}
-            color={isMyMessage ? theme.white : theme.greyIcon}
+            _light={{ color: isMyMessage ? theme.white : theme.greyIcon }}
             fontSize="sm"
             fontWeight={600}>
             {userData?.displayName || userData?.userId || ''}
           </Text>
         </Flex>
 
-        <Text color={isMyMessage ? theme.white : theme.greyIcon} fontSize="md">
+        <Text
+          _light={{ color: isMyMessage ? theme.white : theme.greyIcon }}
+          fontSize="md">
           Video message
         </Text>
-        <Text color={isMyMessage ? theme.white : theme.greyIcon} fontSize="md">
+        <Text
+          _light={{ color: isMyMessage ? theme.white : theme.greyIcon }}
+          fontSize="md">
           Filename: {event.content?.body}
         </Text>
 
@@ -142,7 +158,11 @@ const RenderRoomMessage = ({
       <Box
         style={[
           styles.messageWrapper,
-          isMyMessage ? styles.myMessage : styles.notMyMessage,
+          isMyMessage
+            ? styles.myMessage
+            : colorMode === 'light'
+            ? styles.notMyMessage
+            : styles.notMyMessageDark,
           isPrevSenderSame ? styles.myPrev : null,
         ]}>
         <Flex direction="row" align="center">
@@ -152,18 +172,20 @@ const RenderRoomMessage = ({
 
           <Text
             mb={2}
-            color={isMyMessage ? theme.white : theme.greyIcon}
+            _light={{ color: isMyMessage ? theme.white : theme.greyIcon }}
             fontSize="sm"
             fontWeight={600}>
             {userData?.displayName || userData?.userId || ''}
           </Text>
         </Flex>
-        <Text color={isMyMessage ? theme.white : theme.greyIcon} fontSize="md">
+        <Text
+          _light={{ color: isMyMessage ? theme.white : theme.greyIcon }}
+          fontSize="md">
           {event.content?.body}
         </Text>
         <Text
           mt={2}
-          color={isMyMessage ? theme.white : theme.greyIcon}
+          _light={{ color: isMyMessage ? theme.white : theme.greyIcon }}
           textAlign="right"
           fontSize="2xs">
           {formatDate(event.origin_server_ts)}

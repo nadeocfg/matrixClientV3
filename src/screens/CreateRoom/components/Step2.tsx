@@ -7,11 +7,10 @@ import {
   Image,
   Input,
   Pressable,
-  Radio,
   ScrollView,
-  Stack,
   Text,
   TextArea,
+  useColorMode,
 } from 'native-base';
 import React from 'react';
 import { StyleSheet } from 'react-native';
@@ -58,6 +57,7 @@ const Step2 = ({
     },
   ];
   const dispatch = useAppDispatch();
+  const { colorMode } = useColorMode();
 
   const showVisibilitySwitcher = () => {
     dispatch(
@@ -103,7 +103,14 @@ const Step2 = ({
       <FormControl>
         <FormControl.Label>Description</FormControl.Label>
         <TextArea
-          style={{ backgroundColor: theme.white }}
+          variant="solid"
+          bg={theme.white}
+          _light={{
+            backgroundColor: theme.white,
+          }}
+          _dark={{
+            backgroundColor: theme.dark.bgColor,
+          }}
           autoCompleteType="false"
           w="100%"
           value={roomTopic}
@@ -117,18 +124,25 @@ const Step2 = ({
           px={4}
           direction="row"
           align="center"
-          bg="#fff"
+          _light={{
+            backgroundColor: theme.white,
+          }}
+          _dark={{
+            backgroundColor: theme.greyIcon,
+          }}
           borderRadius={8}>
           <Text fontSize="md" flexGrow={1}>
             {visibilityOptions.find(item => item.value === visibility)?.name}
           </Text>
 
-          <ArrowRightIcon />
+          <ArrowRightIcon
+            color={colorMode === 'light' ? theme.light.text : theme.dark.text}
+          />
         </Flex>
       </Pressable>
 
       <ScrollView>
-        <Heading size="md" color={theme.light.text} fontWeight={600} mt={4}>
+        <Heading size="md" fontWeight={600} mt={4}>
           Members
         </Heading>
         <Box style={{ flex: 1 }}>
@@ -177,10 +191,6 @@ const listStyles = StyleSheet.create({
     flexGrow: 1,
     marginHorizontal: 12,
     fontSize: 16,
-  },
-  listCheckbox: {},
-  selected: {
-    backgroundColor: theme.light.input.outline.bgColor,
   },
 });
 

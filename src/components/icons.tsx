@@ -4,6 +4,7 @@ import { Path, G, Svg, Defs, ClipPath, Rect, Circle } from 'react-native-svg';
 
 interface IconProps extends ViewProps {
   color?: string;
+  secondColor?: string;
 }
 
 export const CloseEyeIcon = ({ color }: IconProps) => {
@@ -354,7 +355,10 @@ export const CloseSquareIcon = ({ color = '#38383A' }: IconProps) => {
   );
 };
 
-export const CameraIcon = ({ color = '#38383A' }: IconProps) => {
+export const CameraIcon = ({
+  color = '#38383A',
+  secondColor = '#fff',
+}: IconProps) => {
   return (
     <Svg width="24" height="24" viewBox="0 0 24 24" fill="none">
       <Path
@@ -367,7 +371,7 @@ export const CameraIcon = ({ color = '#38383A' }: IconProps) => {
       />
       <Path
         d="M12 17C14.2091 17 16 15.2091 16 13C16 10.7909 14.2091 9 12 9C9.79086 9 8 10.7909 8 13C8 15.2091 9.79086 17 12 17Z"
-        stroke="white"
+        stroke={secondColor}
         stroke-width="2"
         stroke-linecap="round"
         stroke-linejoin="round"
@@ -404,7 +408,10 @@ export const GalleryIcon = ({ color = '#38383A' }: IconProps) => {
   );
 };
 
-export const FileIcon = ({ color = '#38383A' }: IconProps) => {
+export const FileIcon = ({
+  color = '#38383A',
+  secondColor = '#fff',
+}: IconProps) => {
   return (
     <Svg width="24" height="24" viewBox="0 0 24 24" fill="none">
       <Path
@@ -417,7 +424,7 @@ export const FileIcon = ({ color = '#38383A' }: IconProps) => {
       />
       <Path
         d="M13 2V9H20"
-        stroke="white"
+        stroke={secondColor}
         stroke-width="2"
         stroke-linecap="round"
         stroke-linejoin="round"

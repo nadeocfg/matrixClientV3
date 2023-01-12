@@ -21,7 +21,9 @@ const BaseBadge = ({ value, ...props }: BadgeProps) => {
         return count / 1000 + 'k';
       }
 
-      return (count / 1000).toFixed(1) + 'k';
+      return (
+        Math.floor(count / 1000) + '.' + Math.floor((count % 1000) / 100) + 'k'
+      );
     }
 
     return '999k+';

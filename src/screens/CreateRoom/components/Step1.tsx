@@ -156,7 +156,7 @@ const chipStyles = StyleSheet.create({
     marginBottom: 4,
     marginRight: 4,
     padding: 4,
-    backgroundColor: theme.chip.bg,
+    backgroundColor: theme.chipBg,
     borderRadius: 16,
   },
 });

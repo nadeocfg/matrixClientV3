@@ -1,4 +1,11 @@
-import { Box, Flex, IBoxProps, Pressable, Text } from 'native-base';
+import {
+  Box,
+  Flex,
+  IBoxProps,
+  Pressable,
+  Text,
+  useColorMode,
+} from 'native-base';
 import React from 'react';
 import theme from '../themes/theme';
 import { CheckIcon } from './icons';
@@ -24,6 +31,8 @@ const CustomRadio = ({
   value,
   ...rest
 }: CustomRadioProps) => {
+  const { colorMode } = useColorMode();
+
   return (
     <Box {...rest}>
       {label && (
@@ -35,10 +44,10 @@ const CustomRadio = ({
       <Box
         borderRadius={10}
         _light={{
-          bg: theme.light.lightBg,
+          bg: theme.white,
         }}
         _dark={{
-          bg: theme.dark.lightBg,
+          bg: theme.greyIcon,
         }}>
         {items.map((item, index) => (
           <Pressable
@@ -56,7 +65,9 @@ const CustomRadio = ({
               <Text fontSize="lg">{item.title}</Text>
               {+item.value === +value && (
                 <Box ml="auto">
-                  <CheckIcon />
+                  <CheckIcon
+                    color={colorMode === 'light' ? theme.greyIcon : theme.white}
+                  />
                 </Box>
               )}
             </Flex>

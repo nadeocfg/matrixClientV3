@@ -3,6 +3,7 @@ import React from 'react';
 import { useAppDispatch } from '../hooks/useDispatch';
 import { useAppSelector } from '../hooks/useSelector';
 import { setActionsDrawerVisible } from '../store/actions/mainActions';
+import theme from '../themes/theme';
 import { StoreModel } from '../types/storeTypes';
 
 const ActionsDrawer = () => {
@@ -35,7 +36,7 @@ const ActionsDrawer = () => {
         {actionsDrawerState.content.actions &&
           actionsDrawerState.content.actions.length === 0 && (
             <Actionsheet.Item onPress={onClose} alignItems="center">
-              Close
+              <Text fontSize="md">Close</Text>
             </Actionsheet.Item>
           )}
 
@@ -49,14 +50,19 @@ const ActionsDrawer = () => {
                 <Text fontSize="md" fontWeight={600}>
                   {item.title}
                 </Text>
-                {item.desc}
+                <Text
+                  _dark={{
+                    color: theme.chipBg,
+                  }}>
+                  {item.desc}
+                </Text>
               </Actionsheet.Item>
             ) : (
               <Actionsheet.Item
                 onPress={() => item.onPress()}
                 key={index}
                 alignItems="center">
-                {item.title}
+                <Text fontSize="md">{item.title}</Text>
               </Actionsheet.Item>
             ),
           )}

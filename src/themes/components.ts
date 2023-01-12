@@ -446,19 +446,32 @@ const components = {
         _input: {
           bg: theme.transparent,
         },
+        _dark: {
+          bg: theme.transparent,
+        },
+      },
+      message: {
+        _input: {
+          bg: theme.chipBg,
+        },
+
+        _dark: {
+          _input: {
+            bg: theme.greyIcon,
+          },
+        },
       },
     },
   },
 
   // TextArea
   TextArea: {
-    baseStyle: {
-      backgroundColor: theme.white,
-    },
+    baseStyle: {},
     defaultProps: {
       px: '4',
       py: '4',
       h: '40',
+      opacity: 1,
     },
   },
 
@@ -702,6 +715,9 @@ const components = {
     baseStyle: {
       py: 2,
       borderRadius: 'xl',
+      _dark: {
+        backgroundColor: theme.black,
+      },
     },
   },
 

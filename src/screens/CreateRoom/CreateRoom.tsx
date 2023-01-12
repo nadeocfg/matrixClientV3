@@ -1,4 +1,4 @@
-import { Box, Button, PresenceTransition } from 'native-base';
+import { Box, Button, PresenceTransition, ScrollView } from 'native-base';
 import React, { useState, useContext, useEffect } from 'react';
 import theme from '../../themes/theme';
 import { StyleSheet } from 'react-native';
@@ -206,7 +206,7 @@ const CreateRoom = () => {
   };
 
   return (
-    <Box
+    <ScrollView
       style={styles.container}
       _light={{
         bg: theme.light.bgColor,
@@ -270,7 +270,7 @@ const CreateRoom = () => {
           />
         </PresenceTransition>
       )}
-    </Box>
+    </ScrollView>
   );
 };
 

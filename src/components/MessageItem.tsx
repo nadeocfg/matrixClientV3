@@ -1,4 +1,4 @@
-import { Box, Flex, Text } from 'native-base';
+import { Box, Flex, Text, useColorMode } from 'native-base';
 import React, { useContext } from 'react';
 import { IEventWithRoomId } from 'matrix-js-sdk';
 import { StyleSheet } from 'react-native';
@@ -19,6 +19,7 @@ const MessageItem = ({ event, userId, isPrevSenderSame }: MessageItemProps) => {
   const matrixContext = useContext(MatrixContext);
   const userData = matrixContext.instance?.getUser(event.sender || '');
   const isMyMessage = userId === event.sender;
+  const { colorMode } = useColorMode();
 
   if (event.type === 'm.room.create') {
     return (
@@ -168,6 +169,7 @@ const MessageItem = ({ event, userId, isPrevSenderSame }: MessageItemProps) => {
       <RenderRoomMessage
         event={event}
         isMyMessage={isMyMessage}
+        colorMode={colorMode}
         isPrevSenderSame={isPrevSenderSame}
         styles={styles}
         userData={userData}
@@ -196,7 +198,11 @@ const styles = StyleSheet.create({
   },
   notMyMessage: {
     borderBottomLeftRadius: 0,
-    backgroundColor: theme.messageBg,
+    backgroundColor: theme.light.messageBg,
+  },
+  notMyMessageDark: {
+    borderBottomLeftRadius: 0,
+    backgroundColor: theme.dark.messageBg,
   },
   myPrev: {
     marginTop: 4,

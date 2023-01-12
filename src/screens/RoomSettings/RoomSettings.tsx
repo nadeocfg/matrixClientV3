@@ -9,6 +9,7 @@ import {
   Pressable,
   ScrollView,
   Text,
+  useColorMode,
 } from 'native-base';
 import React, { useContext, useEffect, useState } from 'react';
 import BaseHeader from '../../components/BaseHeader';
@@ -42,6 +43,7 @@ interface RoomSettingsProps
 
 const RoomSettings = ({ route }: RoomSettingsProps) => {
   const dispatch = useAppDispatch();
+  const { colorMode } = useColorMode();
   const [roomData, setRoomData] = useState<Room | null | undefined>(undefined);
   const [avatar, setAvatar] = useState({
     fullAvatar: '',
@@ -71,13 +73,21 @@ const RoomSettings = ({ route }: RoomSettingsProps) => {
     // },
     {
       title: 'Permissions',
-      icon: <LockIcon />,
+      icon: (
+        <LockIcon
+          color={colorMode === 'light' ? theme.greyIcon : theme.white}
+        />
+      ),
       onPress: () =>
         navigate('RoomPermissionSettings', { roomId: route.params.roomId }),
     },
     {
       title: 'Leave Group',
-      icon: <QuestionMarkRounded />,
+      icon: (
+        <QuestionMarkRounded
+          color={colorMode === 'light' ? theme.greyIcon : theme.white}
+        />
+      ),
       onPress: () => onLeavePress(),
     },
   ];

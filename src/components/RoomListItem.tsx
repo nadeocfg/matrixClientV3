@@ -58,7 +58,7 @@ const RoomListItem = ({
         borderColor={theme.border}
         minH="20"
         p={2}>
-        <Box style={avatarBadgeStyles.wrapper}>
+        <Box style={avatarBadgeStyles.wrapper} flexBasis={'15%'}>
           {avatarUrl ? (
             <Image
               src={checkImageUrl(avatarUrl) || ''}
@@ -84,17 +84,18 @@ const RoomListItem = ({
             <></>
           )}
         </Box>
-        <Box flexBasis={'80%'}>
+        <Box flexBasis={'70%'}>
           <Text ml={2} fontSize={16}>
             {name}
           </Text>
           {message && (
-            <Text ml={2} fontSize={12}>
+            <Text ml={2} fontSize={12} display="flex" flexWrap="wrap">
               {message.length > 50 ? message.substring(0, 49) + '...' : message}
             </Text>
           )}
         </Box>
         <Flex
+          flexBasis={'15%'}
           ml="auto"
           flexDirection="column"
           justify="flex-start"

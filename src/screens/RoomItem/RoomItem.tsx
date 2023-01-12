@@ -9,6 +9,7 @@ import {
   ScrollView,
   Spinner,
   Text,
+  useColorMode,
 } from 'native-base';
 import React, { useState, useContext, useEffect, useRef } from 'react';
 import theme from '../../themes/theme';
@@ -57,6 +58,7 @@ const RoomItem = (
 ) => {
   const dispatch = useAppDispatch();
   const matrixContext = useContext(MatrixContext);
+  const { colorMode } = useColorMode();
   const [isAttachmentsVisible, setIsAttachmentsVisible] = useState(false);
   const [message, setMessage] = useState('');
   const [roomData, setRoomData] = useState({
@@ -588,7 +590,9 @@ const RoomItem = (
                 isAttachmentsVisible ? (
                   <CloseSquareIcon color={theme.primary} />
                 ) : (
-                  <PlusIcon color={theme.greyIcon} />
+                  <PlusIcon
+                    color={colorMode === 'light' ? theme.greyIcon : theme.white}
+                  />
                 )
               }
             />
@@ -597,6 +601,7 @@ const RoomItem = (
               py={1}
               px={3}
               mx={1}
+              variant="message"
               borderRadius="full"
               flexBasis="80%"
               flexGrow={1}
@@ -616,7 +621,11 @@ const RoomItem = (
               <IconButton
                 w={8}
                 h={8}
-                icon={<MicIcon color={theme.greyIcon} />}
+                icon={
+                  <MicIcon
+                    color={colorMode === 'light' ? theme.greyIcon : theme.white}
+                  />
+                }
               />
             )}
           </Flex>
@@ -632,21 +641,43 @@ const RoomItem = (
               <Pressable
                 style={buttonStyles.button}
                 onPress={() => openCamera('photo')}>
-                <CameraIcon />
+                <CameraIcon
+                  color={
+                    colorMode === 'light' ? theme.light.text : theme.dark.text
+                  }
+                  secondColor={
+                    colorMode === 'light' ? theme.white : theme.dark.bgColor
+                  }
+                />
                 <Text>Camera</Text>
               </Pressable>
               <Pressable style={buttonStyles.button} onPress={openGallery}>
-                <GalleryIcon />
+                <GalleryIcon
+                  color={
+                    colorMode === 'light' ? theme.light.text : theme.dark.text
+                  }
+                />
                 <Text>Gallery</Text>
               </Pressable>
               <Pressable style={buttonStyles.button} onPress={openFilesystem}>
-                <FileIcon />
+                <FileIcon
+                  color={
+                    colorMode === 'light' ? theme.light.text : theme.dark.text
+                  }
+                  secondColor={
+                    colorMode === 'light' ? theme.white : theme.dark.bgColor
+                  }
+                />
                 <Text>File</Text>
               </Pressable>
               <Pressable
                 style={[buttonStyles.button, buttonStyles.lastButton]}
                 onPress={() => {}}>
-                <LocationIcon />
+                <LocationIcon
+                  color={
+                    colorMode === 'light' ? theme.light.text : theme.dark.text
+                  }
+                />
                 <Text>Location</Text>
               </Pressable>
             </Box>

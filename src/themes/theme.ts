@@ -11,10 +11,9 @@ const theme = {
   greyLight: colors.greyLight,
   greyIcon: colors.greyIcon,
   chipBg: colors.chipBg,
-  messageBg: colors.messageBg,
 
   white: colors.white,
-  black: colors.black,
+  black: colors.darkText,
   border: colors.border,
 
   danger: colors.danger,
@@ -25,8 +24,8 @@ const theme = {
     bgColor: colors.lightBg,
     text: colors.text,
     lightText: colors.lightText,
+    messageBg: colors.messageBg,
 
-    lightBg: colors.white,
     transparentBg: colors.lightTransparentBg,
     input: {
       outline: {
@@ -40,9 +39,9 @@ const theme = {
     bgColor: colors.text,
     text: colors.lightBg,
     lightText: colors.lightText,
+    messageBg: colors.messageBgDark,
 
-    lightBg: colors.white,
-    transparentBg: colors.lightTransparentBg,
+    transparentBg: colors.darkTransparentBg,
     input: {
       outline: {
         bgColor: colors.lightGreyTransparent,
