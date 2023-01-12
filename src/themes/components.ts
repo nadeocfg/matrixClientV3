@@ -676,6 +676,16 @@ const components = {
   Switch: {
     baseStyle: {
       onTrackColor: theme.primary,
+      _hover: {
+        onTrackColor: theme.primary,
+      },
+
+      _dark: {
+        onTrackColor: theme.primary,
+        _hover: {
+          onTrackColor: theme.primary,
+        },
+      },
     },
   },
 

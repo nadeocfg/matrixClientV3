@@ -58,20 +58,22 @@ const RenderRoomMessage = ({
             : styles.notMyMessageDark,
           isPrevSenderSame ? styles.myPrev : null,
         ]}>
-        <Flex direction="row" align="center">
-          <Box mr={1} mb={1}>
-            {renderAvatar(event, matrixClient)}
-          </Box>
+        {!isMyMessage && (
+          <Flex direction="row" align="center">
+            <Box mr={1} mb={1}>
+              {renderAvatar(event, matrixClient)}
+            </Box>
 
-          <Text
-            mb={2}
-            _light={{ color: isMyMessage ? theme.white : theme.greyIcon }}
-            _dark={{ color: theme.white }}
-            fontSize="sm"
-            fontWeight={600}>
-            {userData?.displayName || userData?.userId || ''}
-          </Text>
-        </Flex>
+            <Text
+              mb={2}
+              _light={{ color: isMyMessage ? theme.white : theme.greyIcon }}
+              _dark={{ color: theme.white }}
+              fontSize="sm"
+              fontWeight={600}>
+              {userData?.displayName || userData?.userId || ''}
+            </Text>
+          </Flex>
+        )}
 
         <Flex direction="row" justify="center">
           <ImageModal
@@ -110,18 +112,20 @@ const RenderRoomMessage = ({
             : styles.notMyMessageDark,
           isPrevSenderSame ? styles.myPrev : null,
         ]}>
-        <Flex direction="row" align="center">
-          <Box mr={1} mb={1}>
-            {renderAvatar(event, matrixClient)}
-          </Box>
-          <Text
-            mb={2}
-            _light={{ color: isMyMessage ? theme.white : theme.greyIcon }}
-            fontSize="sm"
-            fontWeight={600}>
-            {userData?.displayName || userData?.userId || ''}
-          </Text>
-        </Flex>
+        {!isMyMessage && (
+          <Flex direction="row" align="center">
+            <Box mr={1} mb={1}>
+              {renderAvatar(event, matrixClient)}
+            </Box>
+            <Text
+              mb={2}
+              _light={{ color: isMyMessage ? theme.white : theme.greyIcon }}
+              fontSize="sm"
+              fontWeight={600}>
+              {userData?.displayName || userData?.userId || ''}
+            </Text>
+          </Flex>
+        )}
 
         <Text
           _light={{ color: isMyMessage ? theme.white : theme.greyIcon }}
@@ -153,7 +157,6 @@ const RenderRoomMessage = ({
   }
 
   if (event.content.msgtype === 'm.text') {
-    console.log(event);
     return (
       <Box
         style={[
@@ -165,19 +168,21 @@ const RenderRoomMessage = ({
             : styles.notMyMessageDark,
           isPrevSenderSame ? styles.myPrev : null,
         ]}>
-        <Flex direction="row" align="center">
-          <Box mr={1} mb={1}>
-            {renderAvatar(event, matrixClient)}
-          </Box>
+        {!isMyMessage && (
+          <Flex direction="row" align="center">
+            <Box mr={1} mb={1}>
+              {renderAvatar(event, matrixClient)}
+            </Box>
 
-          <Text
-            mb={2}
-            _light={{ color: isMyMessage ? theme.white : theme.greyIcon }}
-            fontSize="sm"
-            fontWeight={600}>
-            {userData?.displayName || userData?.userId || ''}
-          </Text>
-        </Flex>
+            <Text
+              mb={2}
+              _light={{ color: isMyMessage ? theme.white : theme.greyIcon }}
+              fontSize="sm"
+              fontWeight={600}>
+              {userData?.displayName || userData?.userId || ''}
+            </Text>
+          </Flex>
+        )}
         <Text
           _light={{ color: isMyMessage ? theme.white : theme.greyIcon }}
           fontSize="md">

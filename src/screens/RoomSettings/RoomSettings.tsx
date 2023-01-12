@@ -51,6 +51,7 @@ const RoomSettings = ({ route }: RoomSettingsProps) => {
   });
   const [joinedMembers, setJoinedMembers] = useState<RoomMember[]>([]);
   const [invitedMembers, setInvitedMembers] = useState<RoomMember[]>([]);
+  const [bannedMembers, setBannedMembers] = useState<RoomMember[]>([]);
   const matrixContext = useContext(MatrixContext);
   const [isAddNewMembers, setIsAddNewMembers] = useState(false);
   const [searchData, setSearchData] = useState<SearchDataModel>({
@@ -139,6 +140,7 @@ const RoomSettings = ({ route }: RoomSettingsProps) => {
         console.log(room?.getMembersWithMembership('invite'));
         setJoinedMembers(room?.getMembersWithMembership('join') || []);
         setInvitedMembers(room?.getMembersWithMembership('invite') || []);
+        setBannedMembers(room?.getMembersWithMembership('ban') || []);
       });
       setRoomData(room);
       setAvatar({
@@ -346,7 +348,41 @@ const RoomSettings = ({ route }: RoomSettingsProps) => {
         actions: [
           {
             title: 'Cancel invite',
-            onPress: () => kickUser(userId, 'Cancel invite'),
+            onPress: () => kickUser(userId),
+          },
+          {
+            title: 'Cancel',
+            onPress: () => dispatch(setActionsDrawerVisible(false)),
+          },
+        ],
+      }),
+    );
+
+    dispatch(setActionsDrawerVisible(true));
+  };
+
+  // When pressing on invited users
+  const onBannedPress = (userId: string, username: string) => {
+    const room = matrixContext.instance?.getRoom(route.params.roomId);
+    const roomPowerLevel = room?.currentState.getStateEvents(
+      'm.room.power_levels',
+    )[0]?.event?.content;
+
+    const currentUserPowerLevel =
+      roomPowerLevel?.users[matrixContext.instance?.getUserId() || ''];
+
+    if (currentUserPowerLevel < roomPowerLevel?.kick) {
+      return;
+    }
+
+    dispatch(
+      setActionsDrawerContent({
+        title: 'Confirm action',
+        text: `Unban ${username}`,
+        actions: [
+          {
+            title: 'Unban',
+            onPress: () => dispatch(setActionsDrawerVisible(false)),
           },
           {
             title: 'Cancel',
@@ -400,21 +436,30 @@ const RoomSettings = ({ route }: RoomSettingsProps) => {
             duration: 100,
           },
         }}>
-        <BaseHeader
-          title="Select Members"
-          backAction={() => setIsAddNewMembers(false)}
-          action={<Save />}
-        />
-        <SearchUsers
-          matrixContext={matrixContext}
-          foundedUsers={foundedUsers}
-          isSearching={searchData.isSearching}
-          isUserInclude={isUserInclude}
-          onSearchValueChange={onSearchValueChange}
-          onSelectUser={onSelectUser}
-          searchValue={searchData.searchValue}
-          selectedUsers={selectedUsers}
-        />
+        <ScrollView
+          contentContainerStyle={{ height: '100%' }}
+          _light={{
+            bg: theme.light.bgColor,
+          }}
+          _dark={{
+            bg: theme.dark.bgColor,
+          }}>
+          <BaseHeader
+            title="Select Members"
+            backAction={() => setIsAddNewMembers(false)}
+            action={<Save />}
+          />
+          <SearchUsers
+            matrixContext={matrixContext}
+            foundedUsers={foundedUsers}
+            isSearching={searchData.isSearching}
+            isUserInclude={isUserInclude}
+            onSearchValueChange={onSearchValueChange}
+            onSelectUser={onSelectUser}
+            searchValue={searchData.searchValue}
+            selectedUsers={selectedUsers}
+          />
+        </ScrollView>
       </PresenceTransition>
     );
   }
@@ -446,7 +491,7 @@ const RoomSettings = ({ route }: RoomSettingsProps) => {
             },
             {
               title: 'Kick member',
-              onPress: () => kickUser(userId, 'Kick member'),
+              onPress: () => kickUser(userId),
             },
             {
               title: 'Cancel',
@@ -575,6 +620,58 @@ const RoomSettings = ({ route }: RoomSettingsProps) => {
               {invitedMembers.map(member => (
                 <Pressable
                   onPress={() => onInvitedPress(member.userId, member.name)}
+                  key={member.userId}>
+                  <Box style={listStyle.listItem}>
+                    {member.getAvatarUrl(
+                      matrixContext.instance?.baseUrl || '',
+                      48,
+                      48,
+                      'crop',
+                      false,
+                      false,
+                    ) ? (
+                      <Image
+                        src={
+                          member.getAvatarUrl(
+                            matrixContext.instance?.baseUrl || '',
+                            48,
+                            48,
+                            'crop',
+                            false,
+                            false,
+                          ) || ''
+                        }
+                        alt="User avatar"
+                        borderRadius="full"
+                        width={8}
+                        height={8}
+                      />
+                    ) : (
+                      <DefaultAvatar
+                        name={member.name ? member.name[0] : ''}
+                        width={8}
+                        fontSize={16}
+                      />
+                    )}
+                    <Text ml={4}>{member.name}</Text>
+                    <Text ml="auto">{getPowerLabel(member.powerLevel)}</Text>
+                  </Box>
+                </Pressable>
+              ))}
+            </Box>
+          </>
+        )}
+
+        {bannedMembers.length > 0 && (
+          <>
+            <Heading size="md" mt={4} mb={2}>
+              Banned
+            </Heading>
+
+            <Box style={listStyle.container}>
+              {bannedMembers.map(member => (
+                <Pressable
+                  onPress={() => onBannedPress(member.userId, member.name)}
                   key={member.userId}>
                   <Box style={listStyle.listItem}>
                     {member.getAvatarUrl(

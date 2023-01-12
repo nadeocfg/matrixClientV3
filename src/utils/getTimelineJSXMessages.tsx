@@ -2,9 +2,9 @@ export interface GetTimelineJSXMessagesModel {
   join: (user: string) => string;
   leave: (user: string, reason?: string, displayName?: string) => string;
   invite: (inviter: string, user: string) => string;
-  cancelInvite: (inviter: string, user: string) => string;
+  cancelInvite: (user: string) => string;
   rejectInvite: (user: string) => string;
-  kick: (actor: string, user: string, reason: string) => string;
+  kick: (actor: string, user: string) => string;
   ban: (actor: string, user: string, reason: string) => string;
   unban: (actor: string, user: string) => string;
   avatarSets: (user: string) => string;
@@ -30,15 +30,14 @@ const getTimelineJSXMessages = (): GetTimelineJSXMessagesModel => {
     invite(inviter: string, user: string) {
       return `${inviter} invited ${user}`;
     },
-    cancelInvite(inviter: string, user: string) {
-      return `${inviter} canceled ${user}'s invite`;
+    cancelInvite(user: string) {
+      return `${user} rejected the invitation`;
     },
     rejectInvite(user: string) {
       return `${user} rejected the invitation`;
     },
-    kick(actor: string, user: string, reason: string) {
-      const reasonMsg = typeof reason === 'string' ? `: ${reason}` : '';
-      return `${actor} kicked ${user}. ${reasonMsg}`;
+    kick(actor: string, user: string) {
+      return `${actor} kicked ${user}`;
     },
     ban(actor: string, user: string, reason: string) {
       const reasonMsg = typeof reason === 'string' ? `: ${reason}` : '';

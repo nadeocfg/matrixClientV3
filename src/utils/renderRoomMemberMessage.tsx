@@ -1,13 +1,14 @@
-import { IEventWithRoomId, MatrixClient } from 'matrix-js-sdk';
+import { MatrixClient } from 'matrix-js-sdk';
 import getTimelineJSXMessages from './getTimelineJSXMessages';
 import React from 'react';
 import { ViewStyle } from 'react-native';
 import { formatDate } from './formatDate';
 import { Box, Flex, Text } from 'native-base';
 import renderAvatar from './renderMessageAvatar';
+import { RoomEventInterface } from '../types/roomEventInterface';
 
 const renderRoomMemberMessage = (
-  event: IEventWithRoomId,
+  event: RoomEventInterface,
   matrixClient: MatrixClient | null,
   systemMessage: ViewStyle,
 ): React.ReactElement => {
@@ -18,8 +19,17 @@ const renderRoomMemberMessage = (
       return '';
     }
 
-    const sender = matrixClient?.getUser(event.sender)?.displayName;
-    const username = event.content.displayname;
+    const sender =
+      matrixClient?.getUser(event.sender)?.displayName ||
+      event.prev_content?.displayname ||
+      '';
+    const senderId = event.sender;
+    const target = event.state_key;
+    const username =
+      event.content.displayname ||
+      event.prev_content?.displayname ||
+      matrixClient?.getUser(event.state_key || '')?.displayName ||
+      '';
     const reason = event.content.reason;
 
     switch (event.content?.membership) {
@@ -28,58 +38,55 @@ const renderRoomMemberMessage = (
       }
 
       case 'leave': {
-        return renderTimelineSystemMessage.leave(
-          sender || '',
-          reason,
-          username,
-        );
+        if (senderId === target) {
+          if (event.prev_content.membership === 'invite') {
+            return renderTimelineSystemMessage.cancelInvite(sender);
+          } else {
+            return renderTimelineSystemMessage.leave(sender, reason, username);
+          }
+        }
+
+        if (event.prev_content?.membership === 'ban') {
+          return renderTimelineSystemMessage.unban(sender, username);
+        }
+
+        return renderTimelineSystemMessage.kick(sender || '', username);
       }
 
       case 'invite': {
-        return renderTimelineSystemMessage.invite(sender || '', username || '');
+        return renderTimelineSystemMessage.invite(sender, username);
       }
 
       case 'cancelInvite': {
-        return renderTimelineSystemMessage.cancelInvite(
-          sender || '',
-          username || '',
-        );
+        return renderTimelineSystemMessage.cancelInvite(sender);
       }
 
       case 'rejectInvite': {
-        return renderTimelineSystemMessage.rejectInvite(username || '');
+        return renderTimelineSystemMessage.rejectInvite(username);
       }
 
       case 'kick': {
-        return renderTimelineSystemMessage.kick(
-          sender || '',
-          username || '',
-          reason,
-        );
+        return renderTimelineSystemMessage.kick(sender, username);
       }
 
       case 'ban': {
-        return renderTimelineSystemMessage.ban(
-          sender || '',
-          username || '',
-          reason,
-        );
+        return renderTimelineSystemMessage.ban(sender, username, reason);
       }
 
       case 'unban': {
-        return renderTimelineSystemMessage.unban(sender || '', username || '');
+        return renderTimelineSystemMessage.unban(sender, username);
       }
 
       case 'avatarSets': {
-        return renderTimelineSystemMessage.avatarSets(username || '');
+        return renderTimelineSystemMessage.avatarSets(username);
       }
 
       case 'avatarChanged': {
-        return renderTimelineSystemMessage.avatarChanged(username || '');
+        return renderTimelineSystemMessage.avatarChanged(username);
       }
 
       case 'avatarRemoved': {
-        return renderTimelineSystemMessage.avatarRemoved(username || '');
+        return renderTimelineSystemMessage.avatarRemoved(username);
       }
 
       default: {

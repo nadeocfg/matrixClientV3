@@ -8,9 +8,10 @@ import { formatDate } from '../utils/formatDate';
 import renderAvatar from '../utils/renderMessageAvatar';
 import renderRoomMemberMessage from '../utils/renderRoomMemberMessage';
 import RenderRoomMessage from '../utils/RenderRoomMessage';
+import { RoomEventInterface } from '../types/roomEventInterface';
 
 interface MessageItemProps {
-  event: IEventWithRoomId;
+  event: RoomEventInterface;
   userId: string | null | undefined;
   isPrevSenderSame: boolean;
 }
@@ -156,7 +157,6 @@ const MessageItem = ({ event, userId, isPrevSenderSame }: MessageItemProps) => {
   }
 
   if (event.type === 'm.room.member') {
-    console.log(event);
     return renderRoomMemberMessage(
       event,
       matrixContext.instance,

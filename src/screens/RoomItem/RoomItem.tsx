@@ -52,6 +52,7 @@ import DocumentPicker, { types } from 'react-native-document-picker';
 import { useAppSelector } from '../../hooks/useSelector';
 import { StoreModel } from '../../types/storeTypes';
 import { setNeedUpdateCurrentRoom } from '../../store/actions/roomsActions';
+import { RoomEventInterface } from '../../types/roomEventInterface';
 
 const RoomItem = (
   props: NativeStackScreenProps<RootStackModel, 'RoomItem'>,
@@ -71,7 +72,7 @@ const RoomItem = (
   const [timeline, setTimeline] = useState<{
     start?: string | undefined;
     end?: string | undefined;
-    chunk: IEventWithRoomId[];
+    chunk: RoomEventInterface[];
   }>({
     chunk: [],
   });
@@ -119,9 +120,10 @@ const RoomItem = (
 
   useEffect(() => {
     const addNewMessages = (event: MatrixEvent) => {
+      console.log(event);
       if (event.event.room_id === props.route.params.roomId) {
         setTimeline({
-          chunk: [...timeline.chunk, event.event as IEventWithRoomId],
+          chunk: [...timeline.chunk, event.event as RoomEventInterface],
         });
 
         scrollViewRef.current?.scrollToEnd();
