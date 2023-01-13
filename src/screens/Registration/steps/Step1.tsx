@@ -28,6 +28,7 @@ interface Step1Props {
   termsLink: string;
   setIsAgree: (isAgree: boolean) => void;
   isUsernameExist: boolean;
+  isNewPasswordValid: boolean;
   onChange: Function;
   setIsDisabled: Function;
   setIsPassword: Function;
@@ -50,6 +51,7 @@ const Step1 = ({
   isAgree,
   setIsAgree,
   isUsernameExist,
+  isNewPasswordValid,
   onNext,
   styles,
 }: Step1Props) => {
@@ -114,7 +116,7 @@ const Step1 = ({
           </FormControl.ErrorMessage>
         </FormControl>
 
-        <FormControl mb={8}>
+        <FormControl mb={8} isInvalid={!isNewPasswordValid}>
           <FormControl.Label>Password</FormControl.Label>
           <Input
             type={isPassword ? 'password' : 'text'}
@@ -153,9 +155,15 @@ const Step1 = ({
               />
             }
           />
+          <FormControl.ErrorMessage leftIcon={<WarningOutlineIcon size="xs" />}>
+            Password must contain lowercase, uppercase, number, special
+            character and at least 8 characters in length
+          </FormControl.ErrorMessage>
         </FormControl>
 
-        <Button onPress={onNext} isDisabled={!isAgree || isUsernameExist}>
+        <Button
+          onPress={onNext}
+          isDisabled={!isAgree || isUsernameExist || !isNewPasswordValid}>
           Next
         </Button>
         <Checkbox

@@ -5,6 +5,7 @@ import {
   Input,
   ScrollView,
   useColorMode,
+  WarningOutlineIcon,
 } from 'native-base';
 import React, { useState, useContext } from 'react';
 import BaseHeader from '../../../components/BaseHeader';
@@ -20,6 +21,7 @@ import {
 import theme from '../../../themes/theme';
 import { StoreModel } from '../../../types/storeTypes';
 import { navigationRef } from '../../../utils/navigation';
+import isPasswordValid from '../../../utils/isPasswordValid';
 
 const PasswordSettings = () => {
   const { colorMode } = useColorMode();
@@ -31,10 +33,28 @@ const PasswordSettings = () => {
   });
   const [isPassword, setIsPassword] = useState(true);
   const [isNewPassword, setIsNewPassword] = useState(true);
+  const [isNewPasswordValid, setIsNewPasswordValid] = useState(true);
+  const [isReapeatPasswordValid, setIsRepeatPasswordValid] = useState(true);
   const matrixInstance = useContext(MatrixContext);
   const user = useAppSelector((state: StoreModel) => state.userStore.user);
 
   const onChange = (name: string) => (value: string) => {
+    if (name === 'newPassword') {
+      if (value) {
+        setIsNewPasswordValid(isPasswordValid(value));
+      } else {
+        setIsNewPasswordValid(true);
+      }
+    }
+
+    if (name === 'repeatNewPassword') {
+      if (value) {
+        setIsRepeatPasswordValid(isPasswordValid(value));
+      } else {
+        setIsRepeatPasswordValid(true);
+      }
+    }
+
     setPasswordData({
       ...passwordData,
       [name]: value,
@@ -43,7 +63,15 @@ const PasswordSettings = () => {
 
   const DoneButton = () => {
     return (
-      <Button variant="ghost" onPress={changePassword}>
+      <Button
+        variant="ghost"
+        isDisabled={
+          !isNewPasswordValid ||
+          !isReapeatPasswordValid ||
+          !passwordData.newPassword ||
+          !passwordData.repeatNewPassword
+        }
+        onPress={changePassword}>
         Done
       </Button>
     );
@@ -55,6 +83,18 @@ const PasswordSettings = () => {
         setActionsDrawerContent({
           title: 'Error',
           text: 'Please, make sure your passwords match',
+        }),
+      );
+
+      dispatch(setActionsDrawerVisible(true));
+      return;
+    }
+
+    if (!passwordData.currentPassword) {
+      dispatch(
+        setActionsDrawerContent({
+          title: 'Error',
+          text: 'Please, input your current password',
         }),
       );
 
@@ -148,7 +188,7 @@ const PasswordSettings = () => {
             }
           />
         </FormControl>
-        <FormControl mb={4}>
+        <FormControl mb={4} isInvalid={!isNewPasswordValid}>
           <FormControl.Label>New password</FormControl.Label>
           <Input
             type={isNewPassword ? 'password' : 'text'}
@@ -187,8 +227,12 @@ const PasswordSettings = () => {
               />
             }
           />
+          <FormControl.ErrorMessage leftIcon={<WarningOutlineIcon size="xs" />}>
+            Password must contain lowercase, uppercase, number, special
+            character and at least 8 characters in length
+          </FormControl.ErrorMessage>
         </FormControl>
-        <FormControl>
+        <FormControl isInvalid={!isReapeatPasswordValid}>
           <FormControl.Label>Repeat new password</FormControl.Label>
           <Input
             type={isNewPassword ? 'password' : 'text'}
@@ -227,6 +271,10 @@ const PasswordSettings = () => {
               />
             }
           />
+          <FormControl.ErrorMessage leftIcon={<WarningOutlineIcon size="xs" />}>
+            Password must contain lowercase, uppercase, number, special
+            character and at least 8 characters in length
+          </FormControl.ErrorMessage>
         </FormControl>
       </ScrollView>
     </>

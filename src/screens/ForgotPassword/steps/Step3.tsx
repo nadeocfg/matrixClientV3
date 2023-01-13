@@ -9,6 +9,7 @@ import {
   ScrollView,
   Text,
   useColorMode,
+  WarningOutlineIcon,
 } from 'native-base';
 import React from 'react';
 import { StyleProp } from 'react-native';
@@ -19,6 +20,7 @@ import theme from '../../../themes/theme';
 interface Step3Props {
   password: string;
   isPassword: boolean;
+  isNewPasswordValid: boolean;
   onChange: any;
   onNext: () => void;
   styles?: StyleProp<any>;
@@ -29,6 +31,7 @@ const Step3 = ({
   onNext,
   password,
   isPassword,
+  isNewPasswordValid,
   styles,
 }: Step3Props) => {
   const { colorMode } = useColorMode();
@@ -46,11 +49,14 @@ const Step3 = ({
       <Center mb={12}>
         <DefaultAvatar name="A" width={32} fontSize={48} />
         <Heading mt={4}>Choose a new password</Heading>
-        <Text mt={4}>Make sure it’s 8 characters or more</Text>
+        <Text mt={4}>
+          Password must contain lowercase, uppercase, number, special character
+          and at least 8 characters in length
+        </Text>
       </Center>
 
       <Box style={styles.inner}>
-        <FormControl mb={8}>
+        <FormControl mb={8} isInvalid={!isNewPasswordValid}>
           <FormControl.Label>New Password</FormControl.Label>
           <Input
             type={isPassword ? 'password' : 'text'}
@@ -89,9 +95,15 @@ const Step3 = ({
               />
             }
           />
+          <FormControl.ErrorMessage leftIcon={<WarningOutlineIcon size="xs" />}>
+            Password must contain lowercase, uppercase, number, special
+            character and at least 8 characters in length
+          </FormControl.ErrorMessage>
         </FormControl>
 
-        <Button onPress={onNext}>Reset Password</Button>
+        <Button isDisabled={!isNewPasswordValid} onPress={onNext}>
+          Reset Passwor
+        </Button>
       </Box>
     </ScrollView>
   );

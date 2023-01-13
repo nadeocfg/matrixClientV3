@@ -290,6 +290,12 @@ const components = {
               color: theme.darkPrimary,
             },
           },
+          _disabled: {
+            bg: theme.transparent,
+            _text: {
+              color: theme.greyIcon,
+            },
+          },
         },
         _light: {
           bg: theme.transparent,

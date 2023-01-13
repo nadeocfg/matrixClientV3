@@ -19,6 +19,7 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackModel } from '../../types/rootStackType';
 import { MatrixContext } from '../../context/matrixContext';
 import { navigate } from '../../utils/navigation';
+import isPasswordValid from '../../utils/isPasswordValid';
 
 const ForgotPassword = (
   props: NativeStackScreenProps<RootStackModel, 'ForgotPassword'>,
@@ -34,6 +35,7 @@ const ForgotPassword = (
     sid: '',
     secret: '',
   });
+  const [isNewPasswordValid, setIsNewPasswordValid] = useState(true);
   const [currentStep, setCurrentStep] = useState(0);
   const matrixContext = useContext(MatrixContext);
 
@@ -46,6 +48,10 @@ const ForgotPassword = (
         [name]: !newPassword.isPassword,
       });
       return;
+    }
+
+    if (name === 'password') {
+      setIsNewPasswordValid(isPasswordValid(value));
     }
 
     setNewPassword({
@@ -252,6 +258,7 @@ const ForgotPassword = (
           <Step3
             password={newPassword.password}
             isPassword={newPassword.isPassword}
+            isNewPasswordValid={isNewPasswordValid}
             onChange={onChange}
             onNext={onNext}
             styles={styles}

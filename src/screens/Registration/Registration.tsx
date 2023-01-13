@@ -25,6 +25,7 @@ import Step2 from './steps/Step2';
 import Step3 from './steps/Step3';
 import Step4 from './steps/Step4';
 import { setRooms } from '../../store/actions/roomsActions';
+import isPasswordValid from '../../utils/isPasswordValid';
 
 const Registration: React.FC<PropsWithChildren<any>> = () => {
   const dispatch = useAppDispatch();
@@ -41,6 +42,7 @@ const Registration: React.FC<PropsWithChildren<any>> = () => {
   const [isAgree, setIsAgree] = useState(false);
   const [isPassword, setIsPassword] = useState(true);
   const [isUsernameExist, setIsUsernameExist] = useState(false);
+  const [isNewPasswordValid, setIsNewPasswordValid] = useState(true);
   const [flowResponse, setFlowResponse] = useState({
     completed: [],
     flows: [],
@@ -82,31 +84,6 @@ const Registration: React.FC<PropsWithChildren<any>> = () => {
   useEffect(() => {
     let timer: NodeJS.Timeout;
 
-    const checkUsername = async () => {
-      const { server, username } = signUpData;
-
-      const instance = await matrixSdk.createClient({
-        baseUrl: validateUrl(server),
-      });
-
-      instance
-        .isUsernameAvailable(username)
-        .then(res => {
-          setIsUsernameExist(!res);
-        })
-        .catch(err => {
-          console.log({ ...err });
-          dispatch(
-            setActionsDrawerContent({
-              title: err.data?.errcode || '',
-              text: err.data?.error || 'Something went wrong',
-            }),
-          );
-
-          dispatch(setActionsDrawerVisible(true));
-        });
-    };
-
     if (signUpData.username.trim().length > 0) {
       timer = setTimeout(() => {
         checkUsername();
@@ -119,10 +96,42 @@ const Registration: React.FC<PropsWithChildren<any>> = () => {
   }, [signUpData.username]);
 
   const onChange = (name: string) => (value: string) => {
+    if (name === 'password') {
+      setIsNewPasswordValid(isPasswordValid(value));
+    }
+
     setSignUpData({
       ...signUpData,
       [name]: value,
     });
+  };
+
+  const checkUsername = async () => {
+    const { server, username } = signUpData;
+
+    const instance = await matrixSdk.createClient({
+      baseUrl: validateUrl(server),
+    });
+
+    return instance
+      .isUsernameAvailable(username)
+      .then(res => {
+        setIsUsernameExist(!res);
+        return res;
+      })
+      .catch(err => {
+        console.log({ ...err });
+        dispatch(
+          setActionsDrawerContent({
+            title: err.data?.errcode || '',
+            text: err.data?.error || 'Something went wrong',
+          }),
+        );
+
+        dispatch(setActionsDrawerVisible(true));
+
+        return false;
+      });
   };
 
   const handleRecaptcha = (token: string) => {
@@ -314,7 +323,7 @@ const Registration: React.FC<PropsWithChildren<any>> = () => {
       });
   };
 
-  const onNext = () => {
+  const onNext = async () => {
     if (currentStep === 0) {
       if (
         !signUpData.server ||
@@ -330,6 +339,12 @@ const Registration: React.FC<PropsWithChildren<any>> = () => {
         );
 
         dispatch(setActionsDrawerVisible(true));
+        return;
+      }
+
+      const checkName = await checkUsername();
+
+      if (!checkName) {
         return;
       }
 
@@ -394,6 +409,7 @@ const Registration: React.FC<PropsWithChildren<any>> = () => {
             setIsPassword={setIsPassword}
             server={signUpData.server}
             password={signUpData.password}
+            isNewPasswordValid={isNewPasswordValid}
             username={signUpData.username}
             isAgree={isAgree}
             setIsAgree={setIsAgree}
