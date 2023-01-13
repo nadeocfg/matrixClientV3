@@ -1,8 +1,7 @@
 import React from 'react';
-import { ViewProps } from 'react-native';
 import { Path, G, Svg, Defs, ClipPath, Rect, Circle } from 'react-native-svg';
 
-interface IconProps extends ViewProps {
+interface IconProps {
   color?: string;
   secondColor?: string;
 }
@@ -173,7 +172,7 @@ export const MagnifierIcon = ({ color = '#3C3C43', ...props }: IconProps) => {
   );
 };
 
-export const CloseIcon = ({ color = '#38383A' }: IconProps) => {
+export const RemoveIcon = ({ color = '#38383A' }: IconProps) => {
   return (
     <Svg width="11" height="12" viewBox="0 0 11 12" fill="none">
       <Rect
@@ -460,6 +459,38 @@ export const LeaveIcon = ({ color = '#EBEBF5' }: IconProps) => {
         d="M9 15C9 17.2091 10.7909 19 13 19H17C19.2091 19 21 17.2091 21 15V9C21 6.79086 19.2091 5 17 5H13C10.7909 5 9 6.79086 9 9"
         stroke={color}
         stroke-opacity="0.6"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      />
+    </Svg>
+  );
+};
+
+export const ReplyIcon = ({ color = '#38383A' }: IconProps) => {
+  return (
+    <Svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+      <Path
+        d="M22 18.9998C22 18.9998 20.0297 8.97337 10.9745 8.93623V5.59422C10.9745 5.26006 10.7092 5 10.4063 5C10.2548 5 10.1409 5.03704 10.0273 5.11139L2.37386 10.756C1.95707 11.0531 1.88123 11.6473 2.18436 12.0558C2.22215 12.1302 2.29801 12.2043 2.37386 12.2416L10.0652 17.8861C10.3305 18.0719 10.6715 18.0346 10.8987 17.7748C10.9746 17.6634 11.0124 17.552 11.0124 17.4406V14.0986C15.8998 14.061 19.3857 14.5066 22 19L22 18.9998Z"
+        fill={color}
+      />
+    </Svg>
+  );
+};
+
+export const CloseIcon = ({ color = '#38383A' }: IconProps) => {
+  return (
+    <Svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+      <Path
+        d="M6.34314 6.34326L17.6568 17.657"
+        stroke={color}
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      />
+      <Path
+        d="M6.34314 17.6567L17.6568 6.34303"
+        stroke={color}
         stroke-width="2"
         stroke-linecap="round"
         stroke-linejoin="round"

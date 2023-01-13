@@ -24,12 +24,7 @@ import {
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackModel } from '../../types/rootStackType';
 import RoomHeader from './components/RoomHeader';
-import {
-  Direction,
-  IContent,
-  IEventWithRoomId,
-  MatrixEvent,
-} from 'matrix-js-sdk';
+import { Direction, IContent, MatrixEvent } from 'matrix-js-sdk';
 import {
   Keyboard,
   StyleSheet,
@@ -40,12 +35,14 @@ import MessageItem from '../../components/MessageItem';
 import {
   ArrowUpIcon,
   CameraIcon,
+  CloseIcon,
   CloseSquareIcon,
   FileIcon,
   GalleryIcon,
   LocationIcon,
   MicIcon,
   PlusIcon,
+  ReplyIcon,
 } from '../../components/icons';
 import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 import DocumentPicker, { types } from 'react-native-document-picker';
@@ -53,6 +50,8 @@ import { useAppSelector } from '../../hooks/useSelector';
 import { StoreModel } from '../../types/storeTypes';
 import { setNeedUpdateCurrentRoom } from '../../store/actions/roomsActions';
 import { RoomEventInterface } from '../../types/roomEventInterface';
+import sanitizeText from '../../utils/sanitizeText';
+import { formatDate } from '../../utils/formatDate';
 
 const RoomItem = (
   props: NativeStackScreenProps<RootStackModel, 'RoomItem'>,
@@ -62,7 +61,9 @@ const RoomItem = (
   const { colorMode } = useColorMode();
   const [isAttachmentsVisible, setIsAttachmentsVisible] = useState(false);
   const [message, setMessage] = useState('');
-  const [replyId, setReplyId] = useState('');
+  const [replyMessage, setReplyMessage] = useState<RoomEventInterface | null>(
+    null,
+  );
   const [roomData, setRoomData] = useState({
     fullAvatar: '',
     avatar: '',
@@ -79,6 +80,7 @@ const RoomItem = (
   });
   const [isLoadingMessages, setIsLoadingMessages] = useState(false);
   const scrollViewRef = useRef<any>(null);
+  const inputRef = useRef<any>(null);
   const needUpdateCurrentRoom = useAppSelector(
     (state: StoreModel) => state.roomsStore.needUpdateCurrentRoom,
   );
@@ -225,18 +227,76 @@ const RoomItem = (
 
   const changeMessage = (value: string) => setMessage(value);
 
+  const constructThread = () => {
+    const senderName =
+      matrixContext.instance?.getUser(replyMessage?.sender || '')
+        ?.displayName ||
+      replyMessage?.sender ||
+      '';
+    let lastText = replyMessage?.content?.body;
+
+    if (replyMessage?.content['m.relates_to']) {
+      lastText = replyMessage?.content?.body?.split('\n\n')[1];
+    }
+
+    const lastMessage = `<${formatDate(
+      replyMessage?.origin_server_ts || '',
+    )}> <${senderName}>:\n${lastText || ''}`;
+
+    const threadArr: string[] = replyMessage?.content?.body?.split('\n\n');
+
+    const messArr: string[] = [];
+    for (const mess of threadArr) {
+      if (mess.startsWith('<')) {
+        messArr.push(mess);
+      }
+    }
+
+    if (messArr.length === 0) {
+      return lastMessage;
+    }
+
+    return messArr.join('\n') + '\n' + lastMessage;
+  };
+
   const sendMessage = () => {
     if (!message.trim()) {
       return;
     }
 
+    const content: IContent = {
+      body: message,
+      msgtype: 'm.text',
+    };
+
+    if (replyMessage) {
+      content['m.relates_to'] = {
+        'm.in_reply_to': {
+          event_id: replyMessage.event_id,
+        },
+      };
+
+      const thread = constructThread();
+
+      content.body = `${thread}\n\n${content.body}`;
+
+      const replyToLink = `<a href="https://matrix.to/#/${encodeURIComponent(
+        props.route.params.roomId,
+      )}/${encodeURIComponent(replyMessage.event_id)}">In reply to</a>`;
+      const userLink = `<a href="https://matrix.to/#/${encodeURIComponent(
+        replyMessage.sender,
+      )}">${sanitizeText(replyMessage.sender)}</a>`;
+      const fallback = `<mx-reply><blockquote>${replyToLink}${userLink}<br />${sanitizeText(
+        replyMessage.content.body,
+      )}</blockquote></mx-reply>`;
+      content.formatted_body = fallback + content.formatted_body;
+    }
+
     matrixContext.instance
-      ?.sendMessage(roomData.roomId, {
-        msgtype: 'm.text',
-        body: message,
-      })
+      ?.sendMessage(roomData.roomId, content)
       .then(() => {
         setMessage('');
+        setReplyMessage(null);
       })
       .catch(err => {
         console.log({ ...err });
@@ -290,7 +350,7 @@ const RoomItem = (
           start: res.end,
           chunk: res.chunk
             .reverse()
-            .concat(timeline.chunk) as IEventWithRoomId[],
+            .concat(timeline.chunk) as RoomEventInterface[],
         });
       })
       .catch(err => {
@@ -385,6 +445,7 @@ const RoomItem = (
   const openAttachments = () => {
     setIsAttachmentsVisible(!isAttachmentsVisible);
     scrollToTop();
+    setReplyMessage(null);
   };
 
   const openCamera = (type: 'video' | 'photo' = 'photo') => {
@@ -499,6 +560,77 @@ const RoomItem = (
     }
   };
 
+  const onReplyPress = (event: RoomEventInterface) => {
+    console.log(event);
+    setReplyMessage(event);
+    inputRef.current?.focus();
+  };
+
+  const clearReply = () => {
+    setReplyMessage(null);
+  };
+
+  const getReplyMessageType = (msgType: string | undefined) => {
+    if (msgType === 'm.text') {
+      let prevMessage =
+        (replyMessage?.content?.body?.length > 40
+          ? replyMessage?.content?.body
+              ?.replaceAll('\n', ' ')
+              .substring(0, 39) + '...'
+          : replyMessage?.content?.body?.replaceAll('\n', ' ')) || '';
+
+      if (replyMessage?.content?.['m.relates_to']) {
+      }
+
+      return prevMessage;
+    }
+
+    return '';
+  };
+
+  const getReplyName = () => {
+    return matrixContext.instance?.getUser(replyMessage?.sender || '')
+      ?.displayName;
+  };
+
+  const ReplyBox = () => {
+    return (
+      <Flex
+        direction="row"
+        align="center"
+        style={replyBox.wrapper}
+        p={2}
+        _light={{
+          bg: theme.light.bgColor,
+        }}
+        _dark={{
+          bg: theme.dark.bgColor,
+        }}>
+        <Box flexBasis="10%">
+          <ReplyIcon
+            color={colorMode === 'light' ? theme.greyIcon : theme.white}
+          />
+        </Box>
+
+        <Box style={replyBox.content}>
+          <Text color={theme.primary}>Reply to {getReplyName()}</Text>
+          {getReplyMessageType(replyMessage?.content?.msgtype)}
+        </Box>
+
+        <IconButton
+          onPress={clearReply}
+          w={8}
+          h={8}
+          icon={
+            <CloseIcon
+              color={colorMode === 'light' ? theme.greyIcon : theme.white}
+            />
+          }
+        />
+      </Flex>
+    );
+  };
+
   return (
     <>
       <RoomHeader
@@ -553,6 +685,7 @@ const RoomItem = (
 
         {timeline.chunk.map((timelineItem, index) => (
           <MessageItem
+            onReplyPress={onReplyPress}
             event={timelineItem}
             userId={matrixContext.instance?.getUserId()}
             isPrevSenderSame={
@@ -575,6 +708,7 @@ const RoomItem = (
 
       {roomData.membership === 'join' && (
         <>
+          {replyMessage && <ReplyBox />}
           <Flex
             direction="row"
             align="center"
@@ -601,6 +735,8 @@ const RoomItem = (
             />
 
             <Input
+              ref={inputRef}
+              isFocused={true}
               py={1}
               px={3}
               mx={1}
@@ -613,6 +749,7 @@ const RoomItem = (
               value={message}
               onChangeText={changeMessage}
             />
+
             {message ? (
               <IconButton
                 onPress={sendMessage}
@@ -713,6 +850,20 @@ const buttonStyles = StyleSheet.create({
   },
   lastButton: {
     marginRight: 0,
+  },
+});
+
+const replyBox = StyleSheet.create({
+  wrapper: {
+    paddingVertical: 4,
+  },
+  content: {
+    paddingLeft: 8,
+    paddingRight: 4,
+    flexBasis: '80%',
+    flexGrow: 1,
+    borderLeftWidth: 1,
+    borderLeftColor: theme.primary,
   },
 });
 

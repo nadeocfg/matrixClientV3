@@ -1,6 +1,6 @@
-import { Box, Flex, Text, useColorMode } from 'native-base';
+import { Box, Flex, Menu, Text, useColorMode } from 'native-base';
 import React, { useContext } from 'react';
-import { StyleSheet } from 'react-native';
+import { Pressable, StyleSheet } from 'react-native';
 import theme from '../themes/theme';
 import { MatrixContext } from '../context/matrixContext';
 import { formatDate } from '../utils/formatDate';
@@ -13,9 +13,15 @@ interface MessageItemProps {
   event: RoomEventInterface;
   userId: string | null | undefined;
   isPrevSenderSame: boolean;
+  onReplyPress: (event: RoomEventInterface) => void;
 }
 
-const MessageItem = ({ event, userId, isPrevSenderSame }: MessageItemProps) => {
+const MessageItem = ({
+  event,
+  userId,
+  isPrevSenderSame,
+  onReplyPress,
+}: MessageItemProps) => {
   const matrixContext = useContext(MatrixContext);
   const userData = matrixContext.instance?.getUser(event.sender || '');
   const isMyMessage = userId === event.sender;
@@ -165,15 +171,35 @@ const MessageItem = ({ event, userId, isPrevSenderSame }: MessageItemProps) => {
 
   if (event.type === 'm.room.message') {
     return (
-      <RenderRoomMessage
-        event={event}
-        isMyMessage={isMyMessage}
-        colorMode={colorMode}
-        isPrevSenderSame={isPrevSenderSame}
-        styles={styles}
-        userData={userData}
-        matrixClient={matrixContext.instance}
-      />
+      <Menu
+        trigger={triggerProps => {
+          return (
+            <Pressable
+              {...triggerProps}
+              onPress={() => {}}
+              onLongPress={triggerProps.onPress}>
+              {({ pressed }) => {
+                return (
+                  <RenderRoomMessage
+                    event={event}
+                    isMyMessage={isMyMessage}
+                    colorMode={colorMode}
+                    isPrevSenderSame={isPrevSenderSame}
+                    styles={styles}
+                    userData={userData}
+                    matrixClient={matrixContext.instance}
+                    isPressed={pressed}
+                  />
+                );
+              }}
+            </Pressable>
+          );
+        }}>
+        <Menu.Item variant="withBorder" onPress={() => onReplyPress(event)}>
+          Reply
+        </Menu.Item>
+        <Menu.Item onPress={() => {}}>Delete</Menu.Item>
+      </Menu>
     );
   }
 
@@ -205,6 +231,30 @@ const styles = StyleSheet.create({
   },
   myPrev: {
     marginTop: 4,
+  },
+  onPress: {
+    backgroundColor: theme.darkPrimary,
+  },
+  replyBlock: {
+    borderLeftWidth: 2,
+    borderLeftColor: theme.greyLight,
+    paddingLeft: 12,
+    marginBottom: 8,
+
+    // padding: 8,
+    // backgroundColor: theme.greyIcon,
+    // borderRadius: 12,
+  },
+  notMyReplyBlock: {
+    borderLeftWidth: 2,
+    borderLeftColor: theme.greyLight,
+    paddingLeft: 12,
+    marginBottom: 8,
+
+    // padding: 8,
+    // borderRadius: 12,
+    // backgroundColor: theme.greyLight,
+    // color: theme.greyIcon,
   },
 });
 

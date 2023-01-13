@@ -13,7 +13,7 @@ import {
 import React from 'react';
 import { StyleSheet } from 'react-native';
 import DefaultAvatar from '../../../components/DefaultAvatar';
-import { CloseIcon, MagnifierIcon } from '../../../components/icons';
+import { RemoveIcon, MagnifierIcon } from '../../../components/icons';
 import { MatrixContextModel } from '../../../context/matrixContext';
 import theme from '../../../themes/theme';
 import { UserDirectoryItemModel } from '../../../types/userDirectoryItemModel';
@@ -90,7 +90,7 @@ const Step1 = ({
               width={8}
               height={8}
               ml={1}
-              icon={<CloseIcon color="#38383A" />}
+              icon={<RemoveIcon color="#38383A" />}
             />
           </Box>
         ))}

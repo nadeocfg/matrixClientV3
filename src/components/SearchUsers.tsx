@@ -12,7 +12,7 @@ import {
 } from 'native-base';
 import React from 'react';
 import { UserDirectoryItemModel } from '../types/userDirectoryItemModel';
-import { CloseIcon, MagnifierIcon } from './icons';
+import { RemoveIcon, MagnifierIcon } from './icons';
 import { StyleSheet } from 'react-native';
 import DefaultAvatar from './DefaultAvatar';
 import { MatrixContextModel } from '../context/matrixContext';
@@ -99,7 +99,7 @@ const SearchUsers = ({
               width={6}
               height={6}
               ml={1}
-              icon={<CloseIcon color="#38383A" />}
+              icon={<RemoveIcon color="#38383A" />}
             />
           </Box>
         ))}

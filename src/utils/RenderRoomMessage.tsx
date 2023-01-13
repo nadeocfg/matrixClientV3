@@ -15,6 +15,7 @@ import renderAvatar from './renderMessageAvatar';
 interface RenderRoomMessageProps {
   event: IEventWithRoomId;
   isMyMessage: boolean;
+  isPressed: boolean;
   isPrevSenderSame: boolean;
   styles: {
     messageWrapper: ViewStyle;
@@ -22,6 +23,9 @@ interface RenderRoomMessageProps {
     notMyMessage: ViewStyle;
     notMyMessageDark: ViewStyle;
     myPrev: ViewStyle;
+    onPress: ViewStyle;
+    replyBlock: ViewStyle;
+    notMyReplyBlock: ViewStyle;
   };
   userData: User | null | undefined;
   matrixClient: MatrixClient | null;
@@ -36,9 +40,11 @@ const RenderRoomMessage = ({
   userData,
   matrixClient,
   colorMode,
+  isPressed,
 }: RenderRoomMessageProps) => {
   const dispatch = useAppDispatch();
   const width = Dimensions.get('window').width;
+  const hasThread = event.content?.['m.relates_to'] ? true : false;
 
   const setVideo = (url: string) => {
     dispatch(setVideoUrl(url));
@@ -57,6 +63,14 @@ const RenderRoomMessage = ({
             ? styles.notMyMessage
             : styles.notMyMessageDark,
           isPrevSenderSame ? styles.myPrev : null,
+          isPressed ? styles.onPress : null,
+          {
+            transform: [
+              {
+                scale: isPressed ? 0.96 : 1,
+              },
+            ],
+          },
         ]}>
         {!isMyMessage && (
           <Flex direction="row" align="center">
@@ -111,6 +125,14 @@ const RenderRoomMessage = ({
             ? styles.notMyMessage
             : styles.notMyMessageDark,
           isPrevSenderSame ? styles.myPrev : null,
+          isPressed ? styles.onPress : null,
+          {
+            transform: [
+              {
+                scale: isPressed ? 0.96 : 1,
+              },
+            ],
+          },
         ]}>
         {!isMyMessage && (
           <Flex direction="row" align="center">
@@ -170,15 +192,20 @@ const RenderRoomMessage = ({
             ? styles.notMyMessage
             : styles.notMyMessageDark,
           isPrevSenderSame ? styles.myPrev : null,
+          isPressed ? styles.onPress : null,
+          {
+            transform: [
+              {
+                scale: isPressed ? 0.96 : 1,
+              },
+            ],
+          },
         ]}>
         {!isMyMessage && (
-          <Flex direction="row" align="center">
-            <Box mr={1} mb={1}>
-              {renderAvatar(event, matrixClient)}
-            </Box>
+          <Flex mb={2} direction="row" align="center">
+            <Box mr={1}>{renderAvatar(event, matrixClient)}</Box>
 
             <Text
-              mb={2}
               _light={{ color: isMyMessage ? theme.white : theme.greyIcon }}
               fontSize="sm"
               fontWeight={600}>
@@ -186,11 +213,28 @@ const RenderRoomMessage = ({
             </Text>
           </Flex>
         )}
-        <Text
-          _light={{ color: isMyMessage ? theme.white : theme.greyIcon }}
-          fontSize="md">
-          {event.content?.body}
-        </Text>
+        {hasThread ? (
+          <>
+            <Text
+              _light={{ color: isMyMessage ? theme.white : theme.greyIcon }}
+              fontSize="sm"
+              style={isMyMessage ? styles.replyBlock : styles.notMyReplyBlock}>
+              {event.content?.body.split('\n\n')[0]}
+            </Text>
+            <Text
+              _light={{ color: isMyMessage ? theme.white : theme.greyIcon }}
+              fontSize="md">
+              {event.content?.body.split('\n\n')[1]}
+            </Text>
+          </>
+        ) : (
+          <Text
+            _light={{ color: isMyMessage ? theme.white : theme.greyIcon }}
+            fontSize="md">
+            {event.content?.body}
+          </Text>
+        )}
+
         <Text
           mt={2}
           _light={{ color: isMyMessage ? theme.dark.text : theme.greyIcon }}
