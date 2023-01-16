@@ -12,7 +12,7 @@ import {
 import React, { useEffect, useContext, useState } from 'react';
 import { useAppSelector } from '../../hooks/useSelector';
 import theme from '../../themes/theme';
-import { StoreModel } from '../../types/storeTypes';
+import { RoomItemModel, StoreModel } from '../../types/storeTypes';
 import { StyleSheet } from 'react-native';
 import { MatrixContext } from '../../context/matrixContext';
 import { useAppDispatch } from '../../hooks/useDispatch';
@@ -27,6 +27,7 @@ import {
 } from '../../store/actions/mainActions';
 import { IPublicRoomsChunkRoom } from 'matrix-js-sdk';
 import formatTime from '../../utils/formatTime';
+import getTimelineJSXMessages from '../../utils/getTimelineJSXMessages';
 
 const RoomList = () => {
   const { colorMode } = useColorMode();
@@ -155,6 +156,25 @@ const RoomList = () => {
     setFoundedRooms([]);
   };
 
+  const previewMessage = (room: RoomItemModel) => {
+    if (room.membership === 'invite') {
+      return "You're were invited";
+    }
+
+    const lastEvent = room.timeline[room.timeline.length - 1].event;
+    console.log(lastEvent);
+
+    if (lastEvent.type === 'm.room.message') {
+      return lastEvent.content?.body.replace('\n', '');
+    }
+
+    if (lastEvent.type === 'm.room.member') {
+      return getTimelineJSXMessages(lastEvent, matrixContext.instance);
+    }
+
+    return '...';
+  };
+
   return (
     <>
       <RoomListHeader
@@ -230,15 +250,7 @@ const RoomList = () => {
               key={item.roomId}
               avatarUrl={item.avatar_url}
               roomId={item.roomId}
-              message={
-                item.membership === 'invite'
-                  ? "You're were invited"
-                  : item.timeline[item.timeline.length - 1]?.event?.type ===
-                    'm.room.message'
-                  ? item.timeline[item.timeline.length - 1]?.event?.content
-                      ?.body
-                  : '...'
-              }
+              message={previewMessage(item)}
               name={item.name}
               onSelectRoom={onSelectRoom}
               eventTime={formatTime(

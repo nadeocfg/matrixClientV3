@@ -594,6 +594,7 @@ const RoomItem = (
   };
 
   const onReplyPress = (event: Partial<IEvent>) => {
+    console.log(event);
     return;
     const eventId = event.content['m.relates_to']['m.in_reply_to']?.event_id;
     const room = matrixContext.instance?.getRoom(roomData.roomId);

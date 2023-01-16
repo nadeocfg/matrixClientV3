@@ -1,4 +1,4 @@
-import { IEvent, IEventWithRoomId, MatrixClient, User } from 'matrix-js-sdk';
+import { IEvent, MatrixClient, User } from 'matrix-js-sdk';
 import { Box, Button, ColorMode, Flex, Text } from 'native-base';
 import React from 'react';
 import { Dimensions, Pressable, ViewStyle } from 'react-native';
