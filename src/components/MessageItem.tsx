@@ -13,6 +13,7 @@ interface MessageItemProps {
   event: RoomEventInterface;
   userId: string | null | undefined;
   isPrevSenderSame: boolean;
+  onReplyLongPress: (event: RoomEventInterface) => void;
   onReplyPress: (event: RoomEventInterface) => void;
 }
 
@@ -20,6 +21,7 @@ const MessageItem = ({
   event,
   userId,
   isPrevSenderSame,
+  onReplyLongPress,
   onReplyPress,
 }: MessageItemProps) => {
   const matrixContext = useContext(MatrixContext);
@@ -189,13 +191,14 @@ const MessageItem = ({
                     userData={userData}
                     matrixClient={matrixContext.instance}
                     isPressed={pressed}
+                    onReplyPress={onReplyPress}
                   />
                 );
               }}
             </Pressable>
           );
         }}>
-        <Menu.Item variant="withBorder" onPress={() => onReplyPress(event)}>
+        <Menu.Item variant="withBorder" onPress={() => onReplyLongPress(event)}>
           Reply
         </Menu.Item>
         <Menu.Item onPress={() => {}}>Delete</Menu.Item>

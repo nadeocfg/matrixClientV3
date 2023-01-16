@@ -33,6 +33,7 @@ import {
 } from 'react-native';
 import MessageItem from '../../components/MessageItem';
 import {
+  ArrowDownIcon,
   ArrowUpIcon,
   CameraIcon,
   CloseIcon,
@@ -103,10 +104,10 @@ const RoomItem = (
 
   useEffect(() => {
     const showSubscription = Keyboard.addListener('keyboardDidShow', () => {
-      scrollToTop();
+      scrollToBottom();
     });
     const hideSubscription = Keyboard.addListener('keyboardDidHide', () => {
-      scrollToTop();
+      scrollToBottom();
     });
 
     return () => {
@@ -123,9 +124,9 @@ const RoomItem = (
 
   useEffect(() => {
     const addNewMessages = (event: MatrixEvent) => {
-      console.log(event);
       if (event.event.room_id === props.route.params.roomId) {
         setTimeline({
+          ...timeline,
           chunk: [...timeline.chunk, event.event as RoomEventInterface],
         });
 
@@ -183,6 +184,7 @@ const RoomItem = (
     matrixContext.instance
       ?.roomInitialSync(roomId, 20)
       .then(res => {
+        console.log(res.messages);
         if (res.messages) {
           setTimeline(res.messages);
           setFullyRead();
@@ -227,38 +229,6 @@ const RoomItem = (
 
   const changeMessage = (value: string) => setMessage(value);
 
-  const constructThread = () => {
-    const senderName =
-      matrixContext.instance?.getUser(replyMessage?.sender || '')
-        ?.displayName ||
-      replyMessage?.sender ||
-      '';
-    let lastText = replyMessage?.content?.body;
-
-    if (replyMessage?.content['m.relates_to']) {
-      lastText = replyMessage?.content?.body?.split('\n\n')[1];
-    }
-
-    const lastMessage = `<${formatDate(
-      replyMessage?.origin_server_ts || '',
-    )}> <${senderName}>:\n${lastText || ''}`;
-
-    const threadArr: string[] = replyMessage?.content?.body?.split('\n\n');
-
-    const messArr: string[] = [];
-    for (const mess of threadArr) {
-      if (mess.startsWith('<')) {
-        messArr.push(mess);
-      }
-    }
-
-    if (messArr.length === 0) {
-      return lastMessage;
-    }
-
-    return messArr.join('\n') + '\n' + lastMessage;
-  };
-
   const sendMessage = () => {
     if (!message.trim()) {
       return;
@@ -276,20 +246,31 @@ const RoomItem = (
         },
       };
 
-      const thread = constructThread();
+      // Check if replied message is reply also
+      if (replyMessage.content['m.relates_to']) {
+        // Send only reply message text, without old replies
+        const splitMessage = replyMessage.content?.body.split('\n\n');
 
-      content.body = `${thread}\n\n${content.body}`;
+        content.body = `> <${replyMessage.sender}> ${splitMessage[1]}\n\n${content.body}`;
+      } else {
+        content.body = `> <${
+          replyMessage.sender
+        }> ${replyMessage.content?.body?.replace(/\n/g, '\n> ')}\n\n${
+          content.body
+        }`;
+      }
 
       const replyToLink = `<a href="https://matrix.to/#/${encodeURIComponent(
-        props.route.params.roomId,
+        roomData.roomId,
       )}/${encodeURIComponent(replyMessage.event_id)}">In reply to</a>`;
       const userLink = `<a href="https://matrix.to/#/${encodeURIComponent(
         replyMessage.sender,
       )}">${sanitizeText(replyMessage.sender)}</a>`;
-      const fallback = `<mx-reply><blockquote>${replyToLink}${userLink}<br />${sanitizeText(
-        replyMessage.content.body,
-      )}</blockquote></mx-reply>`;
-      content.formatted_body = fallback + content.formatted_body;
+      const fallback = `<mx-reply><blockquote>${replyToLink}${userLink}<br />${
+        replyMessage.content?.formattedBody ||
+        sanitizeText(replyMessage.content?.body)
+      }</blockquote></mx-reply>`;
+      content.formatted_body = fallback + message;
     }
 
     matrixContext.instance
@@ -369,7 +350,7 @@ const RoomItem = (
       });
   };
 
-  const scrollToTop = () => {
+  const scrollToBottom = () => {
     if (scrollViewRef.current) {
       scrollViewRef.current.scrollToEnd();
     }
@@ -444,7 +425,7 @@ const RoomItem = (
 
   const openAttachments = () => {
     setIsAttachmentsVisible(!isAttachmentsVisible);
-    scrollToTop();
+    scrollToBottom();
     setReplyMessage(null);
   };
 
@@ -560,10 +541,34 @@ const RoomItem = (
     }
   };
 
-  const onReplyPress = (event: RoomEventInterface) => {
+  const onReplyLongPress = (event: RoomEventInterface) => {
     console.log(event);
     setReplyMessage(event);
     inputRef.current?.focus();
+  };
+
+  const onReplyPress = (event: RoomEventInterface) => {
+    return;
+    const eventId = event.content['m.relates_to']['m.in_reply_to']?.event_id;
+    const room = matrixContext.instance?.getRoom(roomData.roomId);
+    const tl = room?.getUnfilteredTimelineSet();
+    // console.log(tl);
+    console.log(room?.getLiveTimeline());
+
+    if (tl) {
+      matrixContext.instance?.getEventTimeline(tl, eventId || '').then(res => {
+        console.log(res);
+        if (res) {
+          matrixContext.instance
+            ?.paginateEventTimeline(res, {
+              backwards: true,
+            })
+            .then(result => {
+              console.log(result);
+            });
+        }
+      });
+    }
   };
 
   const clearReply = () => {
@@ -654,7 +659,7 @@ const RoomItem = (
 
       <ScrollView
         onContentSizeChange={
-          timeline.chunk.length <= 20 ? scrollToTop : () => {}
+          timeline.chunk.length <= 20 ? scrollToBottom : () => {}
         }
         onScroll={onScroll}
         _contentContainerStyle={{ paddingBottom: 4 }}
@@ -686,6 +691,7 @@ const RoomItem = (
         {timeline.chunk.map((timelineItem, index) => (
           <MessageItem
             onReplyPress={onReplyPress}
+            onReplyLongPress={onReplyLongPress}
             event={timelineItem}
             userId={matrixContext.instance?.getUserId()}
             isPrevSenderSame={
@@ -695,6 +701,16 @@ const RoomItem = (
           />
         ))}
       </ScrollView>
+
+      {/* Scroll to bottom button
+      <Box style={arrowDownButton.wrapper}>
+        <IconButton
+          width={12}
+          height={12}
+          variant="ghost"
+          icon={<ArrowDownIcon />}
+        />
+      </Box> */}
 
       {roomData.membership !== 'join' &&
         roomData.membership !== 'ban' &&
@@ -864,6 +880,16 @@ const replyBox = StyleSheet.create({
     flexGrow: 1,
     borderLeftWidth: 1,
     borderLeftColor: theme.primary,
+  },
+});
+
+const arrowDownButton = StyleSheet.create({
+  wrapper: {
+    zIndex: 9999,
+    position: 'absolute',
+    bottom: '10%',
+    right: 12,
+    backgroundColor: theme.greyLight,
   },
 });
 

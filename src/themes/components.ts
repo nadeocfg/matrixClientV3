@@ -676,6 +676,13 @@ const components = {
         bg: theme.light.input.outline.bgColor,
       },
     },
+    variants: {
+      replyBox: {
+        _pressed: {
+          bg: theme.darkPrimary,
+        },
+      },
+    },
   },
 
   // Switch

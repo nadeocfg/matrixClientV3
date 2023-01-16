@@ -1,7 +1,7 @@
 import { IEventWithRoomId, MatrixClient, User } from 'matrix-js-sdk';
 import { Box, Button, ColorMode, Flex, Text } from 'native-base';
 import React from 'react';
-import { Dimensions, ViewStyle } from 'react-native';
+import { Dimensions, Pressable, ViewStyle } from 'react-native';
 import ImageModal from 'react-native-image-modal';
 import { useAppDispatch } from '../hooks/useDispatch';
 import {
@@ -30,6 +30,7 @@ interface RenderRoomMessageProps {
   userData: User | null | undefined;
   matrixClient: MatrixClient | null;
   colorMode: ColorMode;
+  onReplyPress: (event: IEventWithRoomId) => void;
 }
 
 const RenderRoomMessage = ({
@@ -41,10 +42,12 @@ const RenderRoomMessage = ({
   matrixClient,
   colorMode,
   isPressed,
+  onReplyPress,
 }: RenderRoomMessageProps) => {
   const dispatch = useAppDispatch();
   const width = Dimensions.get('window').width;
   const hasThread = event.content?.['m.relates_to'] ? true : false;
+  const replyMessage = event.content?.body?.split('\n\n');
 
   const setVideo = (url: string) => {
     dispatch(setVideoUrl(url));
@@ -67,7 +70,7 @@ const RenderRoomMessage = ({
           {
             transform: [
               {
-                scale: isPressed ? 0.96 : 1,
+                scale: isPressed ? 0.99 : 1,
               },
             ],
           },
@@ -215,16 +218,20 @@ const RenderRoomMessage = ({
         )}
         {hasThread ? (
           <>
-            <Text
-              _light={{ color: isMyMessage ? theme.white : theme.greyIcon }}
-              fontSize="sm"
-              style={isMyMessage ? styles.replyBlock : styles.notMyReplyBlock}>
-              {event.content?.body.split('\n\n')[0]}
-            </Text>
+            <Pressable onPress={() => onReplyPress(event)}>
+              <Text
+                _light={{ color: isMyMessage ? theme.white : theme.greyIcon }}
+                fontSize="sm"
+                style={
+                  isMyMessage ? styles.replyBlock : styles.notMyReplyBlock
+                }>
+                {replyMessage[0]}
+              </Text>
+            </Pressable>
             <Text
               _light={{ color: isMyMessage ? theme.white : theme.greyIcon }}
               fontSize="md">
-              {event.content?.body.split('\n\n')[1]}
+              {replyMessage[1]}
             </Text>
           </>
         ) : (
