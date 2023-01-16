@@ -24,7 +24,14 @@ import {
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackModel } from '../../types/rootStackType';
 import RoomHeader from './components/RoomHeader';
-import { Direction, IContent, MatrixEvent } from 'matrix-js-sdk';
+import {
+  Direction,
+  IContent,
+  IEvent,
+  MatrixEvent,
+  Room,
+  TimelineWindow,
+} from 'matrix-js-sdk';
 import {
   Keyboard,
   StyleSheet,
@@ -33,7 +40,6 @@ import {
 } from 'react-native';
 import MessageItem from '../../components/MessageItem';
 import {
-  ArrowDownIcon,
   ArrowUpIcon,
   CameraIcon,
   CloseIcon,
@@ -50,9 +56,7 @@ import DocumentPicker, { types } from 'react-native-document-picker';
 import { useAppSelector } from '../../hooks/useSelector';
 import { StoreModel } from '../../types/storeTypes';
 import { setNeedUpdateCurrentRoom } from '../../store/actions/roomsActions';
-import { RoomEventInterface } from '../../types/roomEventInterface';
 import sanitizeText from '../../utils/sanitizeText';
-import { formatDate } from '../../utils/formatDate';
 
 const RoomItem = (
   props: NativeStackScreenProps<RootStackModel, 'RoomItem'>,
@@ -62,7 +66,10 @@ const RoomItem = (
   const { colorMode } = useColorMode();
   const [isAttachmentsVisible, setIsAttachmentsVisible] = useState(false);
   const [message, setMessage] = useState('');
-  const [replyMessage, setReplyMessage] = useState<RoomEventInterface | null>(
+  const [msgCoordinates, setMsgCoordinates] = useState<
+    Record<string, number>[]
+  >([]);
+  const [replyMessage, setReplyMessage] = useState<Partial<IEvent> | null>(
     null,
   );
   const [roomData, setRoomData] = useState({
@@ -72,13 +79,7 @@ const RoomItem = (
     roomId: '',
     membership: '',
   });
-  const [timeline, setTimeline] = useState<{
-    start?: string | undefined;
-    end?: string | undefined;
-    chunk: RoomEventInterface[];
-  }>({
-    chunk: [],
-  });
+  const [timeline, setTimeline] = useState<MatrixEvent[]>();
   const [isLoadingMessages, setIsLoadingMessages] = useState(false);
   const scrollViewRef = useRef<any>(null);
   const inputRef = useRef<any>(null);
@@ -123,12 +124,11 @@ const RoomItem = (
   }, [matrixContext.instance]);
 
   useEffect(() => {
-    const addNewMessages = (event: MatrixEvent) => {
+    const addNewMessages = (event: MatrixEvent, room: Room) => {
+      console.log('Timeline update');
+
       if (event.event.room_id === props.route.params.roomId) {
-        setTimeline({
-          ...timeline,
-          chunk: [...timeline.chunk, event.event as RoomEventInterface],
-        });
+        setTimeline([...room.timeline]);
 
         scrollViewRef.current?.scrollToEnd();
       }
@@ -139,7 +139,7 @@ const RoomItem = (
     return () => {
       matrixContext.instance?.removeListener('Room.timeline', addNewMessages);
     };
-  }, [timeline, matrixContext.instance]);
+  }, []);
 
   const initialRoomSync = async (roomId: string) => {
     const roomInfo = await matrixContext.instance?.getRoom(roomId);
@@ -181,12 +181,15 @@ const RoomItem = (
 
     dispatch(setNeedUpdateCurrentRoom(false));
 
+    const currentTl = roomInfo.getUnfilteredTimelineSet();
     matrixContext.instance
-      ?.roomInitialSync(roomId, 20)
+      ?.getEventTimeline(
+        currentTl,
+        roomInfo.timeline[roomInfo.timeline.length - 1]?.event.event_id || '',
+      )
       .then(res => {
-        console.log(res.messages);
-        if (res.messages) {
-          setTimeline(res.messages);
+        if (res?.getEvents().length !== 0) {
+          setTimeline(res?.getEvents() || []);
           setFullyRead();
         }
       })
@@ -200,6 +203,9 @@ const RoomItem = (
         );
 
         dispatch(setActionsDrawerVisible(true));
+      })
+      .finally(() => {
+        scrollToBottom();
       });
   };
 
@@ -242,12 +248,12 @@ const RoomItem = (
     if (replyMessage) {
       content['m.relates_to'] = {
         'm.in_reply_to': {
-          event_id: replyMessage.event_id,
+          event_id: replyMessage.event_id || '',
         },
       };
 
       // Check if replied message is reply also
-      if (replyMessage.content['m.relates_to']) {
+      if (replyMessage.content && replyMessage.content['m.relates_to']) {
         // Send only reply message text, without old replies
         const splitMessage = replyMessage.content?.body.split('\n\n');
 
@@ -262,10 +268,10 @@ const RoomItem = (
 
       const replyToLink = `<a href="https://matrix.to/#/${encodeURIComponent(
         roomData.roomId,
-      )}/${encodeURIComponent(replyMessage.event_id)}">In reply to</a>`;
+      )}/${encodeURIComponent(replyMessage.event_id || '')}">In reply to</a>`;
       const userLink = `<a href="https://matrix.to/#/${encodeURIComponent(
-        replyMessage.sender,
-      )}">${sanitizeText(replyMessage.sender)}</a>`;
+        replyMessage.sender || '',
+      )}">${sanitizeText(replyMessage.sender || '')}</a>`;
       const fallback = `<mx-reply><blockquote>${replyToLink}${userLink}<br />${
         replyMessage.content?.formattedBody ||
         sanitizeText(replyMessage.content?.body)
@@ -313,41 +319,81 @@ const RoomItem = (
   };
 
   const fetchPrevMessages = () => {
-    if (isLoadingMessages || !timeline.start) {
+    if (isLoadingMessages) {
       return;
     }
 
     setIsLoadingMessages(true);
 
-    matrixContext.instance
-      ?.createMessagesRequest(
-        props.route.params.roomId,
-        timeline.start,
-        20,
-        Direction.Backward,
-      )
-      .then(res => {
-        setTimeline({
-          start: res.end,
-          chunk: res.chunk
-            .reverse()
-            .concat(timeline.chunk) as RoomEventInterface[],
-        });
-      })
-      .catch(err => {
-        console.log({ ...err });
-        dispatch(
-          setActionsDrawerContent({
-            title: err.data?.errcode || '',
-            text: err.data?.error || 'Something went wrong',
-          }),
-        );
+    const room = matrixContext.instance?.getRoom(roomData.roomId);
 
-        dispatch(setActionsDrawerVisible(true));
-      })
-      .finally(() => {
-        setIsLoadingMessages(false);
-      });
+    if (room) {
+      matrixContext.instance
+        ?.scrollback(room, 20)
+        .then(res => {
+          console.log(res);
+        })
+        .catch(err => {
+          console.log({ ...err });
+          dispatch(
+            setActionsDrawerContent({
+              title: err.data?.errcode || '',
+              text: err.data?.error || 'Something went wrong',
+            }),
+          );
+
+          dispatch(setActionsDrawerVisible(true));
+        })
+        .finally(() => {
+          setIsLoadingMessages(false);
+        });
+    }
+
+    // matrixContext.instance
+    //   ?.getEventTimeline(
+    //     room?.getUnfilteredTimelineSet(),
+    //     '$cFG6AgHRdda0-LkED46RQWB-zHQj0FFlykZ9t_vbXzE',
+    //   )
+    //   .then(res => {
+    //     console.log(res);
+    //   });
+
+    // tlWindow.paginate(Direction.Backward, 20, true).then(res => {
+    //   console.log(res);
+    // });
+    // console.log(tlWindow.canPaginate(Direction.Forward));
+
+    setIsLoadingMessages(false);
+
+    // matrixContext.instance
+    //   ?.createMessagesRequest(
+    //     props.route.params.roomId,
+    //     timeline.start,
+    //     20,
+    //     Direction.Backward,
+    //   )
+    //   .then(res => {
+    //     setTimeline({
+    //       start: res.end,
+    //       chunk: res.chunk
+    //         .reverse()
+    //         .concat(timeline.chunk) as RoomEventInterface[],
+    //     });
+    //   })
+    //   .catch(err => {
+    //     console.log({ ...err });
+    //     dispatch(
+    //       setActionsDrawerContent({
+    //         title: err.data?.errcode || '',
+    //         text: err.data?.error || 'Something went wrong',
+    //       }),
+    //     );
+
+    //     dispatch(setActionsDrawerVisible(true));
+    //   })
+    //   .finally(() => {
+    //     setIsLoadingMessages(false);
+    //   });
   };
 
   const scrollToBottom = () => {
@@ -541,13 +587,13 @@ const RoomItem = (
     }
   };
 
-  const onReplyLongPress = (event: RoomEventInterface) => {
+  const onReplyLongPress = (event: Partial<IEvent>) => {
     console.log(event);
     setReplyMessage(event);
     inputRef.current?.focus();
   };
 
-  const onReplyPress = (event: RoomEventInterface) => {
+  const onReplyPress = (event: Partial<IEvent>) => {
     return;
     const eventId = event.content['m.relates_to']['m.in_reply_to']?.event_id;
     const room = matrixContext.instance?.getRoom(roomData.roomId);
@@ -658,9 +704,7 @@ const RoomItem = (
       </Box>
 
       <ScrollView
-        onContentSizeChange={
-          timeline.chunk.length <= 20 ? scrollToBottom : () => {}
-        }
+        // onContentSizeChange={scrollToBottom}
         onScroll={onScroll}
         _contentContainerStyle={{ paddingBottom: 4 }}
         flex={1}
@@ -688,16 +732,17 @@ const RoomItem = (
           </Center>
         )}
 
-        {timeline.chunk.map((timelineItem, index) => (
+        {(timeline || []).map((matrixEvent, index) => (
           <MessageItem
             onReplyPress={onReplyPress}
             onReplyLongPress={onReplyLongPress}
-            event={timelineItem}
+            matrixEvent={matrixEvent}
             userId={matrixContext.instance?.getUserId()}
             isPrevSenderSame={
-              timelineItem.sender === timeline.chunk[index - 1]?.sender
+              matrixEvent.event.sender ===
+              (timeline || [])[index - 1]?.event.sender
             }
-            key={timelineItem.event_id}
+            key={matrixEvent.event.event_id}
           />
         ))}
       </ScrollView>

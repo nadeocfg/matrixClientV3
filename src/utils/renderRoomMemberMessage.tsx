@@ -1,14 +1,13 @@
-import { MatrixClient } from 'matrix-js-sdk';
+import { IEvent, MatrixClient } from 'matrix-js-sdk';
 import getTimelineJSXMessages from './getTimelineJSXMessages';
 import React from 'react';
 import { ViewStyle } from 'react-native';
 import { formatDate } from './formatDate';
 import { Box, Flex, Text } from 'native-base';
 import renderAvatar from './renderMessageAvatar';
-import { RoomEventInterface } from '../types/roomEventInterface';
 
 const renderRoomMemberMessage = (
-  event: RoomEventInterface,
+  event: Partial<IEvent>,
   matrixClient: MatrixClient | null,
   systemMessage: ViewStyle,
 ): React.ReactElement => {
@@ -20,7 +19,7 @@ const renderRoomMemberMessage = (
     }
 
     const sender =
-      matrixClient?.getUser(event.sender)?.displayName ||
+      matrixClient?.getUser(event.sender || '')?.displayName ||
       event.prev_content?.displayname ||
       '';
     const senderId = event.sender;
@@ -39,7 +38,7 @@ const renderRoomMemberMessage = (
 
       case 'leave': {
         if (senderId === target) {
-          if (event.prev_content.membership === 'invite') {
+          if (event.prev_content?.membership === 'invite') {
             return renderTimelineSystemMessage.cancelInvite(sender);
           } else {
             return renderTimelineSystemMessage.leave(sender, reason, username);

@@ -1,4 +1,4 @@
-import { IEventWithRoomId, MatrixClient, User } from 'matrix-js-sdk';
+import { IEvent, IEventWithRoomId, MatrixClient, User } from 'matrix-js-sdk';
 import { Box, Button, ColorMode, Flex, Text } from 'native-base';
 import React from 'react';
 import { Dimensions, Pressable, ViewStyle } from 'react-native';
@@ -13,7 +13,7 @@ import { formatDate } from './formatDate';
 import renderAvatar from './renderMessageAvatar';
 
 interface RenderRoomMessageProps {
-  event: IEventWithRoomId;
+  event: Partial<IEvent>;
   isMyMessage: boolean;
   isPressed: boolean;
   isPrevSenderSame: boolean;
@@ -24,13 +24,15 @@ interface RenderRoomMessageProps {
     notMyMessageDark: ViewStyle;
     myPrev: ViewStyle;
     onPress: ViewStyle;
+    onPressDark: ViewStyle;
     replyBlock: ViewStyle;
     notMyReplyBlock: ViewStyle;
+    notMyReplyBlockDark: ViewStyle;
   };
   userData: User | null | undefined;
   matrixClient: MatrixClient | null;
   colorMode: ColorMode;
-  onReplyPress: (event: IEventWithRoomId) => void;
+  onReplyPress: (event: Partial<IEvent>) => void;
 }
 
 const RenderRoomMessage = ({
@@ -55,7 +57,7 @@ const RenderRoomMessage = ({
     dispatch(setVideoFullscreen(true));
   };
 
-  if (event.content.msgtype === 'm.image') {
+  if (event.content?.msgtype === 'm.image') {
     return (
       <Box
         style={[
@@ -66,7 +68,11 @@ const RenderRoomMessage = ({
             ? styles.notMyMessage
             : styles.notMyMessageDark,
           isPrevSenderSame ? styles.myPrev : null,
-          isPressed ? styles.onPress : null,
+          isPressed === false
+            ? null
+            : colorMode === 'light'
+            ? styles.onPress
+            : styles.onPressDark,
           {
             transform: [
               {
@@ -101,7 +107,7 @@ const RenderRoomMessage = ({
               height: 250,
             }}
             source={{
-              uri: matrixClient?.mxcUrlToHttp(event.content.url) || '',
+              uri: matrixClient?.mxcUrlToHttp(event.content?.url) || '',
             }}
           />
         </Flex>
@@ -117,7 +123,7 @@ const RenderRoomMessage = ({
     );
   }
 
-  if (event.content.msgtype === 'm.video') {
+  if (event.content?.msgtype === 'm.video') {
     return (
       <Box
         style={[
@@ -167,7 +173,7 @@ const RenderRoomMessage = ({
           mt={2}
           mb={2}
           onPress={() =>
-            setVideo(matrixClient?.mxcUrlToHttp(event.content.url) || '')
+            setVideo(matrixClient?.mxcUrlToHttp(event.content?.url) || '')
           }
           variant="subtle"
           colorScheme="success">
@@ -184,7 +190,7 @@ const RenderRoomMessage = ({
     );
   }
 
-  if (event.content.msgtype === 'm.text') {
+  if (event.content?.msgtype === 'm.text') {
     return (
       <Box
         style={[
@@ -223,7 +229,11 @@ const RenderRoomMessage = ({
                 _light={{ color: isMyMessage ? theme.white : theme.greyIcon }}
                 fontSize="sm"
                 style={
-                  isMyMessage ? styles.replyBlock : styles.notMyReplyBlock
+                  isMyMessage
+                    ? styles.replyBlock
+                    : colorMode === 'light'
+                    ? styles.notMyReplyBlock
+                    : styles.notMyReplyBlockDark
                 }>
                 {replyMessage[0]}
               </Text>
