@@ -1,6 +1,6 @@
 import { Box, Flex, Menu, Text, useColorMode } from 'native-base';
 import React, { useContext } from 'react';
-import { Pressable, StyleSheet } from 'react-native';
+import { Pressable, StyleSheet, LayoutChangeEvent } from 'react-native';
 import theme from '../themes/theme';
 import { MatrixContext } from '../context/matrixContext';
 import { formatDate } from '../utils/formatDate';
@@ -15,6 +15,7 @@ interface MessageItemProps {
   isPrevSenderSame: boolean;
   onReplyLongPress: (event: Partial<IEvent>) => void;
   onReplyPress: (event: Partial<IEvent>) => void;
+  onLayout: (event: LayoutChangeEvent) => void;
 }
 
 const MessageItem = ({
@@ -23,6 +24,7 @@ const MessageItem = ({
   isPrevSenderSame,
   onReplyLongPress,
   onReplyPress,
+  onLayout,
 }: MessageItemProps) => {
   const matrixContext = useContext(MatrixContext);
   const userData = matrixContext.instance?.getUser(
@@ -203,6 +205,7 @@ const MessageItem = ({
               {({ pressed }) => {
                 return (
                   <RenderRoomMessage
+                    onLayout={onLayout}
                     event={matrixEvent.event}
                     isMyMessage={isMyMessage}
                     colorMode={colorMode}

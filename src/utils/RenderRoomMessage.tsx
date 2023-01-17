@@ -1,7 +1,12 @@
 import { IEvent, MatrixClient, User } from 'matrix-js-sdk';
 import { Box, Button, ColorMode, Flex, Text } from 'native-base';
 import React from 'react';
-import { Dimensions, Pressable, ViewStyle } from 'react-native';
+import {
+  Dimensions,
+  Pressable,
+  ViewStyle,
+  LayoutChangeEvent,
+} from 'react-native';
 import ImageModal from 'react-native-image-modal';
 import { useAppDispatch } from '../hooks/useDispatch';
 import {
@@ -33,6 +38,7 @@ interface RenderRoomMessageProps {
   matrixClient: MatrixClient | null;
   colorMode: ColorMode;
   onReplyPress: (event: Partial<IEvent>) => void;
+  onLayout: (event: LayoutChangeEvent) => void;
 }
 
 const RenderRoomMessage = ({
@@ -45,6 +51,7 @@ const RenderRoomMessage = ({
   colorMode,
   isPressed,
   onReplyPress,
+  onLayout,
 }: RenderRoomMessageProps) => {
   const dispatch = useAppDispatch();
   const width = Dimensions.get('window').width;
@@ -60,6 +67,7 @@ const RenderRoomMessage = ({
   if (event.content?.msgtype === 'm.image') {
     return (
       <Box
+        onLayout={onLayout}
         style={[
           styles.messageWrapper,
           isMyMessage
@@ -126,6 +134,7 @@ const RenderRoomMessage = ({
   if (event.content?.msgtype === 'm.video') {
     return (
       <Box
+        onLayout={onLayout}
         style={[
           styles.messageWrapper,
           isMyMessage
@@ -193,6 +202,7 @@ const RenderRoomMessage = ({
   if (event.content?.msgtype === 'm.text') {
     return (
       <Box
+        onLayout={onLayout}
         style={[
           styles.messageWrapper,
           isMyMessage

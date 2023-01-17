@@ -25,18 +25,18 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackModel } from '../../types/rootStackType';
 import RoomHeader from './components/RoomHeader';
 import {
-  Direction,
+  EventTimeline,
   IContent,
   IEvent,
   MatrixEvent,
   Room,
-  TimelineWindow,
 } from 'matrix-js-sdk';
 import {
   Keyboard,
   StyleSheet,
   NativeScrollEvent,
   NativeSyntheticEvent,
+  LayoutChangeEvent,
 } from 'react-native';
 import MessageItem from '../../components/MessageItem';
 import {
@@ -57,6 +57,7 @@ import { useAppSelector } from '../../hooks/useSelector';
 import { StoreModel } from '../../types/storeTypes';
 import { setNeedUpdateCurrentRoom } from '../../store/actions/roomsActions';
 import sanitizeText from '../../utils/sanitizeText';
+import Animated from 'react-native-reanimated';
 
 const RoomItem = (
   props: NativeStackScreenProps<RootStackModel, 'RoomItem'>,
@@ -66,9 +67,6 @@ const RoomItem = (
   const { colorMode } = useColorMode();
   const [isAttachmentsVisible, setIsAttachmentsVisible] = useState(false);
   const [message, setMessage] = useState('');
-  const [msgCoordinates, setMsgCoordinates] = useState<
-    Record<string, number>[]
-  >([]);
   const [replyMessage, setReplyMessage] = useState<Partial<IEvent> | null>(
     null,
   );
@@ -79,9 +77,13 @@ const RoomItem = (
     roomId: '',
     membership: '',
   });
+  const [isBackward, setIsBackward] = useState(false);
   const [timeline, setTimeline] = useState<MatrixEvent[]>();
+  const [currentTimeline, setCurrentTimeline] = useState<
+    EventTimeline | undefined
+  >(undefined);
   const [isLoadingMessages, setIsLoadingMessages] = useState(false);
-  const scrollViewRef = useRef<any>(null);
+  const scrollViewRef = useRef<Animated.ScrollView>(null);
   const inputRef = useRef<any>(null);
   const needUpdateCurrentRoom = useAppSelector(
     (state: StoreModel) => state.roomsStore.needUpdateCurrentRoom,
@@ -182,6 +184,7 @@ const RoomItem = (
     dispatch(setNeedUpdateCurrentRoom(false));
 
     const currentTl = roomInfo.getUnfilteredTimelineSet();
+
     matrixContext.instance
       ?.getEventTimeline(
         currentTl,
@@ -190,6 +193,7 @@ const RoomItem = (
       .then(res => {
         if (res?.getEvents().length !== 0) {
           setTimeline(res?.getEvents() || []);
+          setCurrentTimeline(res);
           setFullyRead();
         }
       })
@@ -312,93 +316,53 @@ const RoomItem = (
   };
 
   const onScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
-    const { contentOffset } = event.nativeEvent;
-    if (contentOffset.y <= 0) {
-      fetchPrevMessages();
+    const { contentOffset, contentSize, layoutMeasurement } = event.nativeEvent;
+    const isBottom =
+      Math.floor(contentSize.height - contentOffset.y) ===
+      Math.floor(layoutMeasurement.height);
+    const isTop = contentOffset.y <= 0;
+
+    if (isTop) {
+      fetchMessages();
+      return;
     }
+
+    // if (isBottom) {
+    //   fetchMessages(false);
+    // }
   };
 
-  const fetchPrevMessages = () => {
+  const fetchMessages = (backwards = true) => {
     if (isLoadingMessages) {
       return;
     }
 
-    setIsLoadingMessages(true);
+    console.log(currentTimeline);
 
-    const room = matrixContext.instance?.getRoom(roomData.roomId);
-
-    if (room) {
-      matrixContext.instance
-        ?.scrollback(room, 20)
-        .then(res => {
-          console.log(res);
-        })
-        .catch(err => {
-          console.log({ ...err });
-          dispatch(
-            setActionsDrawerContent({
-              title: err.data?.errcode || '',
-              text: err.data?.error || 'Something went wrong',
-            }),
-          );
-
-          dispatch(setActionsDrawerVisible(true));
-        })
-        .finally(() => {
-          setIsLoadingMessages(false);
-        });
+    if (!currentTimeline) {
+      return;
     }
 
-    // matrixContext.instance
-    //   ?.getEventTimeline(
-    //     room?.getUnfilteredTimelineSet(),
-    //     '$cFG6AgHRdda0-LkED46RQWB-zHQj0FFlykZ9t_vbXzE',
-    //   )
-    //   .then(res => {
-    //     console.log(res);
-    //   });
+    setIsBackward(backwards);
 
-    // tlWindow.paginate(Direction.Backward, 20, true).then(res => {
-    //   console.log(res);
-    // });
-    // console.log(tlWindow.canPaginate(Direction.Forward));
+    setIsLoadingMessages(true);
 
-    setIsLoadingMessages(false);
-
-    // matrixContext.instance
-    //   ?.createMessagesRequest(
-    //     props.route.params.roomId,
-    //     timeline.start,
-    //     20,
-    //     Direction.Backward,
-    //   )
-    //   .then(res => {
-    //     setTimeline({
-    //       start: res.end,
-    //       chunk: res.chunk
-    //         .reverse()
-    //         .concat(timeline.chunk) as RoomEventInterface[],
-    //     });
-    //   })
-    //   .catch(err => {
-    //     console.log({ ...err });
-    //     dispatch(
-    //       setActionsDrawerContent({
-    //         title: err.data?.errcode || '',
-    //         text: err.data?.error || 'Something went wrong',
-    //       }),
-    //     );
-
-    //     dispatch(setActionsDrawerVisible(true));
-    //   })
-    //   .finally(() => {
-    //     setIsLoadingMessages(false);
-    //   });
+    matrixContext.instance
+      ?.paginateEventTimeline(currentTimeline, {
+        backwards,
+        limit: 20,
+      })
+      .catch(err => {
+        console.log({ ...err });
+      })
+      .finally(() => {
+        setIsLoadingMessages(false);
+      });
   };
 
   const scrollToBottom = () => {
     if (scrollViewRef.current) {
-      scrollViewRef.current.scrollToEnd();
+      scrollViewRef.current?.scrollToEnd();
     }
   };
 
@@ -587,6 +551,15 @@ const RoomItem = (
     }
   };
 
+  const scrollToMessage = (eventId: string, events: MatrixEvent[]) => {
+    const index = events.findIndex(event => event.event.event_id === eventId);
+
+    scrollViewRef.current?.scrollTo({
+      y: index * 100,
+      animated: true,
+    });
+  };
+
   const onReplyLongPress = (event: Partial<IEvent>) => {
     console.log(event);
     setReplyMessage(event);
@@ -594,27 +567,41 @@ const RoomItem = (
   };
 
   const onReplyPress = (event: Partial<IEvent>) => {
-    console.log(event);
-    return;
-    const eventId = event.content['m.relates_to']['m.in_reply_to']?.event_id;
     const room = matrixContext.instance?.getRoom(roomData.roomId);
-    const tl = room?.getUnfilteredTimelineSet();
-    // console.log(tl);
-    console.log(room?.getLiveTimeline());
+    const timelineSet = room?.getUnfilteredTimelineSet();
 
-    if (tl) {
-      matrixContext.instance?.getEventTimeline(tl, eventId || '').then(res => {
-        console.log(res);
-        if (res) {
-          matrixContext.instance
-            ?.paginateEventTimeline(res, {
-              backwards: true,
-            })
-            .then(result => {
-              console.log(result);
-            });
-        }
-      });
+    if (timelineSet) {
+      setIsLoadingMessages(true);
+      matrixContext.instance
+        ?.getEventTimeline(
+          timelineSet,
+          event.content?.['m.relates_to']?.['m.in_reply_to']?.event_id || '',
+        )
+        .then(res => {
+          const events = res?.getEvents();
+          setTimeline(events);
+          setCurrentTimeline(res);
+
+          scrollToMessage(
+            event.content?.['m.relates_to']?.['m.in_reply_to']?.event_id || '',
+            events || [],
+          );
+        })
+        .catch(err => {
+          console.log({ ...err });
+
+          dispatch(
+            setActionsDrawerContent({
+              title: err.data?.errcode || '',
+              text: err.data?.error || 'Something went wrong',
+            }),
+          );
+
+          dispatch(setActionsDrawerVisible(true));
+        })
+        .finally(() => {
+          setIsLoadingMessages(false);
+        });
     }
   };
 
@@ -643,6 +630,11 @@ const RoomItem = (
   const getReplyName = () => {
     return matrixContext.instance?.getUser(replyMessage?.sender || '')
       ?.displayName;
+  };
+
+  const onLayout = (eventId: string) => (event: LayoutChangeEvent) => {
+    console.log(eventId);
+    console.log(event.nativeEvent.layout.height);
   };
 
   const ReplyBox = () => {
@@ -699,13 +691,13 @@ const RoomItem = (
         _dark={{
           bg: theme.dark.bgColor,
         }}>
-        {isLoadingMessages && (
+        {isLoadingMessages && isBackward && (
           <Spinner mt={4} accessibilityLabel="Loading messages" />
         )}
       </Box>
 
       <ScrollView
-        // onContentSizeChange={scrollToBottom}
+        onContentSizeChange={(width, height) => {}}
         onScroll={onScroll}
         _contentContainerStyle={{ paddingBottom: 4 }}
         flex={1}
@@ -735,6 +727,7 @@ const RoomItem = (
 
         {(timeline || []).map((matrixEvent, index) => (
           <MessageItem
+            onLayout={onLayout(matrixEvent.event.event_id || '')}
             onReplyPress={onReplyPress}
             onReplyLongPress={onReplyLongPress}
             matrixEvent={matrixEvent}
@@ -747,6 +740,18 @@ const RoomItem = (
           />
         ))}
       </ScrollView>
+
+      <Box
+        _light={{
+          bg: theme.light.bgColor,
+        }}
+        _dark={{
+          bg: theme.dark.bgColor,
+        }}>
+        {isLoadingMessages && !isBackward && (
+          <Spinner mt={4} accessibilityLabel="Loading messages" />
+        )}
+      </Box>
 
       {/* Scroll to bottom button
       <Box style={arrowDownButton.wrapper}>

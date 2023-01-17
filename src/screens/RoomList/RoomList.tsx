@@ -162,13 +162,12 @@ const RoomList = () => {
     }
 
     const lastEvent = room.timeline[room.timeline.length - 1].event;
-    console.log(lastEvent);
 
-    if (lastEvent.type === 'm.room.message') {
+    if (lastEvent?.type === 'm.room.message') {
       return lastEvent.content?.body.replace('\n', '');
     }
 
-    if (lastEvent.type === 'm.room.member') {
+    if (lastEvent?.type === 'm.room.member') {
       return getTimelineJSXMessages(lastEvent, matrixContext.instance);
     }
 
