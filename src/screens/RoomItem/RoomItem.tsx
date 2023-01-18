@@ -6,10 +6,10 @@ import {
   IconButton,
   Input,
   Pressable,
-  ScrollView,
   Spinner,
   Text,
   useColorMode,
+  FlatList,
 } from 'native-base';
 import React, { useState, useContext, useEffect, useRef } from 'react';
 import theme from '../../themes/theme';
@@ -36,10 +36,11 @@ import {
   StyleSheet,
   NativeScrollEvent,
   NativeSyntheticEvent,
-  LayoutChangeEvent,
+  FlatList as FlatListNative,
 } from 'react-native';
 import MessageItem from '../../components/MessageItem';
 import {
+  ArrowDownIcon,
   ArrowUpIcon,
   CameraIcon,
   CloseIcon,
@@ -57,7 +58,6 @@ import { useAppSelector } from '../../hooks/useSelector';
 import { StoreModel } from '../../types/storeTypes';
 import { setNeedUpdateCurrentRoom } from '../../store/actions/roomsActions';
 import sanitizeText from '../../utils/sanitizeText';
-import Animated from 'react-native-reanimated';
 
 const RoomItem = (
   props: NativeStackScreenProps<RootStackModel, 'RoomItem'>,
@@ -83,15 +83,16 @@ const RoomItem = (
     EventTimeline | undefined
   >(undefined);
   const [isLoadingMessages, setIsLoadingMessages] = useState(false);
-  const scrollViewRef = useRef<Animated.ScrollView>(null);
+  const [isInitialRender, setIsInitialRender] = useState(true);
+  const [selectedEventId, setSelectedEventId] = useState('');
+  const [focusedEvent, setFocusedEvent] = useState('');
+  const scrollViewRef = useRef<FlatListNative>(null);
   const inputRef = useRef<any>(null);
   const needUpdateCurrentRoom = useAppSelector(
     (state: StoreModel) => state.roomsStore.needUpdateCurrentRoom,
   );
 
   useEffect(() => {
-    console.log('mounted');
-
     if (props.route.params.roomId) {
       initialRoomSync(props.route.params.roomId);
     }
@@ -126,13 +127,19 @@ const RoomItem = (
   }, [matrixContext.instance]);
 
   useEffect(() => {
-    const addNewMessages = (event: MatrixEvent, room: Room) => {
+    const addNewMessages = (
+      event: MatrixEvent,
+      room: Room,
+      toStartOfTimeline: boolean,
+      removed: boolean,
+      data: any,
+    ) => {
       console.log('Timeline update');
 
       if (event.event.room_id === props.route.params.roomId) {
-        setTimeline([...room.timeline]);
+        setTimeline([...data.timeline.events]);
 
-        scrollViewRef.current?.scrollToEnd();
+        scrollToBottom();
       }
     };
 
@@ -207,10 +214,10 @@ const RoomItem = (
         );
 
         dispatch(setActionsDrawerVisible(true));
-      })
-      .finally(() => {
-        scrollToBottom();
       });
+    // .finally(() => {
+    //   scrollToBottom();
+    // });
   };
 
   const setFullyRead = async () => {
@@ -315,21 +322,22 @@ const RoomItem = (
       });
   };
 
-  const onScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
-    const { contentOffset, contentSize, layoutMeasurement } = event.nativeEvent;
+  const onSrollEndDrag = (e: NativeSyntheticEvent<NativeScrollEvent>) => {
+    const { contentOffset, contentSize, layoutMeasurement, velocity } =
+      e.nativeEvent;
+
     const isBottom =
       Math.floor(contentSize.height - contentOffset.y) ===
       Math.floor(layoutMeasurement.height);
     const isTop = contentOffset.y <= 0;
 
-    if (isTop) {
-      fetchMessages();
-      return;
+    if (isBottom && (velocity?.y || 0) <= -2) {
+      fetchMessages(false);
     }
 
-    // if (isBottom) {
-    //   fetchMessages(false);
-    // }
+    if (isTop && (velocity?.y || 0) >= 1) {
+      fetchMessages();
+    }
   };
 
   const fetchMessages = (backwards = true) => {
@@ -337,10 +345,18 @@ const RoomItem = (
       return;
     }
 
-    console.log(currentTimeline);
-
     if (!currentTimeline) {
       return;
+    }
+
+    if (backwards) {
+      setFocusedEvent((timeline || [])[0].event.event_id || '');
+    } else {
+      setFocusedEvent(
+        (timeline || [])[
+          timeline && timeline.length > 0 ? timeline.length - 1 : 0
+        ].event.event_id || '',
+      );
     }
 
     setIsBackward(backwards);
@@ -361,8 +377,26 @@ const RoomItem = (
   };
 
   const scrollToBottom = () => {
-    if (scrollViewRef.current) {
-      scrollViewRef.current?.scrollToEnd();
+    if (scrollViewRef.current && timeline?.length) {
+      scrollViewRef.current?.scrollToIndex({
+        index: timeline.length - 1,
+        animated: true,
+      });
+    }
+  };
+
+  const onContentSizeChange = () => {
+    if (isInitialRender) {
+      scrollToBottom();
+      setIsInitialRender(false);
+    }
+
+    if (selectedEventId) {
+      scrollToMessage(selectedEventId);
+    }
+
+    if (focusedEvent) {
+      scrollToMessage(focusedEvent);
     }
   };
 
@@ -551,13 +585,35 @@ const RoomItem = (
     }
   };
 
-  const scrollToMessage = (eventId: string, events: MatrixEvent[]) => {
-    const index = events.findIndex(event => event.event.event_id === eventId);
+  const scrollToMessage = (eventId: string) => {
+    console.log(eventId);
 
-    scrollViewRef.current?.scrollTo({
-      y: index * 100,
-      animated: true,
-    });
+    if (eventId) {
+      let foundedIndex = 0;
+      for (let i = 0; i < (timeline?.length || 0); i += 1) {
+        if (timeline && timeline[i].event.event_id === eventId) {
+          foundedIndex = i;
+        }
+      }
+
+      // if (focusedEvent && !selectedEventId) {
+      //   if (isBackward) {
+      //     foundedIndex -= 1;
+      //   } else {
+      //     foundedIndex += 1;
+      //   }
+      // }
+
+      console.log(foundedIndex);
+
+      scrollViewRef.current?.scrollToIndex({
+        index: foundedIndex,
+        animated: true,
+      });
+
+      setSelectedEventId('');
+      setFocusedEvent('');
+    }
   };
 
   const onReplyLongPress = (event: Partial<IEvent>) => {
@@ -581,10 +637,8 @@ const RoomItem = (
           const events = res?.getEvents();
           setTimeline(events);
           setCurrentTimeline(res);
-
-          scrollToMessage(
+          setSelectedEventId(
             event.content?.['m.relates_to']?.['m.in_reply_to']?.event_id || '',
-            events || [],
           );
         })
         .catch(err => {
@@ -632,9 +686,8 @@ const RoomItem = (
       ?.displayName;
   };
 
-  const onLayout = (eventId: string) => (event: LayoutChangeEvent) => {
-    console.log(eventId);
-    console.log(event.nativeEvent.layout.height);
+  const scrollToLast = () => {
+    initialRoomSync(roomData.roomId);
   };
 
   const ReplyBox = () => {
@@ -696,50 +749,58 @@ const RoomItem = (
         )}
       </Box>
 
-      <ScrollView
-        onContentSizeChange={(width, height) => {}}
-        onScroll={onScroll}
-        _contentContainerStyle={{ paddingBottom: 4 }}
-        flex={1}
+      {roomData.membership === 'invite' && (
+        <Center>
+          <Text flex={1} fontSize={16} mb={4} mt={8}>
+            Do you want to join <Text fontWeight={600}>{roomData.name}</Text>?
+          </Text>
+          <Flex flexDirection="row" align="center">
+            <Button variant="outline" mr={2} onPress={() => onLeave(true)}>
+              Reject
+            </Button>
+            <Button variant="subtle" colorScheme="primary" onPress={onJoin}>
+              Join
+            </Button>
+          </Flex>
+        </Center>
+      )}
+
+      <FlatList
+        data={timeline || []}
         ref={scrollViewRef}
+        flex={1}
         px={4}
         _light={{
           bg: theme.light.bgColor,
         }}
         _dark={{
           bg: theme.dark.bgColor,
-        }}>
-        {roomData.membership === 'invite' && (
-          <Center>
-            <Text flex={1} fontSize={16} mb={4} mt={8}>
-              Do you want to join <Text fontWeight={600}>{roomData.name}</Text>?
-            </Text>
-            <Flex flexDirection="row" align="center">
-              <Button variant="outline" mr={2} onPress={() => onLeave(true)}>
-                Reject
-              </Button>
-              <Button variant="subtle" colorScheme="primary" onPress={onJoin}>
-                Join
-              </Button>
-            </Flex>
-          </Center>
-        )}
-
-        {(timeline || []).map((matrixEvent, index) => (
+        }}
+        onScrollEndDrag={onSrollEndDrag}
+        onContentSizeChange={onContentSizeChange}
+        contentContainerStyle={{ paddingBottom: 4 }}
+        onScrollToIndexFailed={info => {
+          // If cannot scroll to last event
+          scrollViewRef.current?.scrollToIndex({
+            index: info.highestMeasuredFrameIndex,
+            animated: true,
+          });
+        }}
+        initialNumToRender={60}
+        maxToRenderPerBatch={60}
+        renderItem={({ item, index }) => (
           <MessageItem
-            onLayout={onLayout(matrixEvent.event.event_id || '')}
             onReplyPress={onReplyPress}
             onReplyLongPress={onReplyLongPress}
-            matrixEvent={matrixEvent}
+            matrixEvent={item}
             userId={matrixContext.instance?.getUserId()}
             isPrevSenderSame={
-              matrixEvent.event.sender ===
-              (timeline || [])[index - 1]?.event.sender
+              item.event.sender === (timeline || [])[index - 1]?.event.sender
             }
-            key={matrixEvent.event.event_id}
+            key={item.event.event_id}
           />
-        ))}
-      </ScrollView>
+        )}
+      />
 
       <Box
         _light={{
@@ -753,15 +814,16 @@ const RoomItem = (
         )}
       </Box>
 
-      {/* Scroll to bottom button
+      {/* Scroll to bottom button */}
       <Box style={arrowDownButton.wrapper}>
         <IconButton
           width={12}
           height={12}
           variant="ghost"
           icon={<ArrowDownIcon />}
+          onPress={scrollToLast}
         />
-      </Box> */}
+      </Box>
 
       {roomData.membership !== 'join' &&
         roomData.membership !== 'ban' &&

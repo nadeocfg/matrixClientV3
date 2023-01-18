@@ -15,7 +15,7 @@ interface MessageItemProps {
   isPrevSenderSame: boolean;
   onReplyLongPress: (event: Partial<IEvent>) => void;
   onReplyPress: (event: Partial<IEvent>) => void;
-  onLayout: (event: LayoutChangeEvent) => void;
+  onLayout?: (event: LayoutChangeEvent) => void;
 }
 
 const MessageItem = ({

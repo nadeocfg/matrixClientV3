@@ -38,7 +38,7 @@ interface RenderRoomMessageProps {
   matrixClient: MatrixClient | null;
   colorMode: ColorMode;
   onReplyPress: (event: Partial<IEvent>) => void;
-  onLayout: (event: LayoutChangeEvent) => void;
+  onLayout?: (event: LayoutChangeEvent) => void;
 }
 
 const RenderRoomMessage = ({
