@@ -666,6 +666,19 @@ const components = {
           },
         },
       },
+      scrollToBottom: {
+        bg: theme.defaultGrey,
+        _light: {
+          _icon: {
+            color: theme.darkPrimary,
+          },
+        },
+        _dark: {
+          _icon: {
+            color: theme.darkPrimary,
+          },
+        },
+      },
     },
   },
 

@@ -10,6 +10,7 @@ import {
   Text,
   useColorMode,
   FlatList,
+  PresenceTransition,
 } from 'native-base';
 import React, { useState, useContext, useEffect, useRef } from 'react';
 import theme from '../../themes/theme';
@@ -84,6 +85,7 @@ const RoomItem = (
   >(undefined);
   const [isLoadingMessages, setIsLoadingMessages] = useState(false);
   const [isInitialRender, setIsInitialRender] = useState(true);
+  const [isScrollDownVisible, setIsScrollDownVisible] = useState(false);
   const [selectedEventId, setSelectedEventId] = useState('');
   const [focusedEvent, setFocusedEvent] = useState('');
   const scrollViewRef = useRef<FlatListNative>(null);
@@ -153,8 +155,6 @@ const RoomItem = (
   const initialRoomSync = async (roomId: string) => {
     const roomInfo = await matrixContext.instance?.getRoom(roomId);
 
-    console.log(roomInfo);
-
     if (roomInfo) {
       const avatarUrl = roomInfo.getAvatarUrl(
         matrixContext.instance?.baseUrl || '',
@@ -188,6 +188,18 @@ const RoomItem = (
       return;
     }
 
+    getLatestTimeline();
+  };
+
+  const getLatestTimeline = async () => {
+    const roomInfo = await matrixContext.instance?.getRoom(
+      props.route.params.roomId,
+    );
+
+    if (!roomInfo) {
+      return;
+    }
+
     dispatch(setNeedUpdateCurrentRoom(false));
 
     const currentTl = roomInfo.getUnfilteredTimelineSet();
@@ -214,10 +226,10 @@ const RoomItem = (
         );
 
         dispatch(setActionsDrawerVisible(true));
+      })
+      .finally(() => {
+        scrollToBottom();
       });
-    // .finally(() => {
-    //   scrollToBottom();
-    // });
   };
 
   const setFullyRead = async () => {
@@ -320,6 +332,15 @@ const RoomItem = (
 
         dispatch(setActionsDrawerVisible(true));
       });
+  };
+
+  const onScroll = (e: NativeSyntheticEvent<NativeScrollEvent>) => {
+    const { contentOffset, contentSize, layoutMeasurement } = e.nativeEvent;
+
+    setIsScrollDownVisible(
+      Math.floor(contentSize.height - contentOffset.y) !==
+        Math.floor(layoutMeasurement.height),
+    );
   };
 
   const onSrollEndDrag = (e: NativeSyntheticEvent<NativeScrollEvent>) => {
@@ -604,8 +625,6 @@ const RoomItem = (
       //   }
       // }
 
-      console.log(foundedIndex);
-
       scrollViewRef.current?.scrollToIndex({
         index: foundedIndex,
         animated: true,
@@ -687,7 +706,7 @@ const RoomItem = (
   };
 
   const scrollToLast = () => {
-    initialRoomSync(roomData.roomId);
+    getLatestTimeline();
   };
 
   const ReplyBox = () => {
@@ -776,10 +795,12 @@ const RoomItem = (
         _dark={{
           bg: theme.dark.bgColor,
         }}
+        onScroll={onScroll}
         onScrollEndDrag={onSrollEndDrag}
         onContentSizeChange={onContentSizeChange}
         contentContainerStyle={{ paddingBottom: 4 }}
         onScrollToIndexFailed={info => {
+          console.log(info);
           // If cannot scroll to last event
           scrollViewRef.current?.scrollToIndex({
             index: info.highestMeasuredFrameIndex,
@@ -815,15 +836,27 @@ const RoomItem = (
       </Box>
 
       {/* Scroll to bottom button */}
-      <Box style={arrowDownButton.wrapper}>
-        <IconButton
-          width={12}
-          height={12}
-          variant="ghost"
-          icon={<ArrowDownIcon />}
-          onPress={scrollToLast}
-        />
-      </Box>
+      <PresenceTransition
+        visible={isScrollDownVisible}
+        initial={{
+          translateY: 500,
+        }}
+        animate={{
+          translateY: 0,
+          transition: {
+            duration: 300,
+          },
+        }}>
+        <Box style={arrowDownButton.wrapper}>
+          <IconButton
+            width={12}
+            height={12}
+            variant="scrollToBottom"
+            icon={<ArrowDownIcon />}
+            onPress={scrollToLast}
+          />
+        </Box>
+      </PresenceTransition>
 
       {roomData.membership !== 'join' &&
         roomData.membership !== 'ban' &&
@@ -1000,9 +1033,9 @@ const arrowDownButton = StyleSheet.create({
   wrapper: {
     zIndex: 9999,
     position: 'absolute',
-    bottom: '10%',
+    bottom: 10,
     right: 12,
-    backgroundColor: theme.greyLight,
+    backgroundColor: theme.transparent,
   },
 });
 
