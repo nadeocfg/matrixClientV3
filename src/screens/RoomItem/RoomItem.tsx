@@ -228,7 +228,7 @@ const RoomItem = (
         dispatch(setActionsDrawerVisible(true));
       })
       .finally(() => {
-        scrollToBottom();
+        scrollToBottom(true);
       });
   };
 
@@ -397,10 +397,12 @@ const RoomItem = (
       });
   };
 
-  const scrollToBottom = () => {
+  const scrollToBottom = (afterRedact: boolean = false) => {
+    const offset = afterRedact ? 2 : 1;
+
     if (scrollViewRef.current && timeline?.length) {
       scrollViewRef.current?.scrollToIndex({
-        index: timeline.length - 1,
+        index: timeline.length - offset,
         animated: true,
       });
     }
@@ -635,10 +637,83 @@ const RoomItem = (
     }
   };
 
-  const onReplyLongPress = (event: Partial<IEvent>) => {
+  const replyEvent = (event: Partial<IEvent>) => {
     console.log(event);
     setReplyMessage(event);
     inputRef.current?.focus();
+  };
+
+  const checkRedactPermission = (event: Partial<IEvent>): boolean => {
+    if (!event) {
+      return false;
+    }
+
+    const userId = matrixContext.instance?.getUserId();
+
+    if (event.sender === userId) {
+      return true;
+    }
+
+    const room = matrixContext.instance?.getRoom(roomData.roomId);
+    const pLEvent = room?.currentState.getStateEvents('m.room.power_levels')[0];
+    const currentPermissions = pLEvent?.getContent();
+
+    if (
+      currentPermissions?.users[userId || ''] &&
+      currentPermissions?.users[userId || ''] >= currentPermissions?.redact
+    ) {
+      return true;
+    }
+
+    return false;
+  };
+
+  const redactConfirmation = (event: Partial<IEvent>) => {
+    dispatch(
+      setActionsDrawerContent({
+        title: 'Confirm action',
+        text: 'Are you sure you want to delete message?',
+        actions: [
+          {
+            title: 'Delete',
+            onPress: () => redactEvent(event),
+          },
+          {
+            title: 'Cancel',
+            onPress: () => dispatch(setActionsDrawerVisible(false)),
+          },
+        ],
+      }),
+    );
+
+    dispatch(setActionsDrawerVisible(true));
+  };
+
+  const redactEvent = (event: Partial<IEvent>) => {
+    dispatch(setActionsDrawerVisible(false));
+
+    matrixContext.instance
+      ?.redactEvent(roomData.roomId, event.event_id || '')
+      .then(() => {
+        getLatestTimeline();
+
+        const newTimeline = timeline?.filter(
+          item => item.event.event_id !== event.event_id,
+        );
+        setTimeline(newTimeline);
+      })
+      .catch(err => {
+        console.log({ ...err });
+
+        dispatch(
+          setActionsDrawerContent({
+            title: err.data?.errcode || '',
+            text: err.data?.error || 'Something went wrong',
+          }),
+        );
+
+        dispatch(setActionsDrawerVisible(true));
+      });
   };
 
   const onReplyPress = (event: Partial<IEvent>) => {
@@ -812,7 +887,9 @@ const RoomItem = (
         renderItem={({ item, index }) => (
           <MessageItem
             onReplyPress={onReplyPress}
-            onReplyLongPress={onReplyLongPress}
+            replyEvent={replyEvent}
+            canRedactEvent={checkRedactPermission(item.event)}
+            redactEvent={redactConfirmation}
             matrixEvent={item}
             userId={matrixContext.instance?.getUserId()}
             isPrevSenderSame={

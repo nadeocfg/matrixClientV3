@@ -38,7 +38,7 @@ const LogOutButton = (props: IButtonProps) => {
     dispatch(
       setActionsDrawerContent({
         title: 'Logout',
-        text: 'Are you sure you want to log out',
+        text: 'Are you sure you want to log out?',
         actions: [
           {
             title: 'Log out',

@@ -12,9 +12,11 @@ import { IEvent, MatrixEvent } from 'matrix-js-sdk';
 interface MessageItemProps {
   matrixEvent: MatrixEvent;
   userId: string | null | undefined;
+  canRedactEvent: boolean;
   isPrevSenderSame: boolean;
-  onReplyLongPress: (event: Partial<IEvent>) => void;
+  replyEvent: (event: Partial<IEvent>) => void;
   onReplyPress: (event: Partial<IEvent>) => void;
+  redactEvent: (event: Partial<IEvent>) => void;
   onLayout?: (event: LayoutChangeEvent) => void;
 }
 
@@ -22,8 +24,10 @@ const MessageItem = ({
   matrixEvent,
   userId,
   isPrevSenderSame,
-  onReplyLongPress,
+  canRedactEvent,
+  replyEvent,
   onReplyPress,
+  redactEvent,
   onLayout,
 }: MessageItemProps) => {
   const matrixContext = useContext(MatrixContext);
@@ -185,6 +189,32 @@ const MessageItem = ({
     );
   }
 
+  if (matrixEvent.event?.type === 'm.room.redaction') {
+    return (
+      <Box
+        onLayout={onLayout}
+        style={[
+          styles.messageWrapper,
+          colorMode === 'light' ? styles.notMyMessage : styles.notMyMessageDark,
+        ]}>
+        <Text
+          fontStyle="italic"
+          _light={{ color: theme.defaultGrey }}
+          fontSize="md">
+          Deleted message
+        </Text>
+
+        <Text
+          mt={2}
+          _light={{ color: theme.defaultGrey }}
+          textAlign="right"
+          fontSize="2xs">
+          {formatDate(matrixEvent.event?.origin_server_ts)}
+        </Text>
+      </Box>
+    );
+  }
+
   if (matrixEvent.event?.type === 'm.room.member') {
     return renderRoomMemberMessage(
       matrixEvent.event,
@@ -223,10 +253,14 @@ const MessageItem = ({
         }}>
         <Menu.Item
           variant="withBorder"
-          onPress={() => onReplyLongPress(matrixEvent.event)}>
+          onPress={() => replyEvent(matrixEvent.event)}>
           Reply
         </Menu.Item>
-        <Menu.Item onPress={() => {}}>Delete</Menu.Item>
+        {canRedactEvent && (
+          <Menu.Item onPress={() => redactEvent(matrixEvent.event)}>
+            Delete
+          </Menu.Item>
+        )}
       </Menu>
     );
   }
